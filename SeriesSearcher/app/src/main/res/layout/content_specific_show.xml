@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="syrenware.seriessearcher.SpecificShowActivity"
+    tools:showIn="@layout/activity_specific_show">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/txtShowTitle"
+            android:textSize="20dp"
+            android:textStyle="bold"
+           />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtShowTitle"
+            android:layout_marginTop="10dp"
+            android:id="@+id/txtShowPremiered"
+            android:textSize="16dp"
+        />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtShowPremiered"
+            android:layout_marginTop="10dp"
+            android:id="@+id/txtShowGenres"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtShowGenres"
+            android:layout_marginTop="10dp"
+            android:id="@+id/txtShowLanguage"
+            android:textSize="16dp"
+           />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtShowLanguage"
+            android:layout_marginTop="10dp"
+            android:id="@+id/txtShowStatus"
+            android:textSize="16dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtShowStatus"
+            android:layout_marginTop="10dp"
+            android:id="@+id/txtShowRuntime"
+            android:textSize="16dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtShowRuntime"
+            android:layout_marginTop="10dp"
+            android:id="@+id/txtShowRating"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtShowRating"
+            android:layout_marginTop="10dp"
+            android:id="@+id/txtShowLatestEpisode"
+            android:textSize="16dp"
+            android:text="Latest Episode: Season 10 Episode 15"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtShowLatestEpisode"
+            android:layout_marginTop="10dp"
+            android:id="@+id/txtShowNextEpisode"
+            android:textSize="16dp"
+            android:text="Next Episode Release Date: 16 February 2017"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtShowNextEpisode"
+            android:layout_marginTop="10dp"
+            android:id="@+id/txtShowSummary"
+            android:textSize="16dp"
+         />
+    </RelativeLayout>
+
+
+
+</android.support.v4.widget.NestedScrollView>

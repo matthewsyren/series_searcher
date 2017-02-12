@@ -7,9 +7,9 @@
             android:icon="@drawable/ic_home_black"
             android:title="@string/navigation_drawer_my_shows" />
         <item
-            android:id="@+id/nav_all_shows"
+            android:id="@+id/nav_random_shows"
             android:icon="@drawable/ic_theaters_black"
-            android:title="@string/navigation_drawer_all_shows" />
+            android:title="@string/navigation_drawer_random_shows" />
         <item
             android:id="@+id/nav_search"
             android:icon="@drawable/ic_search_black"

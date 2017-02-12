@@ -51,5 +51,4 @@ class ImageLoadClass extends AsyncTask<Void, Void, Bitmap> {
         imageView.setImageBitmap(result);
         delegate.getJsonImage(result, position);
     }
-
 }

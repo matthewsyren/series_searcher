@@ -1,7 +1,10 @@
 package syrenware.seriessearcher;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -10,6 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import static android.R.id.message;
 
 public class SearchActivity extends BaseActivity implements IAPIConnectionResponse {
 
@@ -41,41 +46,55 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
     public void getJsonResponse(String response) {
         try{
             JSONArray jsonArray = new JSONArray(response);
-            ArrayList<Show> lstShows = new ArrayList<Show>();
+            final ArrayList<Show> lstShows = new ArrayList<Show>();
+
             for(int i = 0; i < jsonArray.length(); i++){
                 JSONObject json = jsonArray.getJSONObject(i);
                 json = json.getJSONObject("show");
-                String name = json.getString("name");
-                String status = json.getString("status");
-                String runtime = json.getString("runtime");
-                String rating = json.getJSONObject("rating")
-                        .getString("average");
-                String imageUrl;
-                if(json.getString("image") != "null"){
-                    imageUrl = json.getJSONObject("image")
-                                   .getString("medium");
-                }
-                else{
-                    imageUrl = null;
-                }
 
-                if(rating.equalsIgnoreCase("null") || rating.length() == 0){
-                    rating = "N/A";
-                }
-                if(runtime.equalsIgnoreCase("null") || runtime.length() == 0){
-                    runtime = "N/A";
-                }
+                if(json != null){
+                    int id = json.getInt("id");
+                    String name = json.getString("name");
+                    String status = json.getString("status");
+                    String runtime = json.getString("runtime");
+                    String rating = json.getJSONObject("rating")
+                            .getString("average");
+                    String imageUrl;
 
-                Show show = new Show(name, rating, status, runtime, imageUrl);
-                lstShows.add(show);
+                    if(json.getString("image") != "null"){
+                        imageUrl = json.getJSONObject("image")
+                                       .getString("medium");
+                    }
+                    else{
+                        imageUrl = null;
+                    }
+
+                    if(rating.equalsIgnoreCase("null") || rating.length() == 0){
+                        rating = "N/A";
+                    }
+                    if(runtime.equalsIgnoreCase("null") || runtime.length() == 0){
+                        runtime = "N/A";
+                    }
+
+                    Show show = new Show(id, name, rating, status, runtime, imageUrl);
+                    lstShows.add(show);
+                }
             }
 
-            ListViewAdapter adapter = new ListViewAdapter(this, lstShows);
+            final ListViewAdapter adapter = new ListViewAdapter(this, lstShows);
             ListView listView = (ListView) findViewById(R.id.lstSearchResults);
             listView.setAdapter(adapter);
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
+                    Intent intent = new Intent(SearchActivity.this, SpecificShowActivity.class);
+                    intent.putExtra("specificShowLink", "http://api.tvmaze.com/shows/" + lstShows.get(pos).getShowId());
+                    startActivity(intent);
+                }
+            });
         }
-        catch(Exception jse){
-            Toast.makeText(getApplicationContext(), jse.getMessage(), Toast.LENGTH_LONG).show();
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

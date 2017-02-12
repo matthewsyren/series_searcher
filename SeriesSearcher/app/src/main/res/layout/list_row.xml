@@ -15,15 +15,13 @@
             android:padding="3dip"
             android:layout_alignParentLeft="true"
             android:layout_marginRight="5dip"
-            android:layout_centerInParent="true"
-            >
+            android:layout_centerInParent="true">
 
 
             <ImageView
                 android:id="@+id/show_poster"
                 android:layout_width="75dip"
-                android:layout_height="75dip"
-               />
+                android:layout_height="75dip" />
 
         </LinearLayout>
 
@@ -84,14 +82,15 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:padding="3dip"
-            android:layout_marginLeft="5dip"
-            >
+            android:layout_marginLeft="5dip">
+
             <Button
                 android:layout_width="50dip"
                 android:layout_height="40dip"
                 android:id="@+id/btnToggleShow"
                 android:text="+"
-                android:textSize="17dip"/>
+                android:textSize="17dip"
+                android:focusable="false"/>
         </LinearLayout>
 
     </RelativeLayout>

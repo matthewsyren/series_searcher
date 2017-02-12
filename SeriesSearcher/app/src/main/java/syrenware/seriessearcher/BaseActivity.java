@@ -88,7 +88,7 @@ public class BaseActivity extends Activity
         if(id == R.id.nav_home){
             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
         }
-        if(id == R.id.nav_all_shows){
+        if(id == R.id.nav_random_shows){
             startActivity(new Intent(getApplicationContext(), RandomShowsActivity.class));
         }
         else if(id == R.id.nav_search){

@@ -1,6 +1,8 @@
 package syrenware.seriessearcher;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -17,7 +19,7 @@ public class RandomShowsActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_random_shows);
         super.onCreateDrawer();
-        super.setSelectedNavItem(R.id.nav_all_shows);
+        super.setSelectedNavItem(R.id.nav_random_shows);
 
         //Fetches JSON from API
         int page = (int) (Math.random() * 100 + 1);
@@ -31,7 +33,7 @@ public class RandomShowsActivity extends BaseActivity
     public void getJsonResponse(String response) {
         try{
             JSONArray jsonArray = new JSONArray(response);
-            ArrayList<Show> lstShows = new ArrayList<Show>();
+            final ArrayList<Show> lstShows = new ArrayList<Show>();
 
             int startingShow = (int) (Math.random() * 230 + 1);
             int showCount = 0;
@@ -39,6 +41,7 @@ public class RandomShowsActivity extends BaseActivity
             for(int i = 0; i < 20 && (startingShow + i) < jsonArray.length() - 1; i++){
                 JSONObject json = jsonArray.getJSONObject(startingShow + i);
                 if(json != null){
+                    int id = json.getInt("id");
                     String name = json.getString("name");
                     String status = json.getString("status");
                     String runtime = json.getString("runtime");
@@ -61,7 +64,7 @@ public class RandomShowsActivity extends BaseActivity
                         runtime = "N/A";
                     }
 
-                    Show show = new Show(name, rating, status, runtime, imageUrl);
+                    Show show = new Show(id, name, rating, status, runtime, imageUrl);
 
                     lstShows.add(show);
                     showCount++;
@@ -72,8 +75,15 @@ public class RandomShowsActivity extends BaseActivity
             }
 
             ListViewAdapter adapter = new ListViewAdapter(this, lstShows);
-            ListView listView = (ListView) findViewById(R.id.lstAllShows);
+            ListView listView = (ListView) findViewById(R.id.lstRandomShows);
             listView.setAdapter(adapter);
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
+
+                    Toast.makeText(getApplicationContext(), "Title is " + lstShows.get(pos).getShowTitle(), Toast.LENGTH_LONG).show();
+                }
+            });
         }
         catch(Exception jse){
             Toast.makeText(getApplicationContext(), jse.getMessage(), Toast.LENGTH_LONG).show();

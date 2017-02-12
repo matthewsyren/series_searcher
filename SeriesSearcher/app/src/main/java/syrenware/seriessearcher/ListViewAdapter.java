@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 
 public class ListViewAdapter extends ArrayAdapter
                              implements IAPIImage {
+    //Declarations
     ArrayList<Show> shows = null;
     Context context;
     ImageView image;
@@ -31,7 +33,6 @@ public class ListViewAdapter extends ArrayAdapter
     public ListViewAdapter(Context context, ArrayList<Show> resource)
     {
         super(context, R.layout.list_row,resource);
-        // TODO Auto-generated constructor stub
         this.context = context;
         this.shows = resource;
     }
@@ -39,7 +40,6 @@ public class ListViewAdapter extends ArrayAdapter
     @Override
     public View getView(final int position, View convertView, ViewGroup parent)
     {
-        // TODO Auto-generated method stub
         LayoutInflater inflater = ((Activity)context).getLayoutInflater();
         convertView = inflater.inflate(R.layout.list_row, parent, false);
 
@@ -50,7 +50,7 @@ public class ListViewAdapter extends ArrayAdapter
         latestEpisode = (TextView) convertView.findViewById((R.id.show_latest_episode));
         nextEpisode = (TextView) convertView.findViewById((R.id.show_next_episode_date));
 
-
+        //Populates ImageView from URL if image hasn't been stored yet. If the image has been stored, the ImageView is populated with the stored image
         if(shows.get(position).getShowImageUrl() != null){
             if(shows.get(position).getShowImage() == null){
                 ImageLoadClass loadClass = new ImageLoadClass(shows.get(position).getShowImageUrl(), image, position);
