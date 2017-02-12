@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <!-- Ensures that image is in line with text -->
+        <LinearLayout android:id="@+id/thumbnail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dip"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="5dip"
+            android:layout_centerInParent="true"
+            >
+
+
+            <ImageView
+                android:id="@+id/show_poster"
+                android:layout_width="75dip"
+                android:layout_height="75dip"
+               />
+
+        </LinearLayout>
+
+        <!-- Textual information that relates to image -->
+        <TextView
+            android:id="@+id/show_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/thumbnail"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:text="The Big Bang Theory"
+            android:textColor="#040404"
+            android:typeface="sans"
+            android:textSize="16dip"
+            android:textStyle="bold"
+            android:layout_toLeftOf="@+id/linear_layout_button"/>
+
+        <TextView
+            android:id="@+id/show_rating"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/show_title"
+            android:textColor="#343434"
+            android:textSize="12dip"
+            android:layout_marginTop="1dip"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:text="Rating: 8.4"
+            android:layout_toLeftOf="@+id/linear_layout_button"/>
+
+        <TextView
+            android:id="@+id/show_latest_episode"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/show_rating"
+            android:textColor="#343434"
+            android:textSize="12dip"
+            android:layout_marginTop="1dip"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:text="Latest Episode: Season 10 Episode 13"
+            android:layout_toLeftOf="@+id/linear_layout_button"/>
+
+        <TextView
+            android:id="@+id/show_next_episode_date"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/show_latest_episode"
+            android:textColor="#343434"
+            android:textSize="12dip"
+            android:layout_marginTop="1dip"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:text="Next Episode: 02/02/2017"
+            android:layout_toLeftOf="@+id/linear_layout_button"/>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="3dip"
+            android:layout_marginLeft="5dip"
+            >
+            <Button
+                android:layout_width="50dip"
+                android:layout_height="40dip"
+                android:id="@+id/btnToggleShow"
+                android:text="+"
+                android:textSize="17dip"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
