@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -29,17 +28,19 @@ public class ListViewAdapter extends ArrayAdapter
     TextView latestEpisode;
     TextView nextEpisode;
 
-
-    public ListViewAdapter(Context context, ArrayList<Show> resource)
+    //Constructor
+    public ListViewAdapter(Context context, ArrayList<Show> shows)
     {
-        super(context, R.layout.list_row,resource);
+        super(context, R.layout.list_row,shows);
         this.context = context;
-        this.shows = resource;
+        this.shows = shows;
     }
 
+    //Method populates the appropriate Views with the appropriate data (stored in the shows ArrayList)
     @Override
     public View getView(final int position, View convertView, ViewGroup parent)
     {
+        //Inflates the list_row view for the ListView
         LayoutInflater inflater = ((Activity)context).getLayoutInflater();
         convertView = inflater.inflate(R.layout.list_row, parent, false);
 
@@ -50,10 +51,12 @@ public class ListViewAdapter extends ArrayAdapter
         latestEpisode = (TextView) convertView.findViewById((R.id.show_latest_episode));
         nextEpisode = (TextView) convertView.findViewById((R.id.show_next_episode_date));
 
-        //Populates ImageView from URL if image hasn't been stored yet. If the image has been stored, the ImageView is populated with the stored image
+        //Populates ImageView from URL if image hasn't been stored in the Show object yet. If the image has been stored, the ImageView is populated with the stored image from the Show object
         if(shows.get(position).getShowImageUrl() != null){
             if(shows.get(position).getShowImage() == null){
-                ImageLoadClass loadClass = new ImageLoadClass(shows.get(position).getShowImageUrl(), image, position);
+                ImageLoad loadClass = new ImageLoad(shows.get(position).getShowImageUrl(), image, position);
+
+                //The delegate variable is used to pass the data from the IAPIImage class to the getJsonImage method in this class
                 loadClass.delegate = this;
                 loadClass.execute();
             }
@@ -62,6 +65,7 @@ public class ListViewAdapter extends ArrayAdapter
             }
         }
 
+        //Displays the data in the appropriate Views
         title.setText(shows.get(position).getShowTitle());
         rating.setText("Rating: " + shows.get(position).getShowRating());
         latestEpisode.setText("Status: " + shows.get(position).getShowStatus());
@@ -69,7 +73,7 @@ public class ListViewAdapter extends ArrayAdapter
         return convertView;
     }
 
-    //Method assigns the downloaded to the Show object, in order to prevent downloading the same image more than once
+    //Method assigns the downloaded image to the Show object's showImage attribute, in order to prevent downloading the same image more than once
     @Override
     public void getJsonImage(Bitmap bitmap, int position) {
         shows.get(position).setShowImage(bitmap);

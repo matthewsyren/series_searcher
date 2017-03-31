@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 /**
  * Created by matthew on 2017/01/28.
  * Class holds the details that are retrieved for the TV Shows
+ * showImage is stored in order to decrease data usage. When the user scrolls through a ListView that displays shows, the image would have to be fetched
+ *           from the API multiple times, hence using lots of data. If it is stored in a variable, however, the data needs to be retrieved from the API only once.
  */
 
 public class Show {

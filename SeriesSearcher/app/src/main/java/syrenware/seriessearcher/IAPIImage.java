@@ -8,5 +8,6 @@ import android.graphics.Bitmap;
  */
 
 public interface IAPIImage {
+    //Method is used to send the image and its position in an array to be stored in to the class that implements this interface
     public void getJsonImage(Bitmap bitmap, int position);
 }

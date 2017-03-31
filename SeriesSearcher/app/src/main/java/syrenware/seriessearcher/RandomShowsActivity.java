@@ -21,7 +21,7 @@ public class RandomShowsActivity extends BaseActivity
         super.onCreateDrawer();
         super.setSelectedNavItem(R.id.nav_random_shows);
 
-        //Fetches JSON from API
+        //Fetches JSON from API (the Math.random() method chooses a random page from the API to fetch)
         int page = (int) (Math.random() * 100 + 1);
         APIConnection api = new APIConnection();
         api.delegate = this;
@@ -32,31 +32,37 @@ public class RandomShowsActivity extends BaseActivity
     @Override
     public void getJsonResponse(String response) {
         try{
+            //JSONArray stores the JSON returned from the TVMaze API
             JSONArray jsonArray = new JSONArray(response);
             final ArrayList<Show> lstShows = new ArrayList<Show>();
 
+            //Math.random() is used to choose a random starting point to fetch data from the API. This allows the app to fetch different shows each time it runs
             int startingShow = (int) (Math.random() * 230 + 1);
             int showCount = 0;
 
+            //Loops through the 20 randomly chosen shows returned from the TVMaze API
             for(int i = 0; i < 20 && (startingShow + i) < jsonArray.length() - 1; i++){
+                //Creates new JSONObject to parse the data returned
                 JSONObject json = jsonArray.getJSONObject(startingShow + i);
+
+                //Assigns values to the JSONObject if the JSON returned from the API is not null
                 if(json != null){
                     int id = json.getInt("id");
                     String name = json.getString("name");
                     String status = json.getString("status");
                     String runtime = json.getString("runtime");
-
-                    String rating = json.getJSONObject("rating")
-                            .getString("average");
+                    String rating = json.getJSONObject("rating").getString("average");
                     String imageUrl;
-                    if(json.getString("image") != "null"){
-                        imageUrl = json.getJSONObject("image")
-                                .getString("medium");
+
+                    //Gets the image URL for the current show if there is a URL provided, otherwise sets the URL to null
+                    if(!json.getString("image").equals("null")){
+                        imageUrl = json.getJSONObject("image").getString("medium");
                     }
                     else{
                         imageUrl = null;
                     }
 
+                    //Ensures that the data returned from the API is valid
                     if(rating.equalsIgnoreCase("null") || rating.length() == 0){
                         rating = "N/A";
                     }
@@ -64,20 +70,23 @@ public class RandomShowsActivity extends BaseActivity
                         runtime = "N/A";
                     }
 
+                    //Instantiates a Show object and adds it to the list_view_random_shows ListView
                     Show show = new Show(id, name, rating, status, runtime, imageUrl);
-
                     lstShows.add(show);
                     showCount++;
                 }
                 else{
+                    //Exits the loop if the JSON returned is null
                     break;
                 }
             }
 
+            //Sets the custom adapter for the ListView to display the Show data
             ListViewAdapter adapter = new ListViewAdapter(this, lstShows);
-            ListView listView = (ListView) findViewById(R.id.lstRandomShows);
+            ListView listView = (ListView) findViewById(R.id.list_view_random_shows);
             listView.setAdapter(adapter);
 
+            //Sets onItemClickListener to pick up when the user clicks on a row in the ListView
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
 

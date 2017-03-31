@@ -19,29 +19,28 @@
         android:id="@+id/relative_layout_search">
 
         <EditText
+            android:id="@+id/text_search"
             android:layout_width="250dip"
             android:layout_height="25dip"
-            android:id="@+id/txtSearch"
             android:background="#D3D3D3"
             android:layout_centerVertical="true"
             />
 
         <Button
+            android:id="@+id/button_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Search"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:id="@+id/btnSearch"
             android:onClick="searchShows"
             />
     </RelativeLayout>
 
     <ListView
+        android:id="@+id/list_view_search_results"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lstSearchResults"
         android:layout_below="@+id/relative_layout_search">
     </ListView>
-
 </RelativeLayout>
