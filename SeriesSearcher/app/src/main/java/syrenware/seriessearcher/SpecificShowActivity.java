@@ -45,11 +45,17 @@ public class SpecificShowActivity extends AppCompatActivity
                 String language = json.getString("language");
                 String status = json.getString("status");
                 String runtime = json.getString("runtime");
-                JSONArray arrGenres = json.getJSONArray("genres");
+                JSONArray arrGenres;
+                if(!json.getString("genres").equals("[]")){
+                    arrGenres = json.getJSONArray("genres");
+                }
+                else{
+                    arrGenres = null;
+                }
                 String rating = json.getJSONObject("rating").getString("average");
                 String summary = json.getString("summary");
                 String imageUrl;
-                if(json.getString("image") != "null"){
+                if(!json.getString("image").equals("null")){
                     imageUrl = json.getJSONObject("image").getString("medium");
                 }
                 else{
@@ -85,7 +91,6 @@ public class SpecificShowActivity extends AppCompatActivity
                 TextView txtGenres = (TextView) findViewById(R.id.text_show_genres);
                 TextView txtRating = (TextView) findViewById(R.id.text_show_rating);
                 TextView txtSummary = (TextView) findViewById(R.id.text_show_summary);
-                ImageView imgSpecificShow = (ImageView) findViewById(R.id.image_view_specific_show);
 
                 //Displays the JSON data in the GUI components
                 txtName.setText(name);
@@ -94,13 +99,19 @@ public class SpecificShowActivity extends AppCompatActivity
                 txtStatus.setText("Status: " + status);
                 txtRuntime.setText("Runtime: " + runtime);
                 txtRating.setText("Rating: " + rating);
-                txtGenres.setText("Genres: " + arrGenres.get(0));
-                for(int i = 1; i < arrGenres.length(); i++){
-                    txtGenres.setText(txtGenres.getText() + ", " + arrGenres.get(i).toString());
+                if(arrGenres != null){
+                    txtGenres.setText("Genres: " + arrGenres.get(0));
+                    for(int i = 1; i < arrGenres.length(); i++){
+                        txtGenres.setText(txtGenres.getText() + ", " + arrGenres.get(i).toString());
+                    }
+                }
+                else{
+                    txtGenres.setText("N/A");
                 }
                 txtSummary.setText("Summary: " + summary);
 
-                ImageLoad image = new ImageLoad(imageUrl, imgSpecificShow, 0);
+                //Fetches image from the API
+                ImageLoad image = new ImageLoad(imageUrl, 0);
                 image.delegate = this;
                 image.execute();
             }
@@ -119,9 +130,11 @@ public class SpecificShowActivity extends AppCompatActivity
     //Method retrieves the image from the API and assigns it to the ImageView on this Activity
     @Override
     public void getJsonImage(Bitmap bitmap, int position) {
-
+        ImageView imgSpecificShow = (ImageView) findViewById(R.id.image_view_specific_show);
+        imgSpecificShow.setImageBitmap(bitmap);
     }
 
+    //Method displays the message that is passed in using a Toast alert
     public void displayToastMessage(String message){
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
