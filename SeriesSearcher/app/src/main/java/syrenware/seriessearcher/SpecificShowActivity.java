@@ -11,7 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SpecificShowActivity extends AppCompatActivity
-                                  implements IAPIConnectionResponse, IAPIImage{
+                                  implements IAPIConnectionResponse{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,8 +111,9 @@ public class SpecificShowActivity extends AppCompatActivity
                 txtSummary.setText("Summary: " + summary);
 
                 //Fetches image from the API
-                ImageLoad image = new ImageLoad(imageUrl, 0);
-                image.delegate = this;
+                ImageView imgSpecificShow = (ImageView) findViewById(R.id.image_view_specific_show);
+                ImageLoad image = new ImageLoad(imageUrl, imgSpecificShow, 0);
+                //image.delegate = this;
                 image.execute();
             }
             else{
@@ -125,13 +126,6 @@ public class SpecificShowActivity extends AppCompatActivity
         catch(Exception exc){
             displayToastMessage(exc.getMessage());
         }
-    }
-
-    //Method retrieves the image from the API and assigns it to the ImageView on this Activity
-    @Override
-    public void getJsonImage(Bitmap bitmap, int position) {
-        ImageView imgSpecificShow = (ImageView) findViewById(R.id.image_view_specific_show);
-        imgSpecificShow.setImageBitmap(bitmap);
     }
 
     //Method displays the message that is passed in using a Toast alert

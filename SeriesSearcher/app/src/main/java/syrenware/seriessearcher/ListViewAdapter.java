@@ -54,7 +54,7 @@ public class ListViewAdapter extends ArrayAdapter
         //Populates ImageView from URL if image hasn't been stored in the Show object yet. If the image has been stored, the ImageView is populated with the stored image from the Show object
         if(shows.get(position).getShowImageUrl() != null){
             if(shows.get(position).getShowImage() == null){
-                ImageLoad loadClass = new ImageLoad(shows.get(position).getShowImageUrl(), position);
+                ImageLoad loadClass = new ImageLoad(shows.get(position).getShowImageUrl(), image, position);
 
                 //The delegate variable is used to pass the data from the IAPIImage class to the getJsonImage method in this class
                 loadClass.delegate = this;

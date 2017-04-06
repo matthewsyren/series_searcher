@@ -49,12 +49,8 @@ public class APIConnection extends AsyncTask<String, Void, String> {
 
     //Method passes the JSON back to the Main thread (to the point from which this class was instantiated)
     protected void onPostExecute(String response) {
-        if (response == null) {
-            response = null;
-        }
         if(delegate != null){
             delegate.getJsonResponse(response);
         }
-        Log.i("INFO", response);
     }
 }

@@ -15,12 +15,14 @@ import java.net.URL;
 class ImageLoad extends AsyncTask<Void, Void, Bitmap> {
     //Declarations
     private String url;
+    private ImageView imageView;
     public IAPIImage delegate = null;
     int position;
 
     //Constructor (accepts URL of image, the ImageView to display the image, and the position to store the image in (incrementer)
-    public ImageLoad(String url, int position) {
+    public ImageLoad(String url, ImageView imageView, int position) {
         this.url = url;
+        this.imageView = imageView;
         this.position = position;
     }
 
@@ -52,7 +54,11 @@ class ImageLoad extends AsyncTask<Void, Void, Bitmap> {
     @Override
     protected void onPostExecute(Bitmap result) {
         super.onPostExecute(result);
-        //imageView.setImageBitmap(result);
-        delegate.getJsonImage(result, position);
+        imageView.setImageBitmap(result);
+
+        //Sends the image to the delegate class if the delegate class has been set
+        if(delegate != null){
+            delegate.getJsonImage(result, position);
+        }
     }
 }
