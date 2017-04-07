@@ -1,5 +1,6 @@
 package syrenware.seriessearcher;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class RandomShowsActivity extends BaseActivity
         implements IAPIConnectionResponse {
@@ -86,11 +88,12 @@ public class RandomShowsActivity extends BaseActivity
             ListView listView = (ListView) findViewById(R.id.list_view_random_shows);
             listView.setAdapter(adapter);
 
-            //Sets onItemClickListener to pick up when the user clicks on a row in the ListView
+            //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
-
-                    Toast.makeText(getApplicationContext(), "Title is " + lstShows.get(pos).getShowTitle(), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(RandomShowsActivity.this, SpecificShowActivity.class);
+                    intent.putExtra("specificShowLink", "http://api.tvmaze.com/shows/" + lstShows.get(pos).getShowId());
+                    startActivity(intent);
                 }
             });
         }

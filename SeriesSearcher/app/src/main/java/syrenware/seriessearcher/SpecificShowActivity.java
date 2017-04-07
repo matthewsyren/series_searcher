@@ -1,6 +1,5 @@
 package syrenware.seriessearcher;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
@@ -40,81 +39,30 @@ public class SpecificShowActivity extends AppCompatActivity
             //Assigns JSON data to variables if there is a valid JSON response
             if(response != null){
                 JSONObject json = new JSONObject(response);
-                String name = json.getString("name");
-                String premiered = json.getString("premiered");
-                String language = json.getString("language");
-                String status = json.getString("status");
-                String runtime = json.getString("runtime");
-                JSONArray arrGenres;
-                if(!json.getString("genres").equals("[]")){
-                    arrGenres = json.getJSONArray("genres");
-                }
-                else{
-                    arrGenres = null;
-                }
-                String rating = json.getJSONObject("rating").getString("average");
-                String summary = json.getString("summary");
-                String imageUrl;
-                if(!json.getString("image").equals("null")){
-                    imageUrl = json.getJSONObject("image").getString("medium");
-                }
-                else{
-                    imageUrl = null;
-                }
 
-                //Ensures that no null values are displayed
-                if(premiered.equalsIgnoreCase("null") || premiered.length() == 0){
-                    premiered = "N/A";
+                //If the JSON has a 'premiered' key, then it is used for the show's main information, and if it has a 'season' key, it has information about either the show's next or previous episode
+                if(json.has("premiered")){
+                    displayShowInformation(json);
                 }
-                if(language.equalsIgnoreCase("null") || language.length() == 0){
-                    language = "N/A";
-                }
-                if(rating.equalsIgnoreCase("null") || rating.length() == 0){
-                    rating = "N/A";
-                }
-                if(runtime.equalsIgnoreCase("null") || runtime.length() == 0){
-                    runtime = "N/A";
-                }
-                if(status.equalsIgnoreCase("null") || status.length() == 0){
-                    status = "N/A";
-                }
-                if(summary.equalsIgnoreCase("null") || summary.length() == 0){
-                    summary = "N/A";
-                }
-
-                //Assigns GUI components to variables
-                TextView txtName = (TextView) findViewById(R.id.text_show_title);
-                TextView txtPremiered = (TextView) findViewById(R.id.text_show_premiered);
-                TextView txtLanguage = (TextView) findViewById(R.id.text_show_language);
-                TextView txtStatus = (TextView) findViewById(R.id.text_show_status);
-                TextView txtRuntime = (TextView) findViewById(R.id.text_show_runtime);
-                TextView txtGenres = (TextView) findViewById(R.id.text_show_genres);
-                TextView txtRating = (TextView) findViewById(R.id.text_show_rating);
-                TextView txtSummary = (TextView) findViewById(R.id.text_show_summary);
-
-                //Displays the JSON data in the GUI components
-                txtName.setText(name);
-                txtPremiered.setText("Premiered: " + premiered);
-                txtLanguage.setText("Language: " + language);
-                txtStatus.setText("Status: " + status);
-                txtRuntime.setText("Runtime: " + runtime);
-                txtRating.setText("Rating: " + rating);
-                if(arrGenres != null){
-                    txtGenres.setText("Genres: " + arrGenres.get(0));
-                    for(int i = 1; i < arrGenres.length(); i++){
-                        txtGenres.setText(txtGenres.getText() + ", " + arrGenres.get(i).toString());
+                else if(json.has("season")){
+                    TextView txtLatestEpisode = (TextView) findViewById(R.id.text_show_latest_episode);
+                    String season = json.getString("season");
+                    String episode = json.getString("number");
+                    if(txtLatestEpisode.getText().toString().length() == 0) {
+                        txtLatestEpisode.setText("Latest Episode: Season: " + season + " Episode: " + episode);
+                    }
+                    else{
+                        String airDate = json.getString("airdate");
+                        if(airDate == null){
+                            airDate = "";
+                        }
+                        else{
+                            airDate = "(" + airDate + ")";
+                        }
+                        TextView txtNextEpisode = (TextView) findViewById(R.id.text_show_next_episode);
+                        txtNextEpisode.setText("Next Episode: Season: " + season + " Episode: " + episode + " " + airDate);
                     }
                 }
-                else{
-                    txtGenres.setText("N/A");
-                }
-                txtSummary.setText("Summary: " + summary);
-
-                //Fetches image from the API
-                ImageView imgSpecificShow = (ImageView) findViewById(R.id.image_view_specific_show);
-                ImageLoad image = new ImageLoad(imageUrl, imgSpecificShow, 0);
-                //image.delegate = this;
-                image.execute();
             }
             else{
                 displayToastMessage("Error fetching data, please try again");
@@ -123,13 +71,120 @@ public class SpecificShowActivity extends AppCompatActivity
         catch(JSONException jse){
             displayToastMessage(jse.getMessage());
         }
-        catch(Exception exc){
-            displayToastMessage(exc.getMessage());
-        }
     }
 
     //Method displays the message that is passed in using a Toast alert
     public void displayToastMessage(String message){
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    //Method fetches the main information for the show from the TVMaze API, and then calls another link for more specific information about the show
+    public void displayShowInformation(JSONObject json){
+        try{
+            String name = json.getString("name");
+            String premiered = json.getString("premiered");
+            String language = json.getString("language");
+            String status = json.getString("status");
+            String runtime = json.getString("runtime");
+            JSONArray arrGenres;
+            if(!json.getString("genres").equals("[]")){
+                arrGenres = json.getJSONArray("genres");
+            }
+            else{
+                arrGenres = null;
+            }
+            String rating = json.getJSONObject("rating").getString("average");
+            String summary = json.getString("summary");
+            String imageUrl;
+            if(!json.getString("image").equals("null")){
+                imageUrl = json.getJSONObject("image").getString("medium");
+            }
+            else{
+                imageUrl = null;
+            }
+
+            //Ensures that no null values are displayed
+            if(premiered.equalsIgnoreCase("null") || premiered.length() == 0){
+                premiered = "N/A";
+            }
+            if(language.equalsIgnoreCase("null") || language.length() == 0){
+                language = "N/A";
+            }
+            if(rating.equalsIgnoreCase("null") || rating.length() == 0){
+                rating = "N/A";
+            }
+            if(runtime.equalsIgnoreCase("null") || runtime.length() == 0){
+                runtime = "N/A";
+            }
+            if(status.equalsIgnoreCase("null") || status.length() == 0){
+                status = "N/A";
+            }
+            if(summary.equalsIgnoreCase("null") || summary.length() == 0){
+                summary = "N/A";
+            }
+
+            //Assigns GUI components to variables
+            TextView txtName = (TextView) findViewById(R.id.text_show_title);
+            TextView txtPremiered = (TextView) findViewById(R.id.text_show_premiered);
+            TextView txtLanguage = (TextView) findViewById(R.id.text_show_language);
+            TextView txtStatus = (TextView) findViewById(R.id.text_show_status);
+            TextView txtRuntime = (TextView) findViewById(R.id.text_show_runtime);
+            TextView txtGenres = (TextView) findViewById(R.id.text_show_genres);
+            TextView txtRating = (TextView) findViewById(R.id.text_show_rating);
+            TextView txtSummary = (TextView) findViewById(R.id.text_show_summary);
+            TextView txtPreviousEpisode = (TextView) findViewById(R.id.text_show_latest_episode);
+            TextView txtNextEpisode = (TextView) findViewById(R.id.text_show_next_episode);
+
+            //Displays the JSON data in the GUI components
+            txtName.setText(name);
+            txtPremiered.setText("Premiered: " + premiered);
+            txtLanguage.setText("Language: " + language);
+            txtStatus.setText("Status: " + status);
+            txtRuntime.setText("Runtime: " + runtime);
+            txtRating.setText("Rating: " + rating);
+            if(arrGenres != null){
+                txtGenres.setText("Genres: " + arrGenres.get(0));
+                for(int i = 1; i < arrGenres.length(); i++){
+                    txtGenres.setText(txtGenres.getText() + ", " + arrGenres.get(i).toString());
+                }
+            }
+            else{
+                txtGenres.setText("N/A");
+            }
+            txtSummary.setText("Summary: " + summary);
+
+            //Fetches image from the API
+            ImageView imgSpecificShow = (ImageView) findViewById(R.id.image_view_specific_show);
+            ImageLoad image = new ImageLoad(imageUrl, imgSpecificShow, 0);
+            image.execute();
+
+            //Fetches data about the show's previous and next episodes (which are accessed using different links)
+            JSONObject links = json.getJSONObject("_links");
+            if(links.has("previousepisode")){
+                String previousEpisodeLink = links.getJSONObject("previousepisode").getString("href");
+
+                //Fetches data from the TVMaze API using the link
+                APIConnection api = new APIConnection();
+                api.delegate = this;
+                api.execute(previousEpisodeLink);
+            }
+            else{
+                txtPreviousEpisode.setText("Latest Episode: N/A");
+            }
+            if(links.has("nextepisode")){
+                String nextEpisodeLink = links.getJSONObject("nextepisode").getString("href");
+
+                //Fetches data from the TVMaze API using the link
+                APIConnection api = new APIConnection();
+                api.delegate = this;
+                api.execute(nextEpisodeLink);
+            }
+            else{
+                txtNextEpisode.setText("Next Episode: N/A");
+            }
+        }
+        catch(JSONException jse){
+            displayToastMessage(jse.getMessage());
+        }
     }
 }

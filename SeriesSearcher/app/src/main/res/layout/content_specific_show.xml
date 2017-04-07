@@ -13,11 +13,10 @@
         android:layout_height="match_parent">
         <TextView
             android:id="@+id/text_show_title"
-            android:layout_below="@+id/toolbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:textSize="20dp"
+            android:textSize="@dimen/specific_show_activity_heading_text_size"
             android:textStyle="bold" />
 
         <TextView
@@ -26,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_show_title"
             android:layout_marginTop="10dp"
-            android:textSize="16dp" />
+            android:textSize="@dimen/specific_show_activity_text_size" />
 
         <TextView
             android:id="@+id/text_show_genres"
@@ -34,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_show_premiered"
             android:layout_marginTop="10dp"
-            android:textSize="16dp" />
+            android:textSize="@dimen/specific_show_activity_text_size" />
 
         <TextView
             android:id="@+id/text_show_language"
@@ -42,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_show_genres"
             android:layout_marginTop="10dp"
-            android:textSize="16dp" />
+            android:textSize="@dimen/specific_show_activity_text_size" />
 
         <TextView
             android:id="@+id/text_show_status"
@@ -50,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_show_language"
             android:layout_marginTop="10dp"
-            android:textSize="16dp" />
+            android:textSize="@dimen/specific_show_activity_text_size" />
 
         <TextView
             android:id="@+id/text_show_runtime"
@@ -58,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_show_status"
             android:layout_marginTop="10dp"
-            android:textSize="16dp" />
+            android:textSize="@dimen/specific_show_activity_text_size" />
 
         <TextView
             android:id="@+id/text_show_rating"
@@ -66,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_show_runtime"
             android:layout_marginTop="10dp"
-            android:textSize="16dp" />
+            android:textSize="@dimen/specific_show_activity_text_size" />
 
         <TextView
             android:id="@+id/text_show_latest_episode"
@@ -74,8 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_show_rating"
             android:layout_marginTop="10dp"
-            android:textSize="16dp"
-            android:text="Latest Episode: Season 10 Episode 15"/>
+            android:textSize="@dimen/specific_show_activity_text_size" />
 
         <TextView
             android:id="@+id/text_show_next_episode"
@@ -83,8 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_show_latest_episode"
             android:layout_marginTop="10dp"
-            android:textSize="16dp"
-            android:text="Next Episode Release Date: 16 February 2017"/>
+            android:textSize="@dimen/specific_show_activity_text_size" />
 
         <TextView
             android:id="@+id/text_show_summary"
@@ -92,6 +89,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_show_next_episode"
             android:layout_marginTop="10dp"
-            android:textSize="16dp" />
+            android:textSize="@dimen/specific_show_activity_text_size" />
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>
