@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -27,6 +29,7 @@ public class ListViewAdapter extends ArrayAdapter
     TextView rating;
     TextView latestEpisode;
     TextView nextEpisode;
+    Button btnToggleShow;
 
     //Constructor
     public ListViewAdapter(Context context, ArrayList<Show> shows)
@@ -50,6 +53,7 @@ public class ListViewAdapter extends ArrayAdapter
         rating = (TextView) convertView.findViewById(R.id.show_rating);
         latestEpisode = (TextView) convertView.findViewById((R.id.show_latest_episode));
         nextEpisode = (TextView) convertView.findViewById((R.id.show_next_episode_date));
+        btnToggleShow = (Button) convertView.findViewById(R.id.button_toggle_show);
 
         //Populates ImageView from URL if image hasn't been stored in the Show object yet. If the image has been stored, the ImageView is populated with the stored image from the Show object
         if(shows.get(position).getShowImageUrl() != null){
@@ -70,6 +74,14 @@ public class ListViewAdapter extends ArrayAdapter
         rating.setText("Rating: " + shows.get(position).getShowRating());
         latestEpisode.setText("Status: " + shows.get(position).getShowStatus());
         nextEpisode.setText("Runtime: " + shows.get(position).getShowRuntime());
+
+        //Sets onCLickListener for the buttons contained in each row of the ListView
+        btnToggleShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, shows.get(position).getShowTitle(), Toast.LENGTH_LONG).show();
+            }
+        });
         return convertView;
     }
 

@@ -17,12 +17,10 @@
             android:layout_marginRight="5dip"
             android:layout_centerInParent="true">
 
-
             <ImageView
                 android:id="@+id/show_poster"
                 android:layout_width="75dip"
                 android:layout_height="75dip" />
-
         </LinearLayout>
 
         <!-- Textual information that relates to image -->
@@ -85,14 +83,12 @@
             android:layout_marginLeft="5dip">
 
             <Button
+                android:id="@+id/button_toggle_show"
                 android:layout_width="50dip"
                 android:layout_height="40dip"
-                android:id="@+id/btnToggleShow"
                 android:text="+"
                 android:textSize="17dip"
                 android:focusable="false"/>
         </LinearLayout>
-
     </RelativeLayout>
-
 </RelativeLayout>
