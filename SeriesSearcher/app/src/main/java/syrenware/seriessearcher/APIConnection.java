@@ -25,15 +25,26 @@ public class APIConnection extends AsyncTask<String, Void, String> {
     //Method retrieves the JSON returned from the API
     protected String doInBackground(String... urls) {
         try {
-            URL url = new URL(urls[0]);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection urlConnection = null;
             try {
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                BufferedReader bufferedReader = null;
                 StringBuilder stringBuilder = new StringBuilder();
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    stringBuilder.append(line).append("\n");
+
+                for(int i = 0; i < urls.length; i++){
+                    URL url = new URL(urls[i]);
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    bufferedReader  = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        if(urls.length > 1 && i < urls.length - 1){
+                            stringBuilder.append(line).append(",\n");
+                        }
+                        else{
+                            stringBuilder.append(line).append("\n");
+                        }
+                    }
                 }
+
                 bufferedReader.close();
                 return stringBuilder.toString();
             }
