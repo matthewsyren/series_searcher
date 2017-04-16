@@ -46,23 +46,27 @@ public class User {
     }
 
     //Method gets the unique key used by Firebase to store information about the user signed in
-    public void setUserKey(){
+    public void setUserKey(final LoginActivity context){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference().child("Users");
+        DatabaseReference databaseReference = database.getReference().child("Users");
+        Log.i("Key", userEmailAddress);
 
         //Adds Listeners for when the data is changed
-        myRef.addValueEventListener(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.i("Key", "INSIDE");
+
                 //Loops through all children of the Users key in the Firebase database, and fetches the correct key for the user that is signed in (using the user's email address)
                 Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
                 for(DataSnapshot snapshot : lstSnapshots){
                     String key = snapshot.getKey();
                     String email = (String) snapshot.getValue();
 
-                    //Sets the user's key once the key has been located
+                    //Sets the user's key once the key has been located, and calls the method to log the user in
                     if(email.equals(userEmailAddress)){
                         userKey = key;
+                        context.writeDataToSharedPreferences(userEmailAddress, userKey);
                     }
                 }
             }

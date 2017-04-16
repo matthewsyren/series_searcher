@@ -1,13 +1,24 @@
 package syrenware.seriessearcher;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * Created by matthew on 2017/02/04.
@@ -82,6 +93,21 @@ public class BaseActivity extends Activity
         }
         else if(id == R.id.nav_search){
             startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+        }
+        else if(id == R.id.nav_sign_out){
+            //Signs the user out of Firebase
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            firebaseAuth.signOut();
+
+            //Removes the user's email and key from SharedPreferences
+            SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("userEmail", null);
+            editor.putString("userKey", null);
+            editor.apply();
+
+            //Takes the user back to the LoginActivity
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

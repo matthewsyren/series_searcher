@@ -3,6 +3,7 @@ package syrenware.seriessearcher;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -75,11 +82,22 @@ public class ListViewAdapter extends ArrayAdapter
         latestEpisode.setText("Status: " + shows.get(position).getShowStatus());
         nextEpisode.setText("Runtime: " + shows.get(position).getShowRuntime());
 
+        final User user = new User(context);
+        displayButtonText(user.getUserKey(), "" + shows.get(position).getShowId(), btnToggleShow);
+
         //Sets onCLickListener for the buttons contained in each row of the ListView
         btnToggleShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, shows.get(position).getShowTitle(), Toast.LENGTH_LONG).show();
+                if(btnToggleShow.getText().toString().equals("+")){
+                    btnToggleShow.setText("-");
+                    pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), true);
+                }
+                else{
+                    btnToggleShow.setText("+");
+                    pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), false);
+                }
+                notifyDataSetChanged();
             }
         });
         return convertView;
@@ -89,5 +107,42 @@ public class ListViewAdapter extends ArrayAdapter
     @Override
     public void getJsonImage(Bitmap bitmap, int position) {
         shows.get(position).setShowImage(bitmap);
+    }
+
+    //Method fetches all show keys (show ID's) associated with the user's key, and adds them to an ArrayList. The ArrayList is then passed to the getUserShowData method, which fetches the JSON data for each show from the TVMAze API
+    public void displayButtonText(String userKey, final String showID, final Button btnAddShow){
+        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
+
+        //Adds Listeners for when the data is changed
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Loops through all shows and sets the text of the Button to - if the user has added the show to 'My Shows' already
+                Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
+                for(DataSnapshot snapshot : lstSnapshots){
+                    String showKey = snapshot.getKey();
+                    if(showKey.equals(showID) && (boolean) snapshot.getValue()){
+                        btnAddShow.setText("-");
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.i("FRB", "Error reading data");
+            }
+        });
+    }
+
+    //Method updates the shows that the user has added to 'My Shows' in the Firebase database
+    public void pushUserShowSelection(String userKey, String showID, boolean showAdded){
+        //Establishes a connection to the Firebase database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference().child(userKey);
+
+        //Generates the user's key and saves the value (the user's email address) to the Firebase database
+        databaseReference.child(showID).setValue(showAdded);
     }
 }

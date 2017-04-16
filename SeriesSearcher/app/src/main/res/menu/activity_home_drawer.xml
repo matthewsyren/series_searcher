@@ -26,5 +26,9 @@
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_help_black"
             android:title="@string/navigation_drawer_help" />
+        <item
+            android:id="@+id/nav_sign_out"
+            android:icon="@drawable/ic_sign_out"
+            android:title="@string/navigation_drawer_sign_out" />
     </group>
 </menu>

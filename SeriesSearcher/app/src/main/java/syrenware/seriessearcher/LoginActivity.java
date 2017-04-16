@@ -9,12 +9,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import org.w3c.dom.Text;
 
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
@@ -42,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
             String email = txtEmail.getText().toString();
             String password = txtPassword.getText().toString();
             final User user = new User(email, password);
+            final LoginActivity loginActivity = this;
 
             //Tries to sign the user in using the Firebase authentication database
             firebaseAuth.signInWithEmailAndPassword(user.getUserEmailAddress(), user.getUserPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -49,16 +53,8 @@ public class LoginActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     Log.d("TAG", "signInWithEmail:onComplete:" + task.isSuccessful());
                     if(task.isSuccessful()){
-                        //Saves the user's email and key to the device's SharedPreferences
-                        SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("userEmail", user.getUserEmailAddress());
-                        user.setUserKey();
-                        editor.putString("userKey", user.getUserKey());
-                        editor.apply();
-
-                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                        startActivity(intent);
+                        //Fetches the user's key from Firebase and then calls the writeToSharedPreferences method once the key is fetched
+                        user.setUserKey(loginActivity);
                     }
                     else{
                         Log.w("TAG", "signInWithEmail", task.getException());
@@ -70,6 +66,20 @@ public class LoginActivity extends AppCompatActivity {
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    //Method writes the user's data to SharedPreferences and then takes the user to the HomeActivity
+    public void writeDataToSharedPreferences(String email, String key){
+        //Saves the user's data in SharedPreferences
+        SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("userEmail", email);
+        editor.putString("userKey", key);
+        editor.apply();
+
+        //Takes the user to the HomeActivity
+        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+        startActivity(intent);
     }
 
     //Method takes the user to the CreateAccountActivity

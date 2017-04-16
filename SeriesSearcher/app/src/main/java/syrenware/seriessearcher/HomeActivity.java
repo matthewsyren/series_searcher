@@ -57,12 +57,12 @@ public class HomeActivity extends BaseActivity
     }
 
     //Method fetches all show keys (show ID's) associated with the user's key, and adds them to an ArrayList. The ArrayList is then passed to the getUserShowData method, which fetches the JSON data for each show from the TVMAze API
-    public void getUserShowKeys(String key){
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference().child(key);
+    public void getUserShowKeys(String userKey){
+        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
 
         //Adds Listeners for when the data is changed
-        myRef.addValueEventListener(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //Loops through all shows and adds each show key to the lstShows ArrayList
@@ -70,14 +70,16 @@ public class HomeActivity extends BaseActivity
                 ArrayList<String> lstShows = new ArrayList<>();
                 for(DataSnapshot snapshot : lstSnapshots){
                     String showKey = snapshot.getKey();
-                    lstShows.add(showKey);
+                    if((boolean) snapshot.getValue()){
+                        lstShows.add(showKey);
+                    }
                 }
                 getUserShowData(lstShows);
             }
+
             @Override
             public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                displayToast("Failed to read data, please check your internet connection");
+                Log.i("Data", "Failed to read data, please check your internet connection");
             }
         });
     }
