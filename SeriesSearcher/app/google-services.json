@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "696090753534",
+    "firebase_url": "https://seriessearcher.firebaseio.com",
+    "project_id": "seriessearcher",
+    "storage_bucket": "seriessearcher.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:696090753534:android:d85eaa2be9839a86",
+        "android_client_info": {
+          "package_name": "syrenware.seriessearcher"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "696090753534-ah3gksko2iphhglbca2ctc8dtq0qrsft.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "syrenware.seriessearcher",
+            "certificate_hash": "f3302fde0f978e573d2242245ce1c25bf4f09c0f"
+          }
+        },
+        {
+          "client_id": "696090753534-7thvelplncptcue9uv21jo3au5g1ruls.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcxCFZ9eTtHdGmOCWvDLHmvnzC1NUekRQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "696090753534-7thvelplncptcue9uv21jo3au5g1ruls.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
