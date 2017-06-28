@@ -24,8 +24,7 @@
             android:layout_height="25dip"
             android:background="#D3D3D3"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/button_search"
-            />
+            android:layout_toLeftOf="@+id/button_search" />
 
         <Button
             android:id="@+id/button_search"
@@ -34,8 +33,7 @@
             android:text="Search"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:onClick="searchShows"
-            />
+            android:onClick="searchShows" />
     </RelativeLayout>
 
     <ListView
@@ -44,4 +42,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/relative_layout_search">
     </ListView>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/progress_bar_diameter"
+        android:layout_height="@dimen/progress_bar_diameter"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
 </RelativeLayout>

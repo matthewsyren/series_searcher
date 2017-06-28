@@ -11,4 +11,8 @@
     <dimen name="specific_show_activity_text_size">16sp</dimen>
     <dimen name="specific_show_activity_heading_text_size">20sp</dimen>
     <dimen name="login_button_width">200dp</dimen>
+    <dimen name="app_bar_margin">25dp</dimen>
+    <dimen name="app_bar_text_size">24sp</dimen>
+    <dimen name="progress_bar_diameter">80dp</dimen>
+    <dimen name="button_padding">15dp</dimen>
 </resources>

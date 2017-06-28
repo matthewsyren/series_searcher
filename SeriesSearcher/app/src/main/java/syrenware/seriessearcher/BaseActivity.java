@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,34 @@ public class BaseActivity extends Activity
     protected void onCreateDrawer() {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        displayUserDetails();
+
+        ImageButton btnMenu = (ImageButton) findViewById(R.id.button_menu);
+        btnMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleDrawer(v);
+            }
+        });
+    }
+
+    //Method displays the user's details in the NavigationDrawer
+    public void displayUserDetails(){
+        try{
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            View view =  navigationView.getHeaderView(0);
+            TextView textView = (TextView) view.findViewById(R.id.textView);
+            textView.setText(new User(this).getUserEmailAddress());
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method opens the NavigationDrawer when the menu button is clicked
+    public void toggleDrawer(View view){
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout.openDrawer(GravityCompat.START);
     }
 
     //Method sets the selected item in the Navigation Drawer

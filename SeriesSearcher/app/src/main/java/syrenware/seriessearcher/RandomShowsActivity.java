@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -23,11 +24,25 @@ public class RandomShowsActivity extends BaseActivity
         super.onCreateDrawer();
         super.setSelectedNavItem(R.id.nav_random_shows);
 
+        //Displays the ProgressBar
+        toggleProgressBar(View.VISIBLE);
+
         //Fetches JSON from API (the Math.random() method chooses a random page from the API to fetch)
         int page = (int) (Math.random() * 100 + 1);
         APIConnection api = new APIConnection();
         api.delegate = this;
         api.execute("http://api.tvmaze.com/shows?page=" + page);
+    }
+
+    //Method toggles the visibility of the ProgressBar
+    public void toggleProgressBar(int visibility){
+        try{
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            progressBar.setVisibility(visibility);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     //Method fetches the JSON from the APIConnection class, and parses it
@@ -101,6 +116,9 @@ public class RandomShowsActivity extends BaseActivity
             else{
                 Toast.makeText(getApplicationContext(), "Error fetching data, please check your internet connection", Toast.LENGTH_LONG).show();
             }
+
+            //Hides ProgressBar
+            toggleProgressBar(View.INVISIBLE);
         }
         catch(Exception jse){
             Toast.makeText(getApplicationContext(), jse.getMessage(), Toast.LENGTH_LONG).show();

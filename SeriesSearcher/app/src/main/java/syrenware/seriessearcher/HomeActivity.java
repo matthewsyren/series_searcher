@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,8 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends BaseActivity
-                          implements IAPIConnectionResponse
-{
+                          implements IAPIConnectionResponse {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,12 +42,25 @@ public class HomeActivity extends BaseActivity
         super.onCreateDrawer();
         super.setSelectedNavItem(R.id.nav_home);
 
+        toggleProgressBar(View.VISIBLE);
+
         //Toggles the views visible based on whether the user has added shows to 'My Shows'
         toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
 
         //Gets the unique key used by Firebase to store information about the user signed in, and fetches data based on the keys fetched
         User user = new User(this);
         getUserShowKeys(user.getUserKey());
+    }
+
+    //Method toggles the visibility of the ProgressBar
+    public void toggleProgressBar(int visibility){
+        try{
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            progressBar.setVisibility(visibility);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     //Method takes user to All Shows activity
@@ -192,6 +205,9 @@ public class HomeActivity extends BaseActivity
             else{
                 Toast.makeText(getApplicationContext(), "Error fetching data, please check your internet connection", Toast.LENGTH_LONG).show();
             }
+
+            //Hides ProgressBar
+            toggleProgressBar(View.INVISIBLE);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();

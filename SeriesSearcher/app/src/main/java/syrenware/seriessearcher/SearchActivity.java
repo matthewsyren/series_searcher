@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import static android.R.id.message;
+import static android.R.id.toggle;
 
 public class SearchActivity extends BaseActivity implements IAPIConnectionResponse {
 
@@ -23,8 +25,23 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        //Hides ProgressBar
+        toggleProgressBar(View.INVISIBLE);
+
         super.onCreateDrawer();
         super.setSelectedNavItem(R.id.nav_search);
+    }
+
+    //Method toggles the visibility of the ProgressBar
+    public void toggleProgressBar(int visibility){
+        try{
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            progressBar.setVisibility(visibility);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     //Method retrieves the text that the user searches for in text_search, and then searches for that text using the API
@@ -32,6 +49,9 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
         try{
             EditText txtSearch = (EditText) findViewById(R.id.text_search);
             String show = txtSearch.getText().toString();
+
+            //Displays ProgressBar
+            toggleProgressBar(View.VISIBLE);
 
             //Connects to the TVMaze API using the specific URL for the selected show
             APIConnection api = new APIConnection();
@@ -106,6 +126,9 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
             else{
                 Toast.makeText(getApplicationContext(), "Error fetching data, please check your internet connection", Toast.LENGTH_LONG).show();
             }
+
+            //Hides ProgressBar
+            toggleProgressBar(View.INVISIBLE);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();

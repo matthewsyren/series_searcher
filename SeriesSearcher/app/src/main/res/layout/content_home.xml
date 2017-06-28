@@ -26,12 +26,18 @@
         android:layout_width="wrap_content"
         android:layout_centerInParent="true"
         android:text="@string/main_btnAdd"
-        android:onClick="openAllShows"
-        />
+        android:onClick="openAllShows" />
 
     <ListView
         android:id="@+id/list_view_my_shows"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"/>
+    
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/progress_bar_diameter"
+        android:layout_height="@dimen/progress_bar_diameter"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
 </RelativeLayout>

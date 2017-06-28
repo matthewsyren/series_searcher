@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,7 +29,21 @@ public class CreateAccountActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_create_account);
 
+            //Hides ProgressBar
+            toggleProgressBar(View.INVISIBLE);
+
             firebaseAuth = FirebaseAuth.getInstance();
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method toggles the visibility of the ProgressBar
+    public void toggleProgressBar(int visibility){
+        try{
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            progressBar.setVisibility(visibility);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -46,6 +61,9 @@ public class CreateAccountActivity extends AppCompatActivity {
             String password = txtPassword.getText().toString();
             String confirmPassword = txtConfirmPassword.getText().toString();
 
+            //Displays ProgressBar
+            toggleProgressBar(View.VISIBLE);
+
             //Creates an account if the user's passwords match and they have entered valid data
             if(password.equals(confirmPassword)){
                 final User user = new User(email, password);
@@ -60,12 +78,14 @@ public class CreateAccountActivity extends AppCompatActivity {
                         }
                         else{
                             Toast.makeText(CreateAccountActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            toggleProgressBar(View.INVISIBLE);
                         }
                     }
                 });
             }
             else{
                 Toast.makeText(getApplicationContext(), "Please ensure that your passwords match", Toast.LENGTH_LONG).show();
+                toggleProgressBar(View.INVISIBLE);
             }
         }
         catch(Exception exc){

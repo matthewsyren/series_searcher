@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +29,25 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         firebaseAuth = FirebaseAuth.getInstance();
 
+        //Hides ProgressBar
+        toggleProgressBar(View.INVISIBLE);
+
         //Takes the user to the HomeActivity if they have already signed in
         User user = new User(this);
         if(user.getUserEmailAddress() != null){
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(intent);
+        }
+    }
+
+    //Method toggles the visibility of the ProgressBar
+    public void toggleProgressBar(int visibility){
+        try{
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            progressBar.setVisibility(visibility);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -47,6 +62,9 @@ public class LoginActivity extends AppCompatActivity {
             final User user = new User(email, password);
             final LoginActivity loginActivity = this;
 
+            //Displays ProgressBar
+            toggleProgressBar(View.VISIBLE);
+
             //Tries to sign the user in using the Firebase authentication database
             firebaseAuth.signInWithEmailAndPassword(user.getUserEmailAddress(), user.getUserPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
@@ -59,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                     else{
                         Log.w("TAG", "signInWithEmail", task.getException());
                         Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        toggleProgressBar(View.INVISIBLE);
                     }
                 }
             });

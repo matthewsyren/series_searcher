@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener;
  * Created by Matthew Syrén on 2017/04/10.
  */
 
+@SuppressWarnings("WeakerAccess")
 public class User {
     private String userEmailAddress;
     private String userKey;
@@ -49,14 +50,11 @@ public class User {
     public void setUserKey(final LoginActivity context){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference().child("Users");
-        Log.i("Key", userEmailAddress);
 
         //Adds Listeners for when the data is changed
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.i("Key", "INSIDE");
-
                 //Loops through all children of the Users key in the Firebase database, and fetches the correct key for the user that is signed in (using the user's email address)
                 Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
                 for(DataSnapshot snapshot : lstSnapshots){

@@ -2,7 +2,9 @@ package syrenware.seriessearcher;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import org.json.JSONArray;
@@ -22,6 +24,9 @@ public class SpecificShowActivity extends AppCompatActivity
             Bundle bundle = getIntent().getExtras();
             String showLink = bundle.getString("specificShowLink");
 
+            //Displays ProgressBar
+            toggleProgressBar(View.VISIBLE);
+
             //Fetches data from the TVMaze API using the link
             APIConnection api = new APIConnection();
             api.delegate = this;
@@ -29,6 +34,17 @@ public class SpecificShowActivity extends AppCompatActivity
         }
         catch(Exception exc){
             displayToastMessage(exc.getMessage());
+        }
+    }
+
+    //Method toggles the visibility of the ProgressBar
+    public void toggleProgressBar(int visibility){
+        try{
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            progressBar.setVisibility(visibility);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -61,6 +77,9 @@ public class SpecificShowActivity extends AppCompatActivity
                         }
                         TextView txtNextEpisode = (TextView) findViewById(R.id.text_show_next_episode);
                         txtNextEpisode.setText("Next Episode: Season: " + season + " Episode: " + episode + " " + airDate);
+
+                        //Hides ProgressBar
+                        toggleProgressBar(View.INVISIBLE);
                     }
                 }
             }

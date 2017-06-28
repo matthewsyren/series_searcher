@@ -90,5 +90,12 @@
             android:layout_below="@+id/text_show_next_episode"
             android:layout_marginTop="10dp"
             android:textSize="@dimen/specific_show_activity_text_size" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="@dimen/progress_bar_diameter"
+            android:layout_height="@dimen/progress_bar_diameter"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

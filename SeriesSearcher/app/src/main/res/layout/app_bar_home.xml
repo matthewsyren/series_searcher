@@ -17,9 +17,22 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_menu"
+                android:id="@+id/button_menu"
+                android:background="?android:attr/selectableItemBackground"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_my_shows"
+                android:textSize="@dimen/app_bar_text_size"
+                android:textColor="@color/colorWhite"
+                android:layout_marginLeft="@dimen/app_bar_margin"/>
+        </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
-
     <include layout="@layout/content_home" />
 </android.support.design.widget.CoordinatorLayout>

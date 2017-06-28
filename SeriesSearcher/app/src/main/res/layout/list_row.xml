@@ -87,8 +87,10 @@
                 android:layout_width="50dip"
                 android:layout_height="40dip"
                 android:text="+"
-                android:textSize="17dip"
-                android:focusable="false"/>
+                android:textSize="20sp"
+                android:textColor="@color/colorPrimary"
+                android:focusable="false"
+                android:background="@drawable/button" />
         </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>

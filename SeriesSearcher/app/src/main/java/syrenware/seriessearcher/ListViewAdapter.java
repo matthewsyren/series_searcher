@@ -73,6 +73,7 @@ public class ListViewAdapter extends ArrayAdapter
             }
             else{
                 image.setImageBitmap(shows.get(position).getShowImage());
+                notifyDataSetChanged();
             }
         }
 

@@ -20,6 +20,7 @@
         android:id="@+id/text_login_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="textPassword"
         android:layout_below="@+id/text_login_email"
         android:layout_marginTop="@dimen/fab_margin"
         android:hint="@string/prompt_password"/>
@@ -44,4 +45,10 @@
         android:text="@string/createAccount"
         android:onClick="createAccountOnClick"/>
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/progress_bar_diameter"
+        android:layout_height="@dimen/progress_bar_diameter"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
 </RelativeLayout>

@@ -17,6 +17,7 @@
     <!-- Main Activity -->
     <string name="main_btnAdd">Add Shows</string>
     <string name="main_lblMessage">You currently have no shows added to \'My Shows\'</string>
+    <string name="main_my_shows">My Shows</string>
 
     <!-- Activity Titles -->
     <string name="title_activity_random_shows">RandomShowsActivity</string>
