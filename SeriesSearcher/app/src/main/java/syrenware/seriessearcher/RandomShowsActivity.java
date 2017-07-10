@@ -109,6 +109,7 @@ public class RandomShowsActivity extends BaseActivity
                     public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                         Intent intent = new Intent(RandomShowsActivity.this, SpecificShowActivity.class);
                         intent.putExtra("specificShowLink", "http://api.tvmaze.com/shows/" + lstShows.get(pos).getShowId());
+                        intent.putExtra("showNumber", lstShows.get(pos).getShowId());
                         startActivity(intent);
                     }
                 });

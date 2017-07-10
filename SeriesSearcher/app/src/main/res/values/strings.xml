@@ -14,13 +14,16 @@
 
     <string name="action_settings">Settings</string>
 
-    <!-- Main Activity -->
-    <string name="main_btnAdd">Add Shows</string>
-    <string name="main_lblMessage">You currently have no shows added to \'My Shows\'</string>
-    <string name="main_my_shows">My Shows</string>
+    <!-- HomeActivity -->
+    <string name="button_add_shows">Add Shows</string>
+    <string name="label_home_message">You currently have no shows added to \'My Shows\'</string>
+
+    <!-- SearchActivity -->
+    <string name="label_search">Search</string>
 
     <!-- Activity Titles -->
-    <string name="title_activity_random_shows">RandomShowsActivity</string>
+    <string name="title_activity_home">My Shows</string>
+    <string name="title_activity_random_shows">Random Shows</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="title_activity_specific_show">SpecificShowActivity</string>
 
@@ -29,4 +32,5 @@
     <string name="prompt_confirm_password">Confirm your password</string>
     <string name="login">Login</string>
     <string name="createAccount">Create Account</string>
+    <string name="title_activity_search_by_episode">SearchByEpisodeActivity</string>
 </resources>

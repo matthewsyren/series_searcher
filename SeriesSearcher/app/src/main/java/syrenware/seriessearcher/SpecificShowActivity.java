@@ -1,5 +1,6 @@
 package syrenware.seriessearcher;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -20,6 +21,16 @@ public class SpecificShowActivity extends AppCompatActivity
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_specific_show);
 
+            displayShowInformation();
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method displays the information on the Activity
+    public void displayShowInformation(){
+        try{
             //Fetches the link for the show that the user clicked on from the Bundle
             Bundle bundle = getIntent().getExtras();
             String showLink = bundle.getString("specificShowLink");
@@ -33,7 +44,7 @@ public class SpecificShowActivity extends AppCompatActivity
             api.execute(showLink);
         }
         catch(Exception exc){
-            displayToastMessage(exc.getMessage());
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -84,17 +95,12 @@ public class SpecificShowActivity extends AppCompatActivity
                 }
             }
             else{
-                displayToastMessage("Error fetching data, please try again");
+                Toast.makeText(getApplicationContext(), "Error fetching data, please try again", Toast.LENGTH_LONG).show();
             }
         }
         catch(JSONException jse){
-            displayToastMessage(jse.getMessage());
+            Toast.makeText(getApplicationContext(), jse.getMessage(), Toast.LENGTH_LONG).show();
         }
-    }
-
-    //Method displays the message that is passed in using a Toast alert
-    public void displayToastMessage(String message){
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
     //Method fetches the main information for the show from the TVMaze API, and then calls another link for more specific information about the show
@@ -170,6 +176,7 @@ public class SpecificShowActivity extends AppCompatActivity
             else{
                 txtGenres.setText("N/A");
             }
+            summary = formatSummary(summary);
             txtSummary.setText("Summary: " + summary);
 
             //Fetches image from the API
@@ -200,10 +207,41 @@ public class SpecificShowActivity extends AppCompatActivity
             }
             else{
                 txtNextEpisode.setText("Next Episode: N/A");
+                toggleProgressBar(View.INVISIBLE);
             }
         }
         catch(JSONException jse){
-            displayToastMessage(jse.getMessage());
+            Toast.makeText(getApplicationContext(), jse.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method removes any HTML formatting from the summary field
+    public String formatSummary(String summary){
+        try{
+            boolean htmlIncluded = summary.contains("<");
+            while(htmlIncluded){
+                String beforeHTML = summary.substring(0, summary.indexOf("<"));
+                String afterHTML = summary.substring(summary.indexOf(">") + 1);
+                summary = beforeHTML + afterHTML;
+                htmlIncluded = summary.contains("<");
+            }
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        finally{
+            return summary;
+        }
+    }
+
+    //Method takes the user to the SearchByEpisodeActivity
+    public void searchByEpisodeOnClick(View view) {
+        try {
+            Intent intent = new Intent(SpecificShowActivity.this, SearchByEpisodeActivity.class);
+            startActivity(intent);
+        }
+        catch (Exception exc) {
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

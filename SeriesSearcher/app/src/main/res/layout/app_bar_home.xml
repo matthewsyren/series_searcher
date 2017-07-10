@@ -28,7 +28,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/main_my_shows"
+                android:text="@string/title_activity_home"
                 android:textSize="@dimen/app_bar_text_size"
                 android:textColor="@color/colorWhite"
                 android:layout_marginLeft="@dimen/app_bar_margin"/>

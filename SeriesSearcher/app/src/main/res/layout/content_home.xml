@@ -18,14 +18,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="@string/main_lblMessage" />
+        android:text="@string/label_home_message" />
 
     <Button
         android:id="@+id/button_add_shows"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_centerInParent="true"
-        android:text="@string/main_btnAdd"
+        android:text="@string/button_add_shows"
         android:onClick="openAllShows" />
 
     <ListView

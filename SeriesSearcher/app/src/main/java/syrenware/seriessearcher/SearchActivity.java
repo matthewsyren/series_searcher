@@ -2,7 +2,10 @@ package syrenware.seriessearcher;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -20,6 +23,7 @@ import static android.R.id.message;
 import static android.R.id.toggle;
 
 public class SearchActivity extends BaseActivity implements IAPIConnectionResponse {
+    APIConnection api = new APIConnection();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +32,24 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
 
         //Hides ProgressBar
         toggleProgressBar(View.INVISIBLE);
+
+        final EditText txtSearch = (EditText) findViewById(R.id.text_search_series);
+        txtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchShows();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         super.onCreateDrawer();
         super.setSelectedNavItem(R.id.nav_search);
@@ -45,16 +67,17 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
     }
 
     //Method retrieves the text that the user searches for in text_search, and then searches for that text using the API
-    public void searchShows(View view){
+    public void searchShows(){
         try{
-            EditText txtSearch = (EditText) findViewById(R.id.text_search);
+            EditText txtSearch = (EditText) findViewById(R.id.text_search_series);
             String show = txtSearch.getText().toString();
 
             //Displays ProgressBar
             toggleProgressBar(View.VISIBLE);
 
             //Connects to the TVMaze API using the specific URL for the selected show
-            APIConnection api = new APIConnection();
+            api.cancel(true);
+            api = new APIConnection();
             api.delegate = this;
             api.execute("http://api.tvmaze.com/search/shows?q=" + show);
         }
@@ -119,6 +142,7 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
                     public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                         Intent intent = new Intent(SearchActivity.this, SpecificShowActivity.class);
                         intent.putExtra("specificShowLink", "http://api.tvmaze.com/shows/" + lstShows.get(pos).getShowId());
+                        intent.putExtra("showNumber", lstShows.get(pos).getShowId());
                         startActivity(intent);
                     }
                 });

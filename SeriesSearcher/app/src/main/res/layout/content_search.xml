@@ -13,35 +13,10 @@
     tools:context="syrenware.seriessearcher.SearchActivity"
     tools:showIn="@layout/app_bar_search">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/relative_layout_search">
-
-        <EditText
-            android:id="@+id/text_search"
-            android:layout_width="match_parent"
-            android:layout_height="25dip"
-            android:background="#D3D3D3"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/button_search" />
-
-        <Button
-            android:id="@+id/button_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Search"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:onClick="searchShows" />
-    </RelativeLayout>
-
     <ListView
         android:id="@+id/list_view_search_results"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/relative_layout_search">
-    </ListView>
+        android:layout_height="wrap_content"/>
 
     <ProgressBar
         android:id="@+id/progress_bar"

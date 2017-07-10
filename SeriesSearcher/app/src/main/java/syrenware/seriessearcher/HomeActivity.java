@@ -128,17 +128,7 @@ public class HomeActivity extends BaseActivity
             lstMyShows.setVisibility(listViewVisibility);
         }
         catch(Exception exc){
-            displayToast(exc.getMessage());
-        }
-    }
-
-    //Method displays a Toast message with the String parameter as its value
-    public void displayToast(String message){
-        try{
-            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-        }
-        catch(Exception exc){
-            displayToast(exc.getMessage());
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 

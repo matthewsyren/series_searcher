@@ -24,6 +24,14 @@
                 android:src="@drawable/ic_menu"
                 android:id="@+id/button_menu"
                 android:background="?android:attr/selectableItemBackground"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_activity_random_shows"
+                android:textSize="@dimen/app_bar_text_size"
+                android:textColor="@color/colorWhite"
+                android:layout_marginLeft="@dimen/app_bar_margin"/>
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
