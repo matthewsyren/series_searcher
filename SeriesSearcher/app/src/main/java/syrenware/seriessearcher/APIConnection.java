@@ -11,7 +11,7 @@ import java.net.URL;
  * Created by matthew on 2017/02/03.
  * Class fetches JSON returned from the TVMaze API in an AsyncTask
  */
-
+@SuppressWarnings("WeakerAccess")
 public class APIConnection extends AsyncTask<String, Void, String> {
 
     //Declares an object of the IAPIConnectionResponse interface, which will be used to send the JSON back to the  thread
@@ -40,11 +40,16 @@ public class APIConnection extends AsyncTask<String, Void, String> {
                     }
                 }
 
-                bufferedReader.close();
+                if(bufferedReader != null){
+                    bufferedReader.close();
+                }
+
                 return stringBuilder.toString();
             }
             finally{
-                urlConnection.disconnect();
+                if(urlConnection != null){
+                    urlConnection.disconnect();
+                }
             }
         }
         catch(Exception e) {

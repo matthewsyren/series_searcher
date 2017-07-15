@@ -10,7 +10,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 /**
- * Created by Matthew Syrén on 2017/04/10.
+ * Created by matthew on 2017/01/28.
+ * Class is used as a basis for to hold the data for the users of the program
  */
 
 @SuppressWarnings("WeakerAccess")

@@ -52,7 +52,7 @@ public class RandomShowsActivity extends BaseActivity
             if(response != null){
                 //JSONArray stores the JSON returned from the TVMaze API
                 JSONArray jsonArray = new JSONArray(response);
-                final ArrayList<Show> lstShows = new ArrayList<Show>();
+                final ArrayList<Show> lstShows = new ArrayList<>();
 
                 //Math.random() is used to choose a random starting point to fetch data from the API. This allows the app to fetch different shows each time it runs
                 int startingShow = (int) (Math.random() * 230 + 1);
@@ -108,8 +108,8 @@ public class RandomShowsActivity extends BaseActivity
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                         Intent intent = new Intent(RandomShowsActivity.this, SpecificShowActivity.class);
-                        intent.putExtra("specificShowLink", "http://api.tvmaze.com/shows/" + lstShows.get(pos).getShowId());
-                        intent.putExtra("showNumber", lstShows.get(pos).getShowId());
+                        intent.putExtra("showNumber", "" + lstShows.get(pos).getShowId());
+                        intent.putExtra("previousActivity", "RandomShowsActivity");
                         startActivity(intent);
                     }
                 });

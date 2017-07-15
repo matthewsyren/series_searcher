@@ -2,7 +2,9 @@ package syrenware.seriessearcher;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,17 +28,12 @@ import java.util.ArrayList;
  * Class populates a ListView with the data that is passed into the constructor
  */
 
+@SuppressWarnings("WeakerAccess")
 public class ListViewAdapter extends ArrayAdapter
                              implements IAPIImage {
     //Declarations
-    ArrayList<Show> shows = null;
-    Context context;
-    ImageView image;
-    TextView title;
-    TextView rating;
-    TextView latestEpisode;
-    TextView nextEpisode;
-    Button btnToggleShow;
+    private ArrayList<Show> shows = null;
+    private Context context;
 
     //Constructor
     public ListViewAdapter(Context context, ArrayList<Show> shows)
@@ -48,28 +45,28 @@ public class ListViewAdapter extends ArrayAdapter
 
     //Method populates the appropriate Views with the appropriate data (stored in the shows ArrayList)
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent)
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent)
     {
         //Inflates the list_row view for the ListView
         LayoutInflater inflater = ((Activity)context).getLayoutInflater();
         convertView = inflater.inflate(R.layout.list_row, parent, false);
 
         //Component assignments
-        image = (ImageView) convertView.findViewById(R.id.show_poster);
-        title = (TextView) convertView.findViewById(R.id.show_title);
-        rating = (TextView) convertView.findViewById(R.id.show_rating);
-        latestEpisode = (TextView) convertView.findViewById((R.id.show_latest_episode));
-        nextEpisode = (TextView) convertView.findViewById((R.id.show_next_episode_date));
-        btnToggleShow = (Button) convertView.findViewById(R.id.button_toggle_show);
+        final ImageView image = (ImageView) convertView.findViewById(R.id.show_poster);
+        final TextView title = (TextView) convertView.findViewById(R.id.show_title);
+        final TextView rating = (TextView) convertView.findViewById(R.id.show_rating);
+        final TextView latestEpisode = (TextView) convertView.findViewById((R.id.show_latest_episode));
+        final TextView nextEpisode = (TextView) convertView.findViewById((R.id.show_next_episode_date));
+        final Button btnToggleShow = (Button) convertView.findViewById(R.id.button_toggle_show);
 
         //Populates ImageView from URL if image hasn't been stored in the Show object yet. If the image has been stored, the ImageView is populated with the stored image from the Show object
         if(shows.get(position).getShowImageUrl() != null){
             if(shows.get(position).getShowImage() == null){
-                ImageLoad loadClass = new ImageLoad(shows.get(position).getShowImageUrl(), image, position);
+                ImageLoad imageLoad = new ImageLoad(shows.get(position).getShowImageUrl(), image, position);
 
                 //The delegate variable is used to pass the data from the IAPIImage class to the getJsonImage method in this class
-                loadClass.delegate = this;
-                loadClass.execute();
+                imageLoad.delegate = this;
+                imageLoad.execute();
             }
             else{
                 image.setImageBitmap(shows.get(position).getShowImage());
@@ -78,10 +75,11 @@ public class ListViewAdapter extends ArrayAdapter
         }
 
         //Displays the data in the appropriate Views
+        Resources resources = context.getResources();
         title.setText(shows.get(position).getShowTitle());
-        rating.setText("Rating: " + shows.get(position).getShowRating());
-        latestEpisode.setText("Status: " + shows.get(position).getShowStatus());
-        nextEpisode.setText("Runtime: " + shows.get(position).getShowRuntime());
+        rating.setText(resources.getString(R.string.text_rating, shows.get(position).getShowRating()));
+        latestEpisode.setText(resources.getString(R.string.text_status, shows.get(position).getShowStatus()));
+        nextEpisode.setText(resources.getString(R.string.text_runtime, shows.get(position).getShowRuntime()));
 
         final User user = new User(context);
         displayButtonText(user.getUserKey(), "" + shows.get(position).getShowId(), btnToggleShow);

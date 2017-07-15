@@ -7,7 +7,8 @@ import android.graphics.Bitmap;
  * Class is used to retrieve the image from the API for a specific Show
  */
 
+@SuppressWarnings("WeakerAccess")
 public interface IAPIImage {
     //Method is used to send the image and its position in an array to be stored in to the class that implements this interface
-    public void getJsonImage(Bitmap bitmap, int position);
+    void getJsonImage(Bitmap bitmap, int position);
 }

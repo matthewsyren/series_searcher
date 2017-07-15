@@ -1,6 +1,7 @@
 package syrenware.seriessearcher;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -28,12 +29,42 @@ public class SpecificShowActivity extends AppCompatActivity
         }
     }
 
+    //Method takes the user back to the Activity that they used to get to this Activity
+    @Override
+    public void onBackPressed() {
+        try{
+            super.onBackPressed();
+            Bundle bundle = getIntent().getExtras();
+            String previousActivity = bundle.getString("previousActivity");
+            Intent intent = null;
+
+            if(previousActivity != null){
+                switch(previousActivity){
+                    case "HomeActivity":
+                        intent = new Intent(SpecificShowActivity.this, HomeActivity.class);
+                        break;
+                    case "RandomShowsActivity":
+                        intent = new Intent(SpecificShowActivity.this, RandomShowsActivity.class);
+                        break;
+                    case "SearchActivity":
+                        intent = new Intent(SpecificShowActivity.this, SearchActivity.class);
+                        break;
+                }
+            }
+            startActivity(intent);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
     //Method displays the information on the Activity
     public void displayShowInformation(){
         try{
             //Fetches the link for the show that the user clicked on from the Bundle
             Bundle bundle = getIntent().getExtras();
-            String showLink = bundle.getString("specificShowLink");
+            String showNumber = bundle.getString("showNumber");
+            String showLink = "http://api.tvmaze.com/shows/" + showNumber;
 
             //Displays ProgressBar
             toggleProgressBar(View.VISIBLE);
@@ -112,15 +143,18 @@ public class SpecificShowActivity extends AppCompatActivity
             String status = json.getString("status");
             String runtime = json.getString("runtime");
             JSONArray arrGenres;
+
             if(!json.getString("genres").equals("[]")){
                 arrGenres = json.getJSONArray("genres");
             }
             else{
                 arrGenres = null;
             }
+
             String rating = json.getJSONObject("rating").getString("average");
             String summary = json.getString("summary");
             String imageUrl;
+
             if(!json.getString("image").equals("null")){
                 imageUrl = json.getJSONObject("image").getString("medium");
             }
@@ -128,7 +162,7 @@ public class SpecificShowActivity extends AppCompatActivity
                 imageUrl = null;
             }
 
-            //Ensures that no null values are displayed
+            //Replaces null values/empty Strings with "N/A"
             if(premiered.equalsIgnoreCase("null") || premiered.length() == 0){
                 premiered = "N/A";
             }
@@ -161,14 +195,16 @@ public class SpecificShowActivity extends AppCompatActivity
             TextView txtNextEpisode = (TextView) findViewById(R.id.text_show_next_episode);
 
             //Displays the JSON data in the GUI components
+            Resources resources = this.getResources();
             txtName.setText(name);
-            txtPremiered.setText("Premiered: " + premiered);
-            txtLanguage.setText("Language: " + language);
-            txtStatus.setText("Status: " + status);
-            txtRuntime.setText("Runtime: " + runtime);
-            txtRating.setText("Rating: " + rating);
+            txtPremiered.setText(resources.getString(R.string.text_premiered, premiered));
+            txtLanguage.setText(resources.getString(R.string.text_language, language));
+            txtStatus.setText(resources.getString(R.string.text_status, status));
+            txtRuntime.setText(resources.getString(R.string.text_runtime, runtime));
+            txtRating.setText(resources.getString(R.string.text_rating, rating));
+
             if(arrGenres != null){
-                txtGenres.setText("Genres: " + arrGenres.get(0));
+                txtGenres.setText(resources.getString(R.string.text_genres, arrGenres.get(0)));
                 for(int i = 1; i < arrGenres.length(); i++){
                     txtGenres.setText(txtGenres.getText() + ", " + arrGenres.get(i).toString());
                 }
@@ -177,7 +213,7 @@ public class SpecificShowActivity extends AppCompatActivity
                 txtGenres.setText("N/A");
             }
             summary = formatSummary(summary);
-            txtSummary.setText("Summary: " + summary);
+            txtSummary.setText(resources.getString(R.string.text_summary, summary));
 
             //Fetches image from the API
             ImageView imgSpecificShow = (ImageView) findViewById(R.id.image_view_specific_show);
@@ -195,7 +231,7 @@ public class SpecificShowActivity extends AppCompatActivity
                 api.execute(previousEpisodeLink);
             }
             else{
-                txtPreviousEpisode.setText("Latest Episode: N/A");
+                txtPreviousEpisode.setText(resources.getString(R.string.text_latest_episode, "N/A"));
             }
             if(links.has("nextepisode")){
                 String nextEpisodeLink = links.getJSONObject("nextepisode").getString("href");
@@ -206,7 +242,7 @@ public class SpecificShowActivity extends AppCompatActivity
                 api.execute(nextEpisodeLink);
             }
             else{
-                txtNextEpisode.setText("Next Episode: N/A");
+                txtNextEpisode.setText(resources.getString(R.string.text_next_episode, "N/A"));
                 toggleProgressBar(View.INVISIBLE);
             }
         }
@@ -229,15 +265,25 @@ public class SpecificShowActivity extends AppCompatActivity
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
-        finally{
-            return summary;
-        }
+        return summary;
     }
 
     //Method takes the user to the SearchByEpisodeActivity
     public void searchByEpisodeOnClick(View view) {
         try {
+            //Fetches the show name
+            TextView txtShowName = (TextView) findViewById(R.id.text_show_title);
+            String showName = txtShowName.getText().toString();
+
+            //Fetches the link for the show that the user clicked on from the Bundle
+            Bundle bundle = getIntent().getExtras();
+            String showNumber = bundle.getString("showNumber");
+            String previousActivity = bundle.getString("previousActivity");
+
             Intent intent = new Intent(SpecificShowActivity.this, SearchByEpisodeActivity.class);
+            intent.putExtra("showTitle", showName);
+            intent.putExtra("showNumber", showNumber);
+            intent.putExtra("previousActivity", previousActivity);
             startActivity(intent);
         }
         catch (Exception exc) {

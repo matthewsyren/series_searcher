@@ -4,11 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -18,9 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import static android.R.id.message;
-import static android.R.id.toggle;
 
 public class SearchActivity extends BaseActivity implements IAPIConnectionResponse {
     APIConnection api = new APIConnection();
@@ -141,8 +135,8 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                         Intent intent = new Intent(SearchActivity.this, SpecificShowActivity.class);
-                        intent.putExtra("specificShowLink", "http://api.tvmaze.com/shows/" + lstShows.get(pos).getShowId());
-                        intent.putExtra("showNumber", lstShows.get(pos).getShowId());
+                        intent.putExtra("showNumber", "" + lstShows.get(pos).getShowId());
+                        intent.putExtra("previousActivity", "SearchActivity");
                         startActivity(intent);
                     }
                 });

@@ -2,7 +2,6 @@ package syrenware.seriessearcher;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,11 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,11 +19,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 public class HomeActivity extends BaseActivity
                           implements IAPIConnectionResponse {
@@ -42,6 +33,7 @@ public class HomeActivity extends BaseActivity
         super.onCreateDrawer();
         super.setSelectedNavItem(R.id.nav_home);
 
+        //Displays ProgressBar
         toggleProgressBar(View.VISIBLE);
 
         //Toggles the views visible based on whether the user has added shows to 'My Shows'
@@ -187,7 +179,8 @@ public class HomeActivity extends BaseActivity
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                         Intent intent = new Intent(HomeActivity.this, SpecificShowActivity.class);
-                        intent.putExtra("specificShowLink", "http://api.tvmaze.com/shows/" + lstShows.get(pos).getShowId());
+                        intent.putExtra("showNumber", "" + lstShows.get(pos).getShowId());
+                        intent.putExtra("previousActivity", "HomeActivity");
                         startActivity(intent);
                     }
                 });

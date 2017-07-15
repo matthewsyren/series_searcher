@@ -10,14 +10,16 @@ import java.net.URL;
 
 /**
  * Created by matthew on 2017/02/03.
+ * Class is used to load and display an image in a specific View
  */
 
+@SuppressWarnings("WeakerAccess")
 class ImageLoad extends AsyncTask<Void, Void, Bitmap> {
     //Declarations
     private String url;
     private ImageView imageView;
     public IAPIImage delegate = null;
-    int position;
+    private int position;
 
     //Constructor (accepts URL of image, the ImageView to display the image, and the position to store the image in (incrementer)
     public ImageLoad(String url, ImageView imageView, int position) {
@@ -40,8 +42,7 @@ class ImageLoad extends AsyncTask<Void, Void, Bitmap> {
 
             //Fetches the input stream from the API and decodes it into a Bitmap
             InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
+            return BitmapFactory.decodeStream(input);
         }
         catch (Exception e)
         {

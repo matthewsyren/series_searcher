@@ -42,7 +42,8 @@
         android:layout_marginTop="@dimen/fab_margin"
         android:layout_centerHorizontal="true"
         android:text="@string/createAccount"
-        android:onClick="createAccountOnClick"/>
+        android:onClick="createAccountOnClick"
+        android:background="@drawable/button"/>
 
     <ProgressBar
         android:id="@+id/progress_bar"

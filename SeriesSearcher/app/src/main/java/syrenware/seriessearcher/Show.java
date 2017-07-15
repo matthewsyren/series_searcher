@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
  *           from the API multiple times, hence using lots of data. If it is stored in a variable, however, the data needs to be retrieved from the API only once.
  */
 
+@SuppressWarnings("WeakerAccess")
 public class Show {
     //Declarations
     private int showId;

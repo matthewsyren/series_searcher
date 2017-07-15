@@ -18,8 +18,19 @@
     <string name="button_add_shows">Add Shows</string>
     <string name="label_home_message">You currently have no shows added to \'My Shows\'</string>
 
+    <!-- SpecificShowActivity -->
+    <string name="text_premiered">Premiered: %s</string>
+    <string name="text_genres">Genres: %s</string>
+    <string name="text_language">Language: %s</string>
+    <string name="text_status">Status: %s</string>
+    <string name="text_runtime">Runtime: %s</string>
+    <string name="text_rating">Rating: %s</string>
+    <string name="text_latest_episode">Latest Episode: %s</string>
+    <string name="text_next_episode">Next Episode: %s</string>
+    <string name="text_summary">Summary: %s</string>
+
     <!-- SearchActivity -->
-    <string name="label_search">Search</string>
+    <string name="label_search">Type to search&#8230;</string>
 
     <!-- Activity Titles -->
     <string name="title_activity_home">My Shows</string>
@@ -33,4 +44,14 @@
     <string name="login">Login</string>
     <string name="createAccount">Create Account</string>
     <string name="title_activity_search_by_episode">SearchByEpisodeActivity</string>
+
+    <!-- SearchByEpisodeActivity -->
+    <string name="button_search">Search</string>
+    <string name="text_season">Season</string>
+    <string name="text_episode">Episode Number</string>
+    <string name="text_episode_name">Episode Name: %s</string>
+    <string name="text_episode_air_date">Air Date: %s</string>
+    <string name="text_episode_runtime">Runtime: %s</string>
+    <string name="text_episode_summary">Summary: %s</string>
+
 </resources>
