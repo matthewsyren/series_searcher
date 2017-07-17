@@ -59,18 +59,21 @@ public class ListViewAdapter extends ArrayAdapter
         final TextView nextEpisode = (TextView) convertView.findViewById((R.id.show_next_episode_date));
         final Button btnToggleShow = (Button) convertView.findViewById(R.id.button_toggle_show);
 
-        //Populates ImageView from URL if image hasn't been stored in the Show object yet. If the image has been stored, the ImageView is populated with the stored image from the Show object
-        if(shows.get(position).getShowImageUrl() != null){
-            if(shows.get(position).getShowImage() == null){
-                ImageLoad imageLoad = new ImageLoad(shows.get(position).getShowImageUrl(), image, position);
+        //Fetches images from TVMaze API if the user has not activated Data Saving Mode
+        if(!User.getDataSavingPreference(context)){
+            //Populates ImageView from URL if image hasn't been stored in the Show object yet. If the image has been stored, the ImageView is populated with the stored image from the Show object
+            if(shows.get(position).getShowImageUrl() != null){
+                if(shows.get(position).getShowImage() == null){
+                    ImageLoad imageLoad = new ImageLoad(shows.get(position).getShowImageUrl(), image, position);
 
-                //The delegate variable is used to pass the data from the IAPIImage class to the getJsonImage method in this class
-                imageLoad.delegate = this;
-                imageLoad.execute();
-            }
-            else{
-                image.setImageBitmap(shows.get(position).getShowImage());
-                notifyDataSetChanged();
+                    //The delegate variable is used to pass the data from the IAPIImage class to the getJsonImage method in this class
+                    imageLoad.delegate = this;
+                    imageLoad.execute();
+                }
+                else{
+                    image.setImageBitmap(shows.get(position).getShowImage());
+                    notifyDataSetChanged();
+                }
             }
         }
 

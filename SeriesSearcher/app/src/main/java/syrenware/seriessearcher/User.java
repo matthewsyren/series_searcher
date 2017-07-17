@@ -3,6 +3,8 @@ package syrenware.seriessearcher;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -76,5 +78,20 @@ public class User {
                 Log.i("Data", "Failed to read data");
             }
         });
+    }
+
+    //Method returns the value which states whether the user has chosen Data Saving Mode
+    public static boolean getDataSavingPreference(Context context){
+        boolean dataSavingMode = false;
+
+        try{
+            SharedPreferences sharedPreferences = context.getSharedPreferences("", Context.MODE_PRIVATE);
+            dataSavingMode = sharedPreferences.getBoolean("dataSavingMode", false);
+        }
+        catch(Exception exc){
+            Toast.makeText(context, exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        return dataSavingMode;
     }
 }

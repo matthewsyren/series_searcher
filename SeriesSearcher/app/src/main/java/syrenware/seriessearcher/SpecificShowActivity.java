@@ -212,13 +212,15 @@ public class SpecificShowActivity extends AppCompatActivity
             else{
                 txtGenres.setText("N/A");
             }
-            summary = formatSummary(summary);
+            summary = Show.formatSummary(this, summary);
             txtSummary.setText(resources.getString(R.string.text_summary, summary));
 
-            //Fetches image from the API
-            ImageView imgSpecificShow = (ImageView) findViewById(R.id.image_view_specific_show);
-            ImageLoad image = new ImageLoad(imageUrl, imgSpecificShow, 0);
-            image.execute();
+            if(!User.getDataSavingPreference(this)){
+                //Fetches image from the API
+                ImageView imgSpecificShow = (ImageView) findViewById(R.id.image_view_specific_show);
+                ImageLoad image = new ImageLoad(imageUrl, imgSpecificShow, 0);
+                image.execute();
+            }
 
             //Fetches data about the show's previous and next episodes (which are accessed using different links)
             JSONObject links = json.getJSONObject("_links");
@@ -249,23 +251,6 @@ public class SpecificShowActivity extends AppCompatActivity
         catch(JSONException jse){
             Toast.makeText(getApplicationContext(), jse.getMessage(), Toast.LENGTH_LONG).show();
         }
-    }
-
-    //Method removes any HTML formatting from the summary field
-    public String formatSummary(String summary){
-        try{
-            boolean htmlIncluded = summary.contains("<");
-            while(htmlIncluded){
-                String beforeHTML = summary.substring(0, summary.indexOf("<"));
-                String afterHTML = summary.substring(summary.indexOf(">") + 1);
-                summary = beforeHTML + afterHTML;
-                htmlIncluded = summary.contains("<");
-            }
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        return summary;
     }
 
     //Method takes the user to the SearchByEpisodeActivity

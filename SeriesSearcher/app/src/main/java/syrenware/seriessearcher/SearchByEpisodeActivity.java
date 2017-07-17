@@ -101,21 +101,27 @@ public class SearchByEpisodeActivity extends AppCompatActivity
             EditText txtSeason = (EditText) findViewById(R.id.text_show_season);
             EditText txtEpisode = (EditText) findViewById(R.id.text_show_episode);
 
-            //Fetches the show title from the Bundle
+            //Fetches the show title from the Bundle and assigns input values to the variables
             Bundle bundle = getIntent().getExtras();
             String showNumber = bundle.getString("showNumber");
-
             int season = Integer.parseInt(txtSeason.getText().toString());
             int episode = Integer.parseInt(txtEpisode.getText().toString());
+
             APIConnection api = new APIConnection();
             api.delegate = this;
             api.execute("http://api.tvmaze.com/shows/" + showNumber + "/episodebynumber?season=" + season + "&number="  + episode);
         }
+        catch(NumberFormatException nfe){
+            Toast.makeText(getApplicationContext(), "Please only enter whole numbers, and don't leave any fields empty", Toast.LENGTH_LONG).show();
+            toggleProgressBar(View.INVISIBLE);
+        }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+            toggleProgressBar(View.INVISIBLE);
         }
     }
 
+    //Method parses the JSON returned from the TVMaze API and displays it
     @Override
     public void getJsonResponse(String response) {
         try{
@@ -132,7 +138,7 @@ public class SearchByEpisodeActivity extends AppCompatActivity
                 String episodeAirDate = jsonObject.getString("airdate");
                 String episodeRuntime = jsonObject.getString("runtime");
                 String episodeSummary = jsonObject.getString("summary");
-                episodeSummary = formatSummary(episodeSummary);
+                episodeSummary = Show.formatSummary(this, episodeSummary);
 
                 //Replaces any empty data with "N/A"
                 if(episodeName.equalsIgnoreCase("null") || episodeName.length() == 0) {
@@ -169,23 +175,5 @@ public class SearchByEpisodeActivity extends AppCompatActivity
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
-    }
-
-    //Method removes any HTML formatting from the summary field
-    public String formatSummary(String summary){
-        try{
-            boolean htmlIncluded = summary.contains("<");
-            while(htmlIncluded){
-                String beforeHTML = summary.substring(0, summary.indexOf("<"));
-                String afterHTML = summary.substring(summary.indexOf(">") + 1);
-                summary = beforeHTML + afterHTML;
-                htmlIncluded = summary.contains("<");
-            }
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        return summary;
-
     }
 }

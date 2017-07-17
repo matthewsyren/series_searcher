@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu
+    android:id="@+id/menu_nav_drawer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home_black"
+            android:icon="@drawable/ic_menu_home"
             android:title="@string/navigation_drawer_my_shows" />
         <item
             android:id="@+id/nav_random_shows"
-            android:icon="@drawable/ic_theaters_black"
+            android:icon="@drawable/ic_menu_random_shows"
             android:title="@string/navigation_drawer_random_shows" />
         <item
             android:id="@+id/nav_search"
-            android:icon="@drawable/ic_search_black"
+            android:icon="@drawable/ic_menu_search"
             android:title="@string/navigation_drawer_search" />
         <item
             android:id="@+id/nav_disclaimer"
-            android:icon="@drawable/ic_copyright_black"
+            android:icon="@drawable/ic_menu_disclaimer"
             android:title="@string/navigation_drawer_disclaimer" />
         <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings_black"
-            android:title="@string/navigation_drawer_settings" />
+            android:id="@+id/nav_data_saving_mode"
+            android:enabled="true"
+            android:title="@string/navigation_drawer_data_saving_mode"
+            android:icon="@drawable/ic_menu_data_saving_mode"
+            android:visible="true"
+            app:actionLayout="@layout/nav_switch"
+            app:showAsAction="ifRoom" />
         <item
             android:id="@+id/nav_help"
-            android:icon="@drawable/ic_help_black"
+            android:icon="@drawable/ic_menu_help"
             android:title="@string/navigation_drawer_help" />
         <item
             android:id="@+id/nav_sign_out"
-            android:icon="@drawable/ic_sign_out"
+            android:icon="@drawable/ic_menu_sign_out"
             android:title="@string/navigation_drawer_sign_out" />
     </group>
 </menu>

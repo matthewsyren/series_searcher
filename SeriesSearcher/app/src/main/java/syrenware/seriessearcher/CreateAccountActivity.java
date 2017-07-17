@@ -108,6 +108,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("userEmail", emailAddress);
             editor.putString("userKey", key);
+            editor.putBoolean("dataSavingMode", false);
             editor.apply();
 
             Toast.makeText(getApplicationContext(), "Account successfully created!", Toast.LENGTH_LONG).show();

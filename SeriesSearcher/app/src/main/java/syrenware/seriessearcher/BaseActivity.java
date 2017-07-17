@@ -11,7 +11,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,14 +34,58 @@ public class BaseActivity extends Activity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         displayUserDetails();
+        registerListeners();
+    }
 
-        ImageButton btnMenu = (ImageButton) findViewById(R.id.button_menu);
-        btnMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleDrawer(v);
+    //Method registers listeners for the appropriate Views
+    public void registerListeners(){
+        try{
+            //Registers an OnClickListener for the NavigationDrawer button
+            ImageButton btnMenu = (ImageButton) findViewById(R.id.button_menu);
+            btnMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleDrawer(v);
+                }
+            });
+
+            //Registers an OnCheckedChangedListener for the Data Saving Mode Switch, and displays the appropriate
+            Menu menu = navigationView.getMenu();
+            MenuItem menuItem = menu.findItem(R.id.nav_data_saving_mode);
+            View actionView = menuItem.getActionView();
+            Switch navSwitch = (Switch) actionView.findViewById(R.id.switch_data_saving_mode);
+            navSwitch.setChecked(User.getDataSavingPreference(this));
+            navSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    boolean dataSavingMode = User.getDataSavingPreference(getApplicationContext());
+                    toggleDataSavingPreference(dataSavingMode);
+                }
+            });
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method changes the user's preferences for Data Saving Mode
+    public void toggleDataSavingPreference(boolean currentPreference){
+        try{
+            //Saves the user's new preference for Data Saving Mode
+            SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("dataSavingMode", !currentPreference);
+            editor.apply();
+            if(!currentPreference){
+                Toast.makeText(getApplicationContext(), "Data Saving Mode activated - Images will not be downloaded while in Data Saving Mode", Toast.LENGTH_LONG).show();
             }
-        });
+            else{
+                Toast.makeText(getApplicationContext(), "Data Saving Mode deactivated", Toast.LENGTH_LONG).show();
+            }
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     //Method displays the user's details in the NavigationDrawer

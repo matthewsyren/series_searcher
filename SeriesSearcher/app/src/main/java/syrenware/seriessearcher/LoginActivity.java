@@ -22,18 +22,23 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        firebaseAuth = FirebaseAuth.getInstance();
+        try{
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_login);
+            firebaseAuth = FirebaseAuth.getInstance();
 
-        //Hides ProgressBar
-        toggleProgressBar(View.INVISIBLE);
+            //Hides ProgressBar
+            toggleProgressBar(View.INVISIBLE);
 
-        //Takes the user to the HomeActivity if they have already signed in
-        User user = new User(this);
-        if(user.getUserEmailAddress() != null){
-            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-            startActivity(intent);
+            //Takes the user to the HomeActivity if they have already signed in
+            User user = new User(this);
+            if(user.getUserEmailAddress() != null){
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -46,6 +51,11 @@ public class LoginActivity extends AppCompatActivity {
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    //Method prevents the user from going back to the previous Activity by clicking the back button
+    @Override
+    public void onBackPressed() {
     }
 
     //Method checks the information that the user has entered, and logs the user in if the information matches information in the Firebase authentication database
@@ -86,16 +96,21 @@ public class LoginActivity extends AppCompatActivity {
 
     //Method writes the user's data to SharedPreferences and then takes the user to the HomeActivity
     public void writeDataToSharedPreferences(String email, String key){
-        //Saves the user's data in SharedPreferences
-        SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("userEmail", email);
-        editor.putString("userKey", key);
-        editor.apply();
+        try{
+            //Saves the user's data in SharedPreferences
+            SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("userEmail", email);
+            editor.putString("userKey", key);
+            editor.apply();
 
-        //Takes the user to the HomeActivity
-        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-        startActivity(intent);
+            //Takes the user to the HomeActivity
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            startActivity(intent);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     //Method takes the user to the CreateAccountActivity
