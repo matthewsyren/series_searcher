@@ -46,7 +46,6 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
         });
 
         super.onCreateDrawer();
-        super.setSelectedNavItem(R.id.nav_search);
     }
 
     //Method toggles the visibility of the ProgressBar

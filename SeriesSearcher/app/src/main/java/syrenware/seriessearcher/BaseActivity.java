@@ -1,6 +1,8 @@
 package syrenware.seriessearcher;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.List;
 
 /**
  * Created by matthew on 2017/02/04.
@@ -35,6 +40,28 @@ public class BaseActivity extends Activity
         navigationView.setNavigationItemSelectedListener(this);
         displayUserDetails();
         registerListeners();
+        setCurrentSelectedNavItem();
+
+        //Creates a Listener for the DrawerLayout (used to set selected item when the user drags to open the NavigationDrawer
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                setCurrentSelectedNavItem();
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+            }
+        });
     }
 
     //Method registers listeners for the appropriate Views
@@ -50,16 +77,25 @@ public class BaseActivity extends Activity
             });
 
             //Registers an OnCheckedChangedListener for the Data Saving Mode Switch, and displays the appropriate
-            Menu menu = navigationView.getMenu();
-            MenuItem menuItem = menu.findItem(R.id.nav_data_saving_mode);
+            final Menu menu = navigationView.getMenu();
+            final MenuItem menuItem = menu.findItem(R.id.nav_data_saving_mode);
+
             View actionView = menuItem.getActionView();
-            Switch navSwitch = (Switch) actionView.findViewById(R.id.switch_data_saving_mode);
+            final Switch navSwitch = (Switch) actionView.findViewById(R.id.switch_data_saving_mode);
             navSwitch.setChecked(User.getDataSavingPreference(this));
+
             navSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    boolean dataSavingMode = User.getDataSavingPreference(getApplicationContext());
-                    toggleDataSavingPreference(dataSavingMode);
+                    toggleDataSavingPreference();
+                }
+            });
+
+            menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    navSwitch.performClick();
+                    return false;
                 }
             });
         }
@@ -68,9 +104,39 @@ public class BaseActivity extends Activity
         }
     }
 
+    //Method sets the activated item of the NavigationDrawer to the current Activity
+    public void setCurrentSelectedNavItem(){
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> taskInfo = activityManager.getRunningTasks(1);
+        ComponentName componentName = taskInfo.get(0).topActivity;
+        String currentActivity = componentName.getShortClassName();
+
+        //Sets selected item
+        switch (currentActivity){
+            case ".HomeActivity" :
+                setSelectedNavItem(R.id.nav_home);
+                break;
+            case ".RandomShowsActivity":
+                setSelectedNavItem(R.id.nav_random_shows);
+                break;
+            case ".SearchActivity":
+                setSelectedNavItem(R.id.nav_search);
+                break;
+            case ".HelpActivity":
+                setSelectedNavItem(R.id.nav_help);
+                break;
+            case ".DisclaimerActivity":
+                setSelectedNavItem(R.id.nav_disclaimer);
+                break;
+        }
+    }
+
     //Method changes the user's preferences for Data Saving Mode
-    public void toggleDataSavingPreference(boolean currentPreference){
+    public void toggleDataSavingPreference(){
         try{
+            //Fetches the user's current preferences for Data Saving Mode
+            boolean currentPreference = User.getDataSavingPreference(getApplicationContext());
+
             //Saves the user's new preference for Data Saving Mode
             SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
@@ -150,7 +216,6 @@ public class BaseActivity extends Activity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
@@ -164,6 +229,15 @@ public class BaseActivity extends Activity
         }
         else if(id == R.id.nav_search){
             startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+        }
+        else if(id == R.id.nav_disclaimer){
+            startActivity(new Intent(getApplicationContext(), DisclaimerActivity.class));
+        }
+        else if(id == R.id.nav_help){
+            startActivity(new Intent(getApplicationContext(), HelpActivity.class));
+        }
+        else if(id == R.id.nav_data_saving_mode){
+            setCurrentSelectedNavItem();
         }
         else if(id == R.id.nav_sign_out){
             //Signs the user out of Firebase

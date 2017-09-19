@@ -31,7 +31,6 @@ public class HomeActivity extends BaseActivity
 
         //Sets the NavigationDrawer for the Activity and sets the selected item in the NavigationDrawer to Home
         super.onCreateDrawer();
-        super.setSelectedNavItem(R.id.nav_home);
 
         //Displays ProgressBar
         toggleProgressBar(View.VISIBLE);

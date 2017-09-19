@@ -23,8 +23,7 @@ public class Show {
     private Bitmap showImage = null;
 
     //Constructor
-    public Show(int id, String title, String rating, String status, String runtime, String imageUrl)
-    {
+    public Show(int id, String title, String rating, String status, String runtime, String imageUrl) {
         showId = id;
         showTitle = title;
         showRating = rating;

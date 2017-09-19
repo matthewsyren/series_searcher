@@ -53,5 +53,14 @@
     <string name="text_episode_air_date">Air Date: %s</string>
     <string name="text_episode_runtime">Runtime: %s</string>
     <string name="text_episode_summary">Summary: %s</string>
+    <string name="title_activity_help">HelpActivity</string>
+
+    <!-- HelpActivity -->
+    <string name="text_help">This app allows you to search for information about your favourite TV series. To search for a specific show, just click on \'Search\' in the navigation menu, and start typing. \n\nTo view a list of 20 randomised series, click on the \'Random Shows\' item in the navigation menu. \n\nIf you see a show that you would like to add to your favourite shows, simply click on the \'+\' button that appears next to the show\'s name. All of your favourite shows are accessible via the \'My Shows\' item in the navigation menu. To remove an item from your favourite shows, click on the '-' button that appears next to the show's name. \n\nIf you click on a series, more information is displayed about it. If you would like to search for a specific episode, click on the search button after clicking on the specific show. Here, you will be able to enter a season and episode number, and the app will display any information it has for that specific episode. \n\nIf you choose to activate Data Saving Mode, images will not be downloaded. </string>
+
+
+    <!-- DisclaimerActivity -->
+    <string name="title_activity_disclaimer">DisclaimerActivity</string>
+    <string name="text_disclaimer">This app gets all its information about series from TVmaze (available at www.tvmaze.com)</string>
 
 </resources>

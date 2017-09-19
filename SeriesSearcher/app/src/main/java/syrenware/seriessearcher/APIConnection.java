@@ -11,6 +11,7 @@ import java.net.URL;
  * Created by matthew on 2017/02/03.
  * Class fetches JSON returned from the TVMaze API in an AsyncTask
  */
+
 @SuppressWarnings("WeakerAccess")
 public class APIConnection extends AsyncTask<String, Void, String> {
 

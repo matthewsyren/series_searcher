@@ -34,7 +34,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".CreateAccountActivity" />
-        <activity android:name=".SearchByEpisodeActivity"></activity>
+        <activity android:name=".SearchByEpisodeActivity" />
+        <activity
+            android:name=".HelpActivity"
+            android:label="@string/title_activity_help"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".DisclaimerActivity"
+            android:label="@string/title_activity_disclaimer"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
