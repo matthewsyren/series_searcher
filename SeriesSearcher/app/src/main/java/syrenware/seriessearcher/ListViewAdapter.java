@@ -1,9 +1,12 @@
 package syrenware.seriessearcher;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +24,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOError;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -29,24 +36,23 @@ import java.util.ArrayList;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class ListViewAdapter extends ArrayAdapter
-                             implements IAPIImage {
+public class ListViewAdapter extends ArrayAdapter {
     //Declarations
-    private ArrayList<Show> shows = null;
+    private ArrayList<Show> shows;
     private Context context;
+    private boolean saveImages;
 
     //Constructor
-    public ListViewAdapter(Context context, ArrayList<Show> shows)
-    {
+    public ListViewAdapter(Context context, ArrayList<Show> shows, boolean saveImages) {
         super(context, R.layout.list_row,shows);
         this.context = context;
         this.shows = shows;
+        this.saveImages = saveImages;
     }
 
     //Method populates the appropriate Views with the appropriate data (stored in the shows ArrayList)
     @Override
-    public View getView(final int position, View convertView, @NonNull ViewGroup parent)
-    {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         //Inflates the list_row view for the ListView
         LayoutInflater inflater = ((Activity)context).getLayoutInflater();
         convertView = inflater.inflate(R.layout.list_row, parent, false);
@@ -63,17 +69,8 @@ public class ListViewAdapter extends ArrayAdapter
         if(!User.getDataSavingPreference(context)){
             //Populates ImageView from URL if image hasn't been stored in the Show object yet. If the image has been stored, the ImageView is populated with the stored image from the Show object
             if(shows.get(position).getShowImageUrl() != null){
-                if(shows.get(position).getShowImage() == null){
-                    ImageLoad imageLoad = new ImageLoad(shows.get(position).getShowImageUrl(), image, position);
-
-                    //The delegate variable is used to pass the data from the IAPIImage class to the getJsonImage method in this class
-                    imageLoad.delegate = this;
-                    imageLoad.execute();
-                }
-                else{
-                    image.setImageBitmap(shows.get(position).getShowImage());
-                    notifyDataSetChanged();
-                }
+                ImageLoad imageLoad = new ImageLoad(shows.get(position).getShowImageUrl(), image, context, shows.get(position).getShowId(), saveImages);
+                imageLoad.execute();
             }
         }
 
@@ -96,19 +93,36 @@ public class ListViewAdapter extends ArrayAdapter
                     pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), true);
                 }
                 else{
-                    btnToggleShow.setText("+");
-                    pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), false);
+                    AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                    alertDialog.setTitle("Are you sure you want to remove this series from My Shows?");
+
+                    //Creates OnClickListener for the Dialog message
+                    DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialog, int button) {
+                            switch(button){
+                                //Removes the selected show from the My Shows list
+                                case AlertDialog.BUTTON_POSITIVE:
+                                    btnToggleShow.setText("+");
+                                    String showID = "" + shows.get(position).getShowId();
+                                    shows.remove(position);
+                                    pushUserShowSelection(user.getUserKey(), showID, false);
+                                    break;
+                                case AlertDialog.BUTTON_NEGATIVE:
+                                    break;
+                            }
+                        }
+                    };
+
+                    //Assigns button an OnClickListener for the AlertDialog and displays the AlertDialog
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES", dialogOnClickListener);
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO", dialogOnClickListener);
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.show();
                 }
-                notifyDataSetChanged();
             }
         });
         return convertView;
-    }
-
-    //Method assigns the downloaded image to the Show object's showImage attribute, in order to prevent downloading the same image more than once
-    @Override
-    public void getJsonImage(Bitmap bitmap, int position) {
-        shows.get(position).setShowImage(bitmap);
     }
 
     //Method fetches all show keys (show ID's) associated with the user's key, and adds them to an ArrayList. The ArrayList is then passed to the getUserShowData method, which fetches the JSON data for each show from the TVMAze API
@@ -143,8 +157,10 @@ public class ListViewAdapter extends ArrayAdapter
         //Establishes a connection to the Firebase database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference().child(userKey);
+        String message = showAdded ? "Series added to My Shows" : "Series removed from My Shows";
 
         //Generates the user's key and saves the value (the user's email address) to the Firebase database
         databaseReference.child(showID).setValue(showAdded);
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 }

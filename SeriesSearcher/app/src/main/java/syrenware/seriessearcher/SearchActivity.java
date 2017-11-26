@@ -126,7 +126,7 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
                 }
 
                 //Sets a custom adapter for the list_view_search_results ListView to display the search results
-                final ListViewAdapter adapter = new ListViewAdapter(this, lstShows);
+                final ListViewAdapter adapter = new ListViewAdapter(this, lstShows, false);
                 ListView listView = (ListView) findViewById(R.id.list_view_search_results);
                 listView.setAdapter(adapter);
 

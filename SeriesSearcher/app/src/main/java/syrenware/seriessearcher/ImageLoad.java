@@ -1,9 +1,19 @@
 package syrenware.seriessearcher;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -18,14 +28,17 @@ class ImageLoad extends AsyncTask<Void, Void, Bitmap> {
     //Declarations
     private String url;
     private ImageView imageView;
-    public IAPIImage delegate = null;
-    private int position;
+    private Context context;
+    private int showID;
+    private boolean saveImages;
 
     //Constructor (accepts URL of image, the ImageView to display the image, and the position to store the image in (incrementer)
-    public ImageLoad(String url, ImageView imageView, int position) {
+    public ImageLoad(String url, ImageView imageView, Context context, int showID, boolean saveImages) {
         this.url = url;
         this.imageView = imageView;
-        this.position = position;
+        this.context = context;
+        this.showID = showID;
+        this.saveImages = saveImages;
     }
 
     //Method fetches the image from the URL specified in the constructor
@@ -33,16 +46,33 @@ class ImageLoad extends AsyncTask<Void, Void, Bitmap> {
     protected Bitmap doInBackground(Void... params) {
         try
         {
-            URL urlConnection = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) urlConnection.openConnection();
+            if(checkForFile()){
+                //Loops through all files and displays the file that matches the filename for the appropriate image
+                File[] files = context.getFilesDir().listFiles();
+                String fileName = showID + ".png";
 
-            //Specifies that you want to read the response from the URL and connects to the URL
-            connection.setDoInput(true);
-            connection.connect();
+                for(int i = 0; i < files.length; i++){
+                    String name = files[i].getName();
+                    if(fileName.equals(name)){
+                        //Sets the content for the ImageView to the appropriate image
+                        Uri uri = Uri.parse(files[i].getAbsolutePath());
+                        imageView.setImageURI(uri);
+                        return null;
+                    }
+                }
+            }
+            else{
+                URL urlConnection = new URL(url);
+                HttpURLConnection connection = (HttpURLConnection) urlConnection.openConnection();
 
-            //Fetches the input stream from the API and decodes it into a Bitmap
-            InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream(input);
+                //Specifies that you want to read the response from the URL and connects to the URL
+                connection.setDoInput(true);
+                connection.connect();
+
+                //Fetches the input stream from the API and decodes it into a Bitmap
+                InputStream input = connection.getInputStream();
+                return BitmapFactory.decodeStream(input);
+            }
         }
         catch (Exception e)
         {
@@ -51,15 +81,44 @@ class ImageLoad extends AsyncTask<Void, Void, Bitmap> {
         return null;
     }
 
-    //Method sets the image in the ImageView and sends the image and its position to the class that implemented the IAPIImage class
+    //Method sets the image in the ImageView and saves the image in internal storage
     @Override
     protected void onPostExecute(Bitmap result) {
         super.onPostExecute(result);
-        imageView.setImageBitmap(result);
+        if(result != null){
+            if(saveImages){
+                saveFile(result);
+            }
+            imageView.setImageBitmap(result);
+        }
+    }
 
-        //Sends the image to the delegate class if the delegate class has been set
-        if(delegate != null){
-            delegate.getJsonImage(result, position);
+    //Method checks to see if the image has already been downloaded
+    public boolean checkForFile(){
+        File[] files = context.getFilesDir().listFiles();
+        boolean fileDownloaded = false;
+
+        //Loops through downloaded files to see if the image has already been downloaded
+        for(int i = 0; i < files.length; i++){
+            if(files[i].getName().equals(showID + ".png")){
+                fileDownloaded = true;
+                break;
+            }
+        }
+
+        return fileDownloaded;
+    }
+
+    //Method saves the image to internal storage in order to lessen future data usage
+    public void saveFile(Bitmap bitmap){
+        try{
+            File file = new File(context.getFilesDir(), showID + ".png");
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, fileOutputStream);
+            fileOutputStream.close();
+        }
+        catch(IOException ioe){
+            Toast.makeText(context, ioe.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

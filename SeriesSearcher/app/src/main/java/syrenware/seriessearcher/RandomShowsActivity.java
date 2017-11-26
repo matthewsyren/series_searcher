@@ -100,7 +100,7 @@ public class RandomShowsActivity extends BaseActivity
                 }
 
                 //Sets the custom adapter for the ListView to display the Show data
-                ListViewAdapter adapter = new ListViewAdapter(this, lstShows);
+                ListViewAdapter adapter = new ListViewAdapter(this, lstShows, false);
                 ListView listView = (ListView) findViewById(R.id.list_view_random_shows);
                 listView.setAdapter(adapter);
 

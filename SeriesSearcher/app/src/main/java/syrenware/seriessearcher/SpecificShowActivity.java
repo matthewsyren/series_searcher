@@ -218,7 +218,9 @@ public class SpecificShowActivity extends AppCompatActivity
             if(!User.getDataSavingPreference(this)){
                 //Fetches image from the API
                 ImageView imgSpecificShow = (ImageView) findViewById(R.id.image_view_specific_show);
-                ImageLoad image = new ImageLoad(imageUrl, imgSpecificShow, 0);
+                String showNumber = getIntent().getExtras().getString("showNumber");
+
+                ImageLoad image = new ImageLoad(imageUrl, imgSpecificShow, getApplicationContext(), Integer.parseInt(showNumber), false);
                 image.execute();
             }
 

@@ -20,7 +20,6 @@ public class Show {
     private String showRating;
     private String showStatus;
     private String showRuntime;
-    private Bitmap showImage = null;
 
     //Constructor
     public Show(int id, String title, String rating, String status, String runtime, String imageUrl) {
@@ -30,7 +29,6 @@ public class Show {
         showStatus = status;
         showRuntime = runtime;
         showImageUrl = imageUrl;
-        showImage = null;
     }
 
     //Accessor Methods
@@ -56,15 +54,6 @@ public class Show {
 
     public String getShowImageUrl(){
         return showImageUrl;
-    }
-
-    public Bitmap getShowImage() {
-        return showImage;
-    }
-
-    //Mutator Methods
-    public void setShowImage(Bitmap map){
-        showImage = map;
     }
 
     //Method removes any HTML formatting from the summary field
