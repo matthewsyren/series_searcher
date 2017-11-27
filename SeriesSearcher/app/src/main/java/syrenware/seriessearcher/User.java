@@ -13,11 +13,12 @@ import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by matthew on 2017/01/28.
- * Class is used as a basis for to hold the data for the users of the program
+ * Class is used as a basis to hold the data for the users of the program
  */
 
 @SuppressWarnings("WeakerAccess")
 public class User {
+    //Declarations
     private String userEmailAddress;
     private String userKey;
     private String userPassword;

@@ -7,7 +7,6 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
         <!-- Ensures that image is in line with text -->
         <LinearLayout android:id="@+id/thumbnail"
             android:layout_width="wrap_content"
@@ -30,10 +29,9 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/thumbnail"
             android:layout_toRightOf="@+id/thumbnail"
-            android:text="The Big Bang Theory"
             android:textColor="#040404"
             android:typeface="sans"
-            android:textSize="16dip"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:layout_toLeftOf="@+id/linear_layout_button"/>
 
@@ -43,10 +41,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/show_title"
             android:textColor="#343434"
-            android:textSize="12dip"
+            android:textSize="12sp"
             android:layout_marginTop="1dip"
             android:layout_toRightOf="@+id/thumbnail"
-            android:text="Rating: 8.4"
             android:layout_toLeftOf="@+id/linear_layout_button"/>
 
         <TextView
@@ -55,10 +52,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/show_rating"
             android:textColor="#343434"
-            android:textSize="12dip"
+            android:textSize="12sp"
             android:layout_marginTop="1dip"
             android:layout_toRightOf="@+id/thumbnail"
-            android:text="Latest Episode: Season 10 Episode 13"
             android:layout_toLeftOf="@+id/linear_layout_button"/>
 
         <TextView
@@ -67,10 +63,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/show_latest_episode"
             android:textColor="#343434"
-            android:textSize="12dip"
+            android:textSize="12sp"
             android:layout_marginTop="1dip"
             android:layout_toRightOf="@+id/thumbnail"
-            android:text="Next Episode: 02/02/2017"
             android:layout_toLeftOf="@+id/linear_layout_button"/>
 
         <LinearLayout
@@ -82,12 +77,15 @@
             android:padding="3dip"
             android:layout_marginLeft="5dip">
 
-            <Button
+            <ImageButton
                 android:id="@+id/button_toggle_show"
                 android:layout_width="50dip"
-                android:layout_height="40dip"
-                android:text="+"
+                android:layout_height="50dip"
                 android:textSize="20sp"
+                android:src="@drawable/ic_add_black_24dp"
+                android:tint="@color/colorPrimary"
+                android:tag="Add"
+                android:text="@string/text_add_show"
                 android:textColor="@color/colorPrimary"
                 android:focusable="false"
                 android:background="@drawable/button" />

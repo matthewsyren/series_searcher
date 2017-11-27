@@ -1,7 +1,6 @@
 package syrenware.seriessearcher;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.widget.Toast;
 
 /**

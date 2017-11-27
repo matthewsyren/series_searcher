@@ -1,13 +1,10 @@
 package syrenware.seriessearcher;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -50,7 +47,6 @@ class ImageLoad extends AsyncTask<Void, Void, Bitmap> {
                 //Loops through all files and displays the file that matches the filename for the appropriate image
                 File[] files = context.getFilesDir().listFiles();
                 String fileName = showID + ".png";
-
                 for(int i = 0; i < files.length; i++){
                     String name = files[i].getName();
                     if(fileName.equals(name)){

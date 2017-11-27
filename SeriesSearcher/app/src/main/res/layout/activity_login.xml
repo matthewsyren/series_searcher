@@ -9,56 +9,76 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="syrenware.seriessearcher.LoginActivity">
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/text_input_layout_email_address"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/text_login_email"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@mipmap/ic_launcher_foreground"/>
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.6">
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/text_input_layout_email_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/text_login_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_email"
+                    android:inputType="textEmailAddress" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/text_input_layout_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_email"
-                android:inputType="textEmailAddress" />
-    </android.support.design.widget.TextInputLayout>
+                android:layout_below="@id/text_input_layout_email_address">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/text_login_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:layout_marginTop="@dimen/fab_margin"
+                    android:hint="@string/prompt_password"/>
+            </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/text_input_layout_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_input_layout_email_address">
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/text_login_password"
+            <Button
+                android:id="@+id/button_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
+                android:layout_below="@id/text_input_layout_password"
                 android:layout_marginTop="@dimen/fab_margin"
-                android:hint="@string/prompt_password"/>
-    </android.support.design.widget.TextInputLayout>
+                android:layout_centerHorizontal="true"
+                android:text="@string/login"
+                android:onClick="loginOnClick"
+                android:background="@drawable/button"
+                android:textColor="@color/colorPrimary" />
 
-    <Button
-        android:id="@+id/button_login"
-        android:layout_width="@dimen/login_button_width"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_input_layout_password"
-        android:layout_marginTop="@dimen/fab_margin"
-        android:layout_centerHorizontal="true"
-        android:text="@string/login"
-        android:onClick="loginOnClick"
-        android:background="@drawable/button"
-        android:textColor="@color/colorPrimary"/>
+            <Button
+                android:id="@+id/button_create_account_link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/button_login"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:layout_centerHorizontal="true"
+                android:text="@string/createAccount"
+                android:onClick="createAccountOnClick"
+                android:background="@drawable/button"
+                android:textColor="@color/colorPrimary"/>
+        </RelativeLayout>
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/button_create_account_link"
-        android:layout_width="@dimen/login_button_width"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/button_login"
-        android:layout_marginTop="@dimen/fab_margin"
-        android:layout_centerHorizontal="true"
-        android:text="@string/createAccount"
-        android:onClick="createAccountOnClick"
-        android:background="@drawable/button"
-        android:textColor="@color/colorPrimary"/>
+
 
     <ProgressBar
         android:id="@+id/progress_bar"

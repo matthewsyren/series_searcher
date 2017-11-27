@@ -51,8 +51,9 @@
 
     <Button
         android:id="@+id/button_create_account"
-        android:layout_width="@dimen/login_button_width"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
         android:layout_below="@id/text_input_layout_confirm_password"
         android:layout_marginTop="@dimen/fab_margin"
         android:layout_centerHorizontal="true"

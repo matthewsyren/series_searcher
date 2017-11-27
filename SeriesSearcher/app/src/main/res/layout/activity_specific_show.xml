@@ -49,6 +49,6 @@
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        android:src="@drawable/ic_search"
+        android:src="@drawable/ic_search_black_24dp"
         android:onClick="searchByEpisodeOnClick"/>
 </android.support.design.widget.CoordinatorLayout>

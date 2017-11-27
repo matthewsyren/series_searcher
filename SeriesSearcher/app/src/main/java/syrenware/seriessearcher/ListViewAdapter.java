@@ -5,8 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,10 +23,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOError;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -58,12 +53,12 @@ public class ListViewAdapter extends ArrayAdapter {
         convertView = inflater.inflate(R.layout.list_row, parent, false);
 
         //Component assignments
-        final ImageView image = (ImageView) convertView.findViewById(R.id.show_poster);
-        final TextView title = (TextView) convertView.findViewById(R.id.show_title);
-        final TextView rating = (TextView) convertView.findViewById(R.id.show_rating);
-        final TextView latestEpisode = (TextView) convertView.findViewById((R.id.show_latest_episode));
-        final TextView nextEpisode = (TextView) convertView.findViewById((R.id.show_next_episode_date));
-        final Button btnToggleShow = (Button) convertView.findViewById(R.id.button_toggle_show);
+        final ImageView image = convertView.findViewById(R.id.show_poster);
+        final TextView title = convertView.findViewById(R.id.show_title);
+        final TextView rating = convertView.findViewById(R.id.show_rating);
+        final TextView latestEpisode = convertView.findViewById((R.id.show_latest_episode));
+        final TextView nextEpisode = convertView.findViewById((R.id.show_next_episode_date));
+        final ImageButton btnToggleShow = convertView.findViewById(R.id.button_toggle_show);
 
         //Fetches images from TVMaze API if the user has not activated Data Saving Mode
         if(!User.getDataSavingPreference(context)){
@@ -88,8 +83,9 @@ public class ListViewAdapter extends ArrayAdapter {
         btnToggleShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(btnToggleShow.getText().toString().equals("+")){
-                    btnToggleShow.setText("-");
+                if(btnToggleShow.getTag().equals("Add")){
+                    btnToggleShow.setImageResource(R.drawable.ic_remove_black_24dp);
+                    btnToggleShow.setTag("Remove");
                     pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), true);
                 }
                 else{
@@ -103,9 +99,12 @@ public class ListViewAdapter extends ArrayAdapter {
                             switch(button){
                                 //Removes the selected show from the My Shows list
                                 case AlertDialog.BUTTON_POSITIVE:
-                                    btnToggleShow.setText("+");
+                                    btnToggleShow.setImageResource(R.drawable.ic_add_black_24dp);
+                                    btnToggleShow.setTag("Add");
                                     String showID = "" + shows.get(position).getShowId();
-                                    shows.remove(position);
+                                    if(saveImages) {
+                                        shows.remove(position);
+                                    }
                                     pushUserShowSelection(user.getUserKey(), showID, false);
                                     break;
                                 case AlertDialog.BUTTON_NEGATIVE:
@@ -126,7 +125,7 @@ public class ListViewAdapter extends ArrayAdapter {
     }
 
     //Method fetches all show keys (show ID's) associated with the user's key, and adds them to an ArrayList. The ArrayList is then passed to the getUserShowData method, which fetches the JSON data for each show from the TVMAze API
-    public void displayButtonText(String userKey, final String showID, final Button btnAddShow){
+    public void displayButtonText(String userKey, final String showID, final ImageButton btnAddShow){
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
 
@@ -139,7 +138,8 @@ public class ListViewAdapter extends ArrayAdapter {
                 for(DataSnapshot snapshot : lstSnapshots){
                     String showKey = snapshot.getKey();
                     if(showKey.equals(showID) && (boolean) snapshot.getValue()){
-                        btnAddShow.setText("-");
+                        btnAddShow.setImageResource(R.drawable.ic_remove_black_24dp);
+                        btnAddShow.setTag("Remove");
                         break;
                     }
                 }
