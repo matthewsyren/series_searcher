@@ -42,7 +42,7 @@ public class SearchByEpisodeActivity extends AppCompatActivity
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
         try{
-            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            ProgressBar progressBar = findViewById(R.id.progress_bar);
             progressBar.setVisibility(visibility);
         }
         catch(Exception exc){
@@ -57,7 +57,7 @@ public class SearchByEpisodeActivity extends AppCompatActivity
             Bundle bundle = getIntent().getExtras();
             String showTitle = bundle.getString("showTitle");
 
-            TextView txtShowTitle = (TextView) findViewById(R.id.text_show_title);
+            TextView txtShowTitle = findViewById(R.id.text_show_title);
             txtShowTitle.setText(showTitle);
             setTitle("Search for episode");
         }
@@ -98,8 +98,8 @@ public class SearchByEpisodeActivity extends AppCompatActivity
             //Displays ProgressBar
             toggleProgressBar(View.VISIBLE);
 
-            EditText txtSeason = (EditText) findViewById(R.id.text_show_season);
-            EditText txtEpisode = (EditText) findViewById(R.id.text_show_episode);
+            EditText txtSeason = findViewById(R.id.text_show_season);
+            EditText txtEpisode = findViewById(R.id.text_show_episode);
 
             //Fetches the show title from the Bundle and assigns input values to the variables
             Bundle bundle = getIntent().getExtras();
@@ -126,10 +126,10 @@ public class SearchByEpisodeActivity extends AppCompatActivity
     public void getJsonResponse(String response) {
         try{
             //Assigns Views to variables
-            TextView txtEpisodeName = (TextView) findViewById(R.id.text_show_episode_name);
-            TextView txtEpisodeAirDate = (TextView) findViewById(R.id.text_show_air_date);
-            TextView txtEpisodeRuntime = (TextView) findViewById(R.id.text_show_runtime);
-            TextView txtEpisodeSummary = (TextView) findViewById(R.id.text_show_summary);
+            TextView txtEpisodeName = findViewById(R.id.text_show_episode_name);
+            TextView txtEpisodeAirDate = findViewById(R.id.text_show_air_date);
+            TextView txtEpisodeRuntime = findViewById(R.id.text_show_runtime);
+            TextView txtEpisodeSummary = findViewById(R.id.text_show_summary);
 
             if(response != null){
                 //Assigns JSON data to variables

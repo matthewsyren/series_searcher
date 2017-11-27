@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
         try{
-            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            ProgressBar progressBar = findViewById(R.id.progress_bar);
             progressBar.setVisibility(visibility);
         }
         catch(Exception exc){
@@ -61,8 +61,8 @@ public class LoginActivity extends AppCompatActivity {
     //Method checks the information that the user has entered, and logs the user in if the information matches information in the Firebase authentication database
     public void loginOnClick(View view){
         try{
-            EditText txtEmail = (EditText) findViewById(R.id.text_login_email);
-            EditText txtPassword = (EditText) findViewById(R.id.text_login_password);
+            EditText txtEmail = findViewById(R.id.text_login_email);
+            EditText txtPassword = findViewById(R.id.text_login_password);
 
             String email = txtEmail.getText().toString();
             String password = txtPassword.getText().toString();

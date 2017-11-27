@@ -82,7 +82,7 @@ public class SpecificShowActivity extends AppCompatActivity
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
         try{
-            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            ProgressBar progressBar = findViewById(R.id.progress_bar);
             progressBar.setVisibility(visibility);
         }
         catch(Exception exc){
@@ -103,7 +103,7 @@ public class SpecificShowActivity extends AppCompatActivity
                     displayShowInformation(json);
                 }
                 else if(json.has("season")){
-                    TextView txtLatestEpisode = (TextView) findViewById(R.id.text_show_latest_episode);
+                    TextView txtLatestEpisode = findViewById(R.id.text_show_latest_episode);
                     String season = json.getString("season");
                     String episode = json.getString("number");
                     if(txtLatestEpisode.getText().toString().length() == 0) {
@@ -117,7 +117,7 @@ public class SpecificShowActivity extends AppCompatActivity
                         else{
                             airDate = "(" + airDate + ")";
                         }
-                        TextView txtNextEpisode = (TextView) findViewById(R.id.text_show_next_episode);
+                        TextView txtNextEpisode = findViewById(R.id.text_show_next_episode);
                         txtNextEpisode.setText("Next Episode: Season: " + season + " Episode: " + episode + " " + airDate);
 
                         //Hides ProgressBar
@@ -183,16 +183,16 @@ public class SpecificShowActivity extends AppCompatActivity
             }
 
             //Assigns GUI components to variables
-            TextView txtName = (TextView) findViewById(R.id.text_show_title);
-            TextView txtPremiered = (TextView) findViewById(R.id.text_show_premiered);
-            TextView txtLanguage = (TextView) findViewById(R.id.text_show_language);
-            TextView txtStatus = (TextView) findViewById(R.id.text_show_status);
-            TextView txtRuntime = (TextView) findViewById(R.id.text_show_runtime);
-            TextView txtGenres = (TextView) findViewById(R.id.text_show_genres);
-            TextView txtRating = (TextView) findViewById(R.id.text_show_rating);
-            TextView txtSummary = (TextView) findViewById(R.id.text_show_summary);
-            TextView txtPreviousEpisode = (TextView) findViewById(R.id.text_show_latest_episode);
-            TextView txtNextEpisode = (TextView) findViewById(R.id.text_show_next_episode);
+            TextView txtName = findViewById(R.id.text_show_title);
+            TextView txtPremiered = findViewById(R.id.text_show_premiered);
+            TextView txtLanguage = findViewById(R.id.text_show_language);
+            TextView txtStatus = findViewById(R.id.text_show_status);
+            TextView txtRuntime = findViewById(R.id.text_show_runtime);
+            TextView txtGenres = findViewById(R.id.text_show_genres);
+            TextView txtRating = findViewById(R.id.text_show_rating);
+            TextView txtSummary = findViewById(R.id.text_show_summary);
+            TextView txtPreviousEpisode = findViewById(R.id.text_show_latest_episode);
+            TextView txtNextEpisode = findViewById(R.id.text_show_next_episode);
 
             //Displays the JSON data in the GUI components
             Resources resources = this.getResources();
@@ -217,7 +217,7 @@ public class SpecificShowActivity extends AppCompatActivity
 
             if(!User.getDataSavingPreference(this)){
                 //Fetches image from the API
-                ImageView imgSpecificShow = (ImageView) findViewById(R.id.image_view_specific_show);
+                ImageView imgSpecificShow = findViewById(R.id.image_view_specific_show);
                 String showNumber = getIntent().getExtras().getString("showNumber");
 
                 ImageLoad image = new ImageLoad(imageUrl, imgSpecificShow, getApplicationContext(), Integer.parseInt(showNumber), false);
@@ -259,7 +259,7 @@ public class SpecificShowActivity extends AppCompatActivity
     public void searchByEpisodeOnClick(View view) {
         try {
             //Fetches the show name
-            TextView txtShowName = (TextView) findViewById(R.id.text_show_title);
+            TextView txtShowName = findViewById(R.id.text_show_title);
             String showName = txtShowName.getText().toString();
 
             //Fetches the link for the show that the user clicked on from the Bundle

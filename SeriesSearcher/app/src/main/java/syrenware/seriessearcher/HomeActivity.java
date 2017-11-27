@@ -46,7 +46,7 @@ public class HomeActivity extends BaseActivity
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
         try{
-            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            ProgressBar progressBar = findViewById(R.id.progress_bar);
             progressBar.setVisibility(visibility);
         }
         catch(Exception exc){
@@ -110,9 +110,9 @@ public class HomeActivity extends BaseActivity
     //Method sets the visibility of the views based on the parameters passed in
     public void toggleViewVisibility(int listViewVisibility, int otherViewVisibility){
         try{
-            TextView txtNoShows = (TextView) findViewById(R.id.text_no_shows);
-            Button btnAddShows = (Button) findViewById(R.id.button_add_shows);
-            ListView lstMyShows = (ListView) findViewById(R.id.list_view_my_shows);
+            TextView txtNoShows = findViewById(R.id.text_no_shows);
+            Button btnAddShows = findViewById(R.id.button_add_shows);
+            ListView lstMyShows = findViewById(R.id.list_view_my_shows);
 
             txtNoShows.setVisibility(otherViewVisibility);
             btnAddShows.setVisibility(otherViewVisibility);
@@ -171,7 +171,7 @@ public class HomeActivity extends BaseActivity
 
                 //Sets a custom adapter for the list_view_search_results ListView to display the search results
                 final ListViewAdapter adapter = new ListViewAdapter(this, lstShows, true);
-                ListView listView = (ListView) findViewById(R.id.list_view_my_shows);
+                ListView listView = findViewById(R.id.list_view_my_shows);
                 listView.setAdapter(adapter);
 
                 //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on

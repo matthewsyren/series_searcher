@@ -36,14 +36,14 @@ public class BaseActivity extends Activity
     private NavigationView navigationView;
 
     protected void onCreateDrawer() {
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         displayUserDetails();
         registerListeners();
         setCurrentSelectedNavItem();
 
         //Creates a Listener for the DrawerLayout (used to set selected item when the user drags to open the NavigationDrawer
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -68,7 +68,7 @@ public class BaseActivity extends Activity
     public void registerListeners(){
         try{
             //Registers an OnClickListener for the NavigationDrawer button
-            ImageButton btnMenu = (ImageButton) findViewById(R.id.button_menu);
+            ImageButton btnMenu = findViewById(R.id.button_menu);
             btnMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -81,7 +81,7 @@ public class BaseActivity extends Activity
             final MenuItem menuItem = menu.findItem(R.id.nav_data_saving_mode);
 
             View actionView = menuItem.getActionView();
-            final Switch navSwitch = (Switch) actionView.findViewById(R.id.switch_data_saving_mode);
+            final Switch navSwitch = actionView.findViewById(R.id.switch_data_saving_mode);
             navSwitch.setChecked(User.getDataSavingPreference(this));
 
             navSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -157,9 +157,9 @@ public class BaseActivity extends Activity
     //Method displays the user's details in the NavigationDrawer
     public void displayUserDetails(){
         try{
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            NavigationView navigationView = findViewById(R.id.nav_view);
             View view =  navigationView.getHeaderView(0);
-            TextView textView = (TextView) view.findViewById(R.id.textView);
+            TextView textView = view.findViewById(R.id.textView);
             textView.setText(new User(this).getUserEmailAddress());
         }
         catch(Exception exc){
@@ -169,7 +169,7 @@ public class BaseActivity extends Activity
 
     //Method opens the NavigationDrawer when the menu button is clicked
     public void toggleDrawer(View view){
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
@@ -186,7 +186,7 @@ public class BaseActivity extends Activity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {

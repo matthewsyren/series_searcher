@@ -27,7 +27,7 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
         //Hides ProgressBar
         toggleProgressBar(View.INVISIBLE);
 
-        final EditText txtSearch = (EditText) findViewById(R.id.text_search_series);
+        final EditText txtSearch = findViewById(R.id.text_search_series);
         txtSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -51,7 +51,7 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
         try{
-            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            ProgressBar progressBar = findViewById(R.id.progress_bar);
             progressBar.setVisibility(visibility);
         }
         catch(Exception exc){
@@ -62,7 +62,7 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
     //Method retrieves the text that the user searches for in text_search, and then searches for that text using the API
     public void searchShows(){
         try{
-            EditText txtSearch = (EditText) findViewById(R.id.text_search_series);
+            EditText txtSearch = findViewById(R.id.text_search_series);
             String show = txtSearch.getText().toString();
 
             //Displays ProgressBar
@@ -127,7 +127,7 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
 
                 //Sets a custom adapter for the list_view_search_results ListView to display the search results
                 final ListViewAdapter adapter = new ListViewAdapter(this, lstShows, false);
-                ListView listView = (ListView) findViewById(R.id.list_view_search_results);
+                ListView listView = findViewById(R.id.list_view_search_results);
                 listView.setAdapter(adapter);
 
                 //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on

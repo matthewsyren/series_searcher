@@ -41,7 +41,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
         try{
-            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            ProgressBar progressBar = findViewById(R.id.progress_bar);
             progressBar.setVisibility(visibility);
         }
         catch(Exception exc){
@@ -52,9 +52,9 @@ public class CreateAccountActivity extends AppCompatActivity {
     //Method creates an account for the user
     public void createAccountOnClick(View view){
         try{
-            EditText txtEmail = (EditText) findViewById(R.id.text_create_account_email);
-            EditText txtPassword = (EditText) findViewById(R.id.text_create_account_password);
-            EditText txtConfirmPassword = (EditText) findViewById(R.id.text_create_account_confirm_password);
+            EditText txtEmail = findViewById(R.id.text_create_account_email);
+            EditText txtPassword = findViewById(R.id.text_create_account_password);
+            EditText txtConfirmPassword = findViewById(R.id.text_create_account_confirm_password);
 
             String email = txtEmail.getText().toString();
             String password = txtPassword.getText().toString();

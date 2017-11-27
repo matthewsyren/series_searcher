@@ -36,7 +36,7 @@ public class RandomShowsActivity extends BaseActivity
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
         try{
-            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            ProgressBar progressBar = findViewById(R.id.progress_bar);
             progressBar.setVisibility(visibility);
         }
         catch(Exception exc){
@@ -100,7 +100,7 @@ public class RandomShowsActivity extends BaseActivity
 
                 //Sets the custom adapter for the ListView to display the Show data
                 ListViewAdapter adapter = new ListViewAdapter(this, lstShows, false);
-                ListView listView = (ListView) findViewById(R.id.list_view_random_shows);
+                ListView listView = findViewById(R.id.list_view_random_shows);
                 listView.setAdapter(adapter);
 
                 //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
