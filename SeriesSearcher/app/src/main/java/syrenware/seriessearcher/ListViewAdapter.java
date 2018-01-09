@@ -74,7 +74,6 @@ public class ListViewAdapter extends ArrayAdapter {
         rating.setText(resources.getString(R.string.text_rating, shows.get(position).getShowRating()));
         latestEpisode.setText(resources.getString(R.string.text_status, shows.get(position).getShowStatus()));
         nextEpisode.setText(resources.getString(R.string.text_runtime, shows.get(position).getShowRuntime()));
-
         final User user = new User(context);
         displayButtonText(user.getUserKey(), "" + shows.get(position).getShowId(), btnToggleShow);
 
@@ -85,26 +84,25 @@ public class ListViewAdapter extends ArrayAdapter {
                 if(btnToggleShow.getTag().equals("Add")){
                     btnToggleShow.setImageResource(R.drawable.ic_remove_black_24dp);
                     btnToggleShow.setTag("Remove");
-                    pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), true);
+                    pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), true);
                 }
                 else{
                     AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-                    alertDialog.setTitle("Are you sure you want to remove this series from My Shows?");
+                    alertDialog.setTitle("Are you sure you want to remove " + shows.get(position).getShowTitle() + " from My Series?");
 
                     //Creates OnClickListener for the Dialog message
                     DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
                         @Override
                         public void onClick(DialogInterface dialog, int button) {
                             switch(button){
-                                //Removes the selected show from the My Shows list
+                                //Removes the selected show from the My Series list
                                 case AlertDialog.BUTTON_POSITIVE:
                                     btnToggleShow.setImageResource(R.drawable.ic_add_black_24dp);
                                     btnToggleShow.setTag("Add");
-                                    String showID = "" + shows.get(position).getShowId();
                                     if(saveImages) {
                                         shows.remove(position);
                                     }
-                                    pushUserShowSelection(user.getUserKey(), showID, false);
+                                    pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), false);
                                     break;
                                 case AlertDialog.BUTTON_NEGATIVE:
                                     break;
@@ -132,7 +130,7 @@ public class ListViewAdapter extends ArrayAdapter {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //Loops through all shows and sets the text of the Button to - if the user has added the show to 'My Shows' already
+                //Loops through all shows and sets the text of the Button to - if the user has added the show to 'My Series' already
                 Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
                 for(DataSnapshot snapshot : lstSnapshots){
                     String showKey = snapshot.getKey();
@@ -151,12 +149,12 @@ public class ListViewAdapter extends ArrayAdapter {
         });
     }
 
-    //Method updates the shows that the user has added to 'My Shows' in the Firebase database
-    public void pushUserShowSelection(String userKey, String showID, boolean showAdded){
+    //Method updates the shows that the user has added to 'My Series' in the Firebase database
+    public void pushUserShowSelection(String userKey, String showID, String showTitle, boolean showAdded){
         //Establishes a connection to the Firebase database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference().child(userKey);
-        String message = showAdded ? "Series added to My Shows" : "Series removed from My Shows";
+        String message = showAdded ? showTitle + " added to My Series" : showTitle + " removed from My Series";
 
         //Generates the user's key and saves the value (the user's email address) to the Firebase database
         databaseReference.child(showID).setValue(showAdded);

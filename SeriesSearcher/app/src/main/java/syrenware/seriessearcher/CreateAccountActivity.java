@@ -69,14 +69,20 @@ public class CreateAccountActivity extends AppCompatActivity {
                 firebaseAuth.createUserWithEmailAndPassword(user.getUserEmailAddress(), user.getUserPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d("TAG", "createUserWithEmail:onComplete:" + task.isSuccessful());
-
                         if(task.isSuccessful()){
                             //Registers the user in the Firebase authentication for this app
                             pushUser(user.getUserEmailAddress());
                         }
+                        else if(task.getException().toString().contains("FirebaseAuthUserCollisionException")){
+                            Toast.makeText(CreateAccountActivity.this, "This email address has already been used to create an account, please use another email address", Toast.LENGTH_LONG).show();
+                            toggleProgressBar(View.INVISIBLE);
+                        }
+                        else if(task.getException().toString().contains("FirebaseAuthWeakPasswordException")){
+                            Toast.makeText(CreateAccountActivity.this, "Please enter a stronger password (your password must have at least 6 characters)", Toast.LENGTH_LONG).show();
+                            toggleProgressBar(View.INVISIBLE);
+                        }
                         else{
-                            Toast.makeText(CreateAccountActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CreateAccountActivity.this, "An error occurred while trying to create your account, please try again", Toast.LENGTH_LONG).show();
                             toggleProgressBar(View.INVISIBLE);
                         }
                     }

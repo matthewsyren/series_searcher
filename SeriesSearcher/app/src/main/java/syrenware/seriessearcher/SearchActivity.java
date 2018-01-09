@@ -62,6 +62,7 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
     //Method retrieves the text that the user searches for in text_search, and then searches for that text using the API
     public void searchShows(){
         try{
+            //Fetches user's input
             EditText txtSearch = findViewById(R.id.text_search_series);
             String show = txtSearch.getText().toString();
 

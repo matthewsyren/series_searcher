@@ -4,8 +4,8 @@
     <!-- Navigation Drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="navigation_drawer_my_shows">My Shows</string>
-    <string name="navigation_drawer_random_shows">Random Shows</string>
+    <string name="navigation_drawer_my_shows">My Series</string>
+    <string name="navigation_drawer_random_shows">Random Series</string>
     <string name="navigation_drawer_search">Search</string>
     <string name="navigation_drawer_disclaimer">Disclaimer</string>
     <string name="navigation_drawer_help">Help</string>
@@ -15,7 +15,7 @@
     <string name="action_settings">Settings</string>
 
     <!-- HomeActivity -->
-    <string name="button_add_shows">Add Shows</string>
+    <string name="button_add_shows">Add Series</string>
     <string name="label_home_message">You currently have no shows added to \'My Shows\'</string>
 
     <!-- SpecificShowActivity -->
@@ -33,8 +33,8 @@
     <string name="label_search">Type to search&#8230;</string>
 
     <!-- Activity Titles -->
-    <string name="title_activity_home">My Shows</string>
-    <string name="title_activity_random_shows">Random Shows</string>
+    <string name="title_activity_home">My Series</string>
+    <string name="title_activity_random_shows">Random Series</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="title_activity_specific_show">SpecificShowActivity</string>
 

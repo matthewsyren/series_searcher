@@ -1,5 +1,6 @@
 package syrenware.seriessearcher;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -98,6 +100,11 @@ public class SearchByEpisodeActivity extends AppCompatActivity
             //Displays ProgressBar
             toggleProgressBar(View.VISIBLE);
 
+            //Hides the user's keyboard
+            InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+            //Gets user's input
             EditText txtSeason = findViewById(R.id.text_show_season);
             EditText txtEpisode = findViewById(R.id.text_show_episode);
 
@@ -107,6 +114,7 @@ public class SearchByEpisodeActivity extends AppCompatActivity
             int season = Integer.parseInt(txtSeason.getText().toString());
             int episode = Integer.parseInt(txtEpisode.getText().toString());
 
+            //Fetches information from the TVMaze API
             APIConnection api = new APIConnection();
             api.delegate = this;
             api.execute("http://api.tvmaze.com/shows/" + showNumber + "/episodebynumber?season=" + season + "&number="  + episode);

@@ -23,10 +23,12 @@
     <Button
         android:id="@+id/button_add_shows"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_centerInParent="true"
         android:text="@string/button_add_shows"
-        android:onClick="openAllShows" />
+        android:onClick="openSearchShows"
+        android:background="@drawable/button"
+        android:textColor="@color/colorPrimary"/>
 
     <ListView
         android:id="@+id/list_view_my_shows"

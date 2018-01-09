@@ -35,7 +35,7 @@ public class HomeActivity extends BaseActivity
         //Displays ProgressBar
         toggleProgressBar(View.VISIBLE);
 
-        //Toggles the views visible based on whether the user has added shows to 'My Shows'
+        //Toggles the views visible based on whether the user has added shows to 'My Series'
         toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
 
         //Gets the unique key used by Firebase to store information about the user signed in, and fetches data based on the keys fetched
@@ -54,9 +54,9 @@ public class HomeActivity extends BaseActivity
         }
     }
 
-    //Method takes user to All Shows activity
-    public void openAllShows(View view) {
-        Intent intent = new Intent(this, RandomShowsActivity.class);
+    //Method takes user to SearchActivity
+    public void openSearchShows(View view) {
+        Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
     }
 
@@ -88,7 +88,7 @@ public class HomeActivity extends BaseActivity
         });
     }
 
-    //Method fetches the shows the user has added to 'My Shows' using the keys passed in with the ArrayList
+    //Method fetches the shows the user has added to 'My Series' using the keys passed in with the ArrayList
     public void getUserShowData(ArrayList<String> lstShows){
         if(lstShows.size() > 0){
             //Transfers the data from lstShows to an array containing the necessary links to the API (an array can be passed in to the APIConnection class to fetch data from the API)
@@ -104,6 +104,7 @@ public class HomeActivity extends BaseActivity
         }
         else{
             toggleViewVisibility(View.INVISIBLE,View.VISIBLE);
+            toggleProgressBar(View.INVISIBLE);
         }
     }
 
