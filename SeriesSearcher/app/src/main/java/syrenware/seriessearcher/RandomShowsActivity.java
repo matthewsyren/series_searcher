@@ -124,4 +124,15 @@ public class RandomShowsActivity extends BaseActivity
             Toast.makeText(getApplicationContext(), jse.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
+
+    //Method refreshes the Activity in order to fetch 20 new randomised series
+    public void refreshOnClick(View view){
+        try{
+            finish();
+            startActivity(getIntent());
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
 }

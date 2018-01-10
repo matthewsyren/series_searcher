@@ -30,18 +30,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/app_bar_text_size"
-                android:background="@color/colorWhite"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/colorWhite"
                 android:textColorHint="@color/colorGray"
                 android:layout_marginLeft="@dimen/app_bar_margin"
                 android:layout_marginRight="@dimen/app_bar_margin"
                 android:paddingLeft="@dimen/app_bar_search_padding"
                 android:imeOptions="actionSearch"
                 android:hint="@string/label_search"
-                android:maxLines="1"/>
+                android:maxLines="1"
+                android:drawableLeft="@drawable/ic_search_black_24dp"
+                android:drawableTint="@color/colorWhite"/>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
-
     <include layout="@layout/content_search" />
-
 </android.support.design.widget.CoordinatorLayout>
