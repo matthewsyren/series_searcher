@@ -71,14 +71,22 @@
                 android:layout_below="@id/button_login"
                 android:layout_marginTop="@dimen/fab_margin"
                 android:layout_centerHorizontal="true"
-                android:text="@string/createAccount"
+                android:text="@string/create_account"
                 android:onClick="createAccountOnClick"
                 android:background="@drawable/button"
                 android:textColor="@color/colorPrimary"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/forgot_password"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/label_forgot_password_text_size"
+                android:onClick="forgotPasswordOnClick"
+                android:layout_below="@id/button_create_account_link"/>
         </RelativeLayout>
     </LinearLayout>
-
-
 
     <ProgressBar
         android:id="@+id/progress_bar"

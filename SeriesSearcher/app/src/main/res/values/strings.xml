@@ -42,7 +42,8 @@
     <string name="prompt_password">Password</string>
     <string name="prompt_confirm_password">Confirm password</string>
     <string name="login">Login</string>
-    <string name="createAccount">Create Account</string>
+    <string name="create_account">Create Account</string>
+    <string name="forgot_password">Forgot Password</string>
     <string name="title_activity_search_by_episode">SearchByEpisodeActivity</string>
 
     <!-- SearchByEpisodeActivity -->

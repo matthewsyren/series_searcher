@@ -57,7 +57,7 @@
         android:layout_below="@id/text_input_layout_confirm_password"
         android:layout_marginTop="@dimen/fab_margin"
         android:layout_centerHorizontal="true"
-        android:text="@string/createAccount"
+        android:text="@string/create_account"
         android:onClick="createAccountOnClick"
         android:background="@drawable/button"/>
 
