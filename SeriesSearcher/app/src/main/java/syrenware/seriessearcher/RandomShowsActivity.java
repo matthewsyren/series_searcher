@@ -46,7 +46,7 @@ public class RandomShowsActivity extends BaseActivity
 
     //Method fetches the JSON from the APIConnection class, and parses it
     @Override
-    public void getJsonResponse(String response) {
+    public void parseJsonResponse(String response) {
         try{
             if(response != null){
                 //JSONArray stores the JSON returned from the TVMaze API
@@ -88,7 +88,8 @@ public class RandomShowsActivity extends BaseActivity
                         }
 
                         //Instantiates a Show object and adds it to the list_view_random_shows ListView
-                        Show show = new Show(id, name, rating, status, runtime, imageUrl);
+                        Show show = new Show(id, name, rating, status, imageUrl);
+                        show.setShowRuntime(runtime);
                         lstShows.add(show);
                         showCount++;
                     }
@@ -99,7 +100,7 @@ public class RandomShowsActivity extends BaseActivity
                 }
 
                 //Sets the custom adapter for the ListView to display the Show data
-                ListViewAdapter adapter = new ListViewAdapter(this, lstShows, false);
+                SearchListViewAdapter adapter = new SearchListViewAdapter(this, lstShows, false);
                 ListView listView = findViewById(R.id.list_view_random_shows);
                 listView.setAdapter(adapter);
 

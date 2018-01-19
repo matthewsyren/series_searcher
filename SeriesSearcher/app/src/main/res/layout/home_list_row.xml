@@ -48,7 +48,7 @@
             android:layout_toLeftOf="@+id/linear_layout_button"/>
 
         <TextView
-            android:id="@+id/show_latest_episode"
+            android:id="@+id/show_status"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/show_rating"
@@ -62,7 +62,7 @@
             android:id="@+id/show_next_episode_date"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/show_latest_episode"
+            android:layout_below="@id/show_status"
             android:textColor="#343434"
             android:textSize="12sp"
             android:layout_marginTop="1dip"

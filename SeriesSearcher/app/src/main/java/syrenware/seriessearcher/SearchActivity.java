@@ -17,7 +17,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class SearchActivity extends BaseActivity implements IAPIConnectionResponse {
-    APIConnection api = new APIConnection();
+    //Declarations
+    private APIConnection api = new APIConnection();
+    private ArrayList<Show> lstShows =  new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +84,7 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
 
     //Method parses the JSON returned from the API, and populates the list_view_search_results ListView with the data
     @Override
-    public void getJsonResponse(String response) {
+    public void parseJsonResponse(String response) {
         try{
             //JSONArray stores the JSON returned from the TVMaze API
             if(response != null){
@@ -121,13 +123,14 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
                         }
 
                         //Instantiates a Show object and adds it to the lstShows ArrayList
-                        Show show = new Show(id, name, rating, status, runtime, imageUrl);
+                        Show show = new Show(id, name, rating, status, imageUrl);
+                        show.setShowRuntime(runtime);
                         lstShows.add(show);
                     }
                 }
 
                 //Sets a custom adapter for the list_view_search_results ListView to display the search results
-                final ListViewAdapter adapter = new ListViewAdapter(this, lstShows, false);
+                final SearchListViewAdapter adapter = new SearchListViewAdapter(this, lstShows, false);
                 ListView listView = findViewById(R.id.list_view_search_results);
                 listView.setAdapter(adapter);
 

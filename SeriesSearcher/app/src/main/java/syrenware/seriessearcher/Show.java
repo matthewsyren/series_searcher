@@ -3,6 +3,12 @@ package syrenware.seriessearcher;
 import android.content.Context;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 /**
  * Created by matthew on 2017/01/28.
  * Class holds the details that are retrieved for the TV Shows
@@ -18,16 +24,16 @@ public class Show {
     private String showTitle;
     private String showRating;
     private String showStatus;
+    private String showNextEpisode;
     private String showRuntime;
 
     //Constructor
-    public Show(int id, String title, String rating, String status, String runtime, String imageUrl) {
-        showId = id;
-        showTitle = title;
-        showRating = rating;
-        showStatus = status;
-        showRuntime = runtime;
-        showImageUrl = imageUrl;
+    public Show(int showId, String showTitle, String showRating, String showStatus, String showImageUrl) {
+        this.showId = showId;
+        this.showTitle = showTitle;
+        this.showRating = showRating;
+        this.showStatus = showStatus;
+        this.showImageUrl = showImageUrl;
     }
 
     //Accessor Methods
@@ -47,12 +53,25 @@ public class Show {
         return showStatus;
     }
 
-    public String getShowRuntime() {
-        return showRuntime;
+    public String getShowNextEpisode() {
+        return showNextEpisode;
     }
 
     public String getShowImageUrl(){
         return showImageUrl;
+    }
+
+    public String getShowRuntime() {
+        return showRuntime;
+    }
+
+    //Mutator methods
+    public void setShowNextEpisode(String showNextEpisode) {
+        this.showNextEpisode = showNextEpisode;
+    }
+
+    public void setShowRuntime(String showRuntime) {
+        this.showRuntime = showRuntime;
     }
 
     //Method removes any HTML formatting from the summary field

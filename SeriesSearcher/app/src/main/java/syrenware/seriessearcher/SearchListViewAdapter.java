@@ -30,15 +30,15 @@ import java.util.ArrayList;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class ListViewAdapter extends ArrayAdapter {
+public class SearchListViewAdapter extends ArrayAdapter{
     //Declarations
     private ArrayList<Show> shows;
     private Context context;
     private boolean saveImages;
 
     //Constructor
-    public ListViewAdapter(Context context, ArrayList<Show> shows, boolean saveImages) {
-        super(context, R.layout.list_row,shows);
+    public SearchListViewAdapter(Context context, ArrayList<Show> shows, boolean saveImages) {
+        super(context, R.layout.home_list_row,shows);
         this.context = context;
         this.shows = shows;
         this.saveImages = saveImages;
@@ -47,16 +47,16 @@ public class ListViewAdapter extends ArrayAdapter {
     //Method populates the appropriate Views with the appropriate data (stored in the shows ArrayList)
     @Override
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
-        //Inflates the list_row view for the ListView
+        //Inflates the home_list_row view for the ListView
         LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-        convertView = inflater.inflate(R.layout.list_row, parent, false);
+        convertView = inflater.inflate(R.layout.search_list_row, parent, false);
 
         //Component assignments
         final ImageView image = convertView.findViewById(R.id.show_poster);
         final TextView title = convertView.findViewById(R.id.show_title);
         final TextView rating = convertView.findViewById(R.id.show_rating);
-        final TextView latestEpisode = convertView.findViewById((R.id.show_latest_episode));
-        final TextView nextEpisode = convertView.findViewById((R.id.show_next_episode_date));
+        final TextView status = convertView.findViewById((R.id.show_status));
+        final TextView runtime = convertView.findViewById((R.id.show_runtime));
         final ImageButton btnToggleShow = convertView.findViewById(R.id.button_toggle_show);
 
         //Fetches images from TVMaze API if the user has not activated Data Saving Mode
@@ -72,8 +72,8 @@ public class ListViewAdapter extends ArrayAdapter {
         Resources resources = context.getResources();
         title.setText(shows.get(position).getShowTitle());
         rating.setText(resources.getString(R.string.text_rating, shows.get(position).getShowRating()));
-        latestEpisode.setText(resources.getString(R.string.text_status, shows.get(position).getShowStatus()));
-        nextEpisode.setText(resources.getString(R.string.text_runtime, shows.get(position).getShowRuntime()));
+        status.setText(resources.getString(R.string.text_status, shows.get(position).getShowStatus()));
+        runtime.setText(resources.getString(R.string.text_runtime, shows.get(position).getShowRuntime()));
         final User user = new User(context);
         displayButtonText(user.getUserKey(), "" + shows.get(position).getShowId(), btnToggleShow);
 

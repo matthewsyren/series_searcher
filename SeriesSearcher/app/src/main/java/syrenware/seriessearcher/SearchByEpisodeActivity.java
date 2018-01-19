@@ -131,7 +131,7 @@ public class SearchByEpisodeActivity extends AppCompatActivity
 
     //Method parses the JSON returned from the TVMaze API and displays it
     @Override
-    public void getJsonResponse(String response) {
+    public void parseJsonResponse(String response) {
         try{
             //Assigns Views to variables
             TextView txtEpisodeName = findViewById(R.id.text_show_episode_name);

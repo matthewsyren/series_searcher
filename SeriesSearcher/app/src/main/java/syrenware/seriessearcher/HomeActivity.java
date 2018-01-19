@@ -24,6 +24,9 @@ import java.util.ArrayList;
 
 public class HomeActivity extends BaseActivity
                           implements IAPIConnectionResponse {
+    //Declarations
+    private ArrayList<Show> lstShows = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,13 +129,13 @@ public class HomeActivity extends BaseActivity
 
     //Method parses the JSON returned from the API and displays the information in the list_view_my_shows ListView
     @Override
-    public void getJsonResponse(String response) {
+    public void parseJsonResponse(String response) {
         try{
             //JSONArray stores the JSON returned from the TVMaze API
             if(response != null){
+                //Creates JSONArray from the response
                 response = "[\n" + response + "\n]";
                 JSONArray jsonArray = new JSONArray(response);
-                final ArrayList<Show> lstShows = new ArrayList<>();
 
                 //Loops through all Shows returned from the TVMaze API search result
                 for(int i = 0; i < jsonArray.length(); i++){
@@ -141,37 +144,67 @@ public class HomeActivity extends BaseActivity
 
                     //Assigns values to the JSONObject if the JSON returned from the API is not null
                     if(json != null){
-                        int id = json.getInt("id");
-                        String name = json.getString("name");
-                        String status = json.getString("status");
-                        String runtime = json.getString("runtime");
-                        String rating = json.getJSONObject("rating").getString("average");
-                        String imageUrl;
+                        String url = json.getString("url");
+                        if(url.contains("shows")){
+                            int id = json.getInt("id");
+                            String name = json.getString("name");
+                            String status = json.getString("status");
+                            String rating = json.getJSONObject("rating").getString("average");
+                            String imageUrl;
 
-                        //Gets the image URL for the current show if there is a URL provided, otherwise sets the URL to null
-                        if(!json.getString("image").equals("null")){
-                            imageUrl = json.getJSONObject("image").getString("medium");
-                        }
-                        else{
-                            imageUrl = null;
-                        }
+                            //Gets the image URL for the current show if there is a URL provided, otherwise sets the URL to null
+                            if(!json.getString("image").equals("null")){
+                                imageUrl = json.getJSONObject("image").getString("medium");
+                            }
+                            else{
+                                imageUrl = null;
+                            }
 
-                        //Ensures that the data returned in the JSON is valid
-                        if(rating.equalsIgnoreCase("null") || rating.length() == 0){
-                            rating = "N/A";
-                        }
-                        if(runtime.equalsIgnoreCase("null") || runtime.length() == 0){
-                            runtime = "N/A";
-                        }
+                            //Ensures that the data returned in the JSON is valid
+                            if(rating.equalsIgnoreCase("null") || rating.length() == 0){
+                                rating = "N/A";
+                            }
 
-                        //Instantiates a Show object and adds it to the lstShows ArrayList
-                        Show show = new Show(id, name, rating, status, runtime, imageUrl);
-                        lstShows.add(show);
+                            JSONObject links = json.getJSONObject("_links");
+                            if(links.has("nextepisode")){
+                                String nextEpisodeLink = links.getJSONObject("nextepisode").getString("href");
+
+                                //Fetches data from the TVMaze API using the link
+                                APIConnection api = new APIConnection();
+                                api.delegate = this;
+                                api.execute(nextEpisodeLink);
+                            }
+
+                            //Instantiates a Show object and adds it to the lstShows ArrayList
+                            Show show = new Show(id, name, rating, status, imageUrl);
+                            show.setShowNextEpisode("Next Episode: N/A");
+                            lstShows.add(show);
+                        }
+                        else if(url.contains("episodes")){
+                            String season = json.getString("season");
+                            String episode = json.getString("number");
+                            String airDate = json.getString("airdate");
+
+                            //Sets the next episode information
+                            if(airDate == null){
+                                airDate = "N/A";
+                            }
+                            else{
+                                airDate = airDate + " (S: " + season + " E: " + episode + ")";
+                            }
+
+                            //Sets the next episode date for the appropriate series
+                            for(int s = 0; s < lstShows.size(); s++){
+                                if(url.toLowerCase().contains(lstShows.get(s).getShowTitle().toLowerCase().replace(" ", "-"))){
+                                    lstShows.get(s).setShowNextEpisode(airDate);
+                                }
+                            }
+                        }
                     }
                 }
 
                 //Sets a custom adapter for the list_view_search_results ListView to display the search results
-                final ListViewAdapter adapter = new ListViewAdapter(this, lstShows, true);
+                final HomeListViewAdapter adapter = new HomeListViewAdapter(this, lstShows, true);
                 ListView listView = findViewById(R.id.list_view_my_shows);
                 listView.setAdapter(adapter);
 

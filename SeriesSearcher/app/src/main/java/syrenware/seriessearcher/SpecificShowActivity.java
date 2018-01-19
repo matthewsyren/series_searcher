@@ -92,7 +92,7 @@ public class SpecificShowActivity extends AppCompatActivity
 
     //Method parses the JSON returned from the API and displays the data
     @Override
-    public void getJsonResponse(String response) {
+    public void parseJsonResponse(String response) {
         try{
             //Assigns JSON data to variables if there is a valid JSON response
             if(response != null){
@@ -215,6 +215,7 @@ public class SpecificShowActivity extends AppCompatActivity
             summary = Show.formatSummary(this, summary);
             txtSummary.setText(resources.getString(R.string.text_summary, summary));
 
+            //Displays the image if the user hasn't enabled data saving mode
             if(!User.getDataSavingPreference(this)){
                 //Fetches image from the API
                 ImageView imgSpecificShow = findViewById(R.id.image_view_specific_show);

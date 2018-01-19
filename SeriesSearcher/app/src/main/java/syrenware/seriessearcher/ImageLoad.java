@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ class ImageLoad extends AsyncTask<Void, Void, Bitmap> {
     private Context context;
     private int showID;
     private boolean saveImages;
+    private Uri uri;
 
     //Constructor (accepts URL of image, the ImageView to display the image, and the position to store the image in (incrementer)
     public ImageLoad(String url, ImageView imageView, Context context, int showID, boolean saveImages) {
@@ -51,8 +53,8 @@ class ImageLoad extends AsyncTask<Void, Void, Bitmap> {
                     String name = files[i].getName();
                     if(fileName.equals(name)){
                         //Sets the content for the ImageView to the appropriate image
-                        Uri uri = Uri.parse(files[i].getAbsolutePath());
-                        imageView.setImageURI(uri);
+                        uri = Uri.parse(files[i].getAbsolutePath());
+
                         return null;
                     }
                 }
@@ -86,6 +88,9 @@ class ImageLoad extends AsyncTask<Void, Void, Bitmap> {
                 saveFile(result);
             }
             imageView.setImageBitmap(result);
+        }
+        else{
+            imageView.setImageURI(uri);
         }
     }
 
