@@ -26,6 +26,8 @@ public class HomeActivity extends BaseActivity
                           implements IAPIConnectionResponse {
     //Declarations
     private ArrayList<Show> lstShows = new ArrayList<>();
+    private HomeListViewAdapter adapter;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,11 @@ public class HomeActivity extends BaseActivity
 
         //Displays ProgressBar
         toggleProgressBar(View.VISIBLE);
+
+        //Sets a custom adapter for the list_view_search_results ListView to display the search results
+        listView = findViewById(R.id.list_view_my_shows);
+        adapter = new HomeListViewAdapter(this, lstShows);
+        listView.setAdapter(adapter);
 
         //Toggles the views visible based on whether the user has added shows to 'My Series'
         toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
@@ -66,7 +73,7 @@ public class HomeActivity extends BaseActivity
     //Method fetches all show keys (show ID's) associated with the user's key, and adds them to an ArrayList. The ArrayList is then passed to the getUserShowData method, which fetches the JSON data for each show from the TVMAze API
     public void getUserShowKeys(String userKey){
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
+        final DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
 
         //Adds Listeners for when the data is changed
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -81,6 +88,8 @@ public class HomeActivity extends BaseActivity
                         lstShows.add(showKey);
                     }
                 }
+                //Removes EventListener from the Firebase Database and fetches the data for the Shows
+                databaseReference.removeEventListener(this);
                 getUserShowData(lstShows);
             }
 
@@ -177,8 +186,9 @@ public class HomeActivity extends BaseActivity
 
                             //Instantiates a Show object and adds it to the lstShows ArrayList
                             Show show = new Show(id, name, rating, status, imageUrl);
-                            show.setShowNextEpisode("Next Episode: N/A");
+                            show.setShowNextEpisode("N/A");
                             lstShows.add(show);
+                            adapter.notifyDataSetChanged();
                         }
                         else if(url.contains("episodes")){
                             String season = json.getString("season");
@@ -197,16 +207,12 @@ public class HomeActivity extends BaseActivity
                             for(int s = 0; s < lstShows.size(); s++){
                                 if(url.toLowerCase().contains(lstShows.get(s).getShowTitle().toLowerCase().replace(" ", "-"))){
                                     lstShows.get(s).setShowNextEpisode(airDate);
+                                    adapter.notifyDataSetChanged();
                                 }
                             }
                         }
                     }
                 }
-
-                //Sets a custom adapter for the list_view_search_results ListView to display the search results
-                final HomeListViewAdapter adapter = new HomeListViewAdapter(this, lstShows, true);
-                ListView listView = findViewById(R.id.list_view_my_shows);
-                listView.setAdapter(adapter);
 
                 //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

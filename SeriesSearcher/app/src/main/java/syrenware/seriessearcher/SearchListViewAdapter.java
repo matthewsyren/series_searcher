@@ -82,7 +82,7 @@ public class SearchListViewAdapter extends ArrayAdapter{
             @Override
             public void onClick(View v) {
                 if(btnToggleShow.getTag().equals("Add")){
-                    btnToggleShow.setImageResource(R.drawable.ic_remove_black_24dp);
+                    btnToggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
                     btnToggleShow.setTag("Remove");
                     pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), true);
                 }
@@ -135,7 +135,7 @@ public class SearchListViewAdapter extends ArrayAdapter{
                 for(DataSnapshot snapshot : lstSnapshots){
                     String showKey = snapshot.getKey();
                     if(showKey.equals(showID) && (boolean) snapshot.getValue()){
-                        btnAddShow.setImageResource(R.drawable.ic_remove_black_24dp);
+                        btnAddShow.setImageResource(R.drawable.ic_delete_black_24dp);
                         btnAddShow.setTag("Remove");
                         break;
                     }

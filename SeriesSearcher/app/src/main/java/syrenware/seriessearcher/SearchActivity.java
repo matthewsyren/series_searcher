@@ -20,6 +20,8 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
     //Declarations
     private APIConnection api = new APIConnection();
     private ArrayList<Show> lstShows =  new ArrayList<>();
+    SearchListViewAdapter adapter;
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,11 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
 
         //Hides ProgressBar
         toggleProgressBar(View.INVISIBLE);
+
+        //Sets a custom adapter for the list_view_search_results ListView to display the search results
+        adapter = new SearchListViewAdapter(this, lstShows, false);
+        listView = findViewById(R.id.list_view_search_results);
+        listView.setAdapter(adapter);
 
         final EditText txtSearch = findViewById(R.id.text_search_series);
         txtSearch.addTextChangedListener(new TextWatcher() {
@@ -89,7 +96,6 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
             //JSONArray stores the JSON returned from the TVMaze API
             if(response != null){
                 JSONArray jsonArray = new JSONArray(response);
-                final ArrayList<Show> lstShows = new ArrayList<>();
 
                 //Loops through all Shows returned from the TVMaze API search result
                 for(int i = 0; i < jsonArray.length(); i++){
@@ -126,13 +132,9 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
                         Show show = new Show(id, name, rating, status, imageUrl);
                         show.setShowRuntime(runtime);
                         lstShows.add(show);
+                        adapter.notifyDataSetChanged();
                     }
                 }
-
-                //Sets a custom adapter for the list_view_search_results ListView to display the search results
-                final SearchListViewAdapter adapter = new SearchListViewAdapter(this, lstShows, false);
-                ListView listView = findViewById(R.id.list_view_search_results);
-                listView.setAdapter(adapter);
 
                 //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

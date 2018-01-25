@@ -15,6 +15,10 @@ import java.util.ArrayList;
 
 public class RandomShowsActivity extends BaseActivity
         implements IAPIConnectionResponse {
+    //Declarations
+    private ArrayList<Show> lstShows;
+    private SearchListViewAdapter adapter;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +26,12 @@ public class RandomShowsActivity extends BaseActivity
         setContentView(R.layout.activity_random_shows);
         super.onCreateDrawer();
         super.setSelectedNavItem(R.id.nav_random_shows);
+
+        //Sets up Adapter to ListView
+        lstShows = new ArrayList<>();
+        adapter = new SearchListViewAdapter(this, lstShows, false);
+        listView = findViewById(R.id.list_view_random_shows);
+        listView.setAdapter(adapter);
 
         //Displays the ProgressBar
         toggleProgressBar(View.VISIBLE);
@@ -51,7 +61,6 @@ public class RandomShowsActivity extends BaseActivity
             if(response != null){
                 //JSONArray stores the JSON returned from the TVMaze API
                 JSONArray jsonArray = new JSONArray(response);
-                final ArrayList<Show> lstShows = new ArrayList<>();
 
                 //Math.random() is used to choose a random starting point to fetch data from the API. This allows the app to fetch different shows each time it runs
                 int startingShow = (int) (Math.random() * 230 + 1);
@@ -91,6 +100,7 @@ public class RandomShowsActivity extends BaseActivity
                         Show show = new Show(id, name, rating, status, imageUrl);
                         show.setShowRuntime(runtime);
                         lstShows.add(show);
+                        adapter.notifyDataSetChanged();
                         showCount++;
                     }
                     else{
@@ -98,11 +108,6 @@ public class RandomShowsActivity extends BaseActivity
                         break;
                     }
                 }
-
-                //Sets the custom adapter for the ListView to display the Show data
-                SearchListViewAdapter adapter = new SearchListViewAdapter(this, lstShows, false);
-                ListView listView = findViewById(R.id.list_view_random_shows);
-                listView.setAdapter(adapter);
 
                 //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -34,14 +30,12 @@ public class HomeListViewAdapter extends ArrayAdapter{
     //Declarations
     private ArrayList<Show> shows;
     private Context context;
-    private boolean saveImages;
 
     //Constructor
-    public HomeListViewAdapter(Context context, ArrayList<Show> shows, boolean saveImages) {
+    public HomeListViewAdapter(Context context, ArrayList<Show> shows) {
         super(context, R.layout.home_list_row,shows);
         this.context = context;
         this.shows = shows;
-        this.saveImages = saveImages;
     }
 
     //Method populates the appropriate Views with the appropriate data (stored in the shows ArrayList)
@@ -63,7 +57,7 @@ public class HomeListViewAdapter extends ArrayAdapter{
         if(!User.getDataSavingPreference(context)){
             //Populates ImageView from URL if image hasn't been stored in the Show object yet. If the image has been stored, the ImageView is populated with the stored image from the Show object
             if(shows.get(position).getShowImageUrl() != null){
-                ImageLoad imageLoad = new ImageLoad(shows.get(position).getShowImageUrl(), image, context, shows.get(position).getShowId(), saveImages);
+                ImageLoad imageLoad = new ImageLoad(shows.get(position).getShowImageUrl(), image, context, shows.get(position).getShowId(), true);
                 imageLoad.execute();
             }
         }
@@ -75,78 +69,43 @@ public class HomeListViewAdapter extends ArrayAdapter{
         status.setText(resources.getString(R.string.text_status, shows.get(position).getShowStatus()));
         nextEpisode.setText(resources.getString(R.string.text_next_episode, shows.get(position).getShowNextEpisode()));
         final User user = new User(context);
-        displayButtonText(user.getUserKey(), "" + shows.get(position).getShowId(), btnToggleShow);
+
+        //Displays the remove button
+        btnToggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
+        btnToggleShow.setTag("Remove");
 
         //Sets onCLickListener for the buttons contained in each row of the ListView
         btnToggleShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(btnToggleShow.getTag().equals("Add")){
-                    btnToggleShow.setImageResource(R.drawable.ic_remove_black_24dp);
-                    btnToggleShow.setTag("Remove");
-                    pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), true);
-                }
-                else{
-                    AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-                    alertDialog.setTitle("Are you sure you want to remove " + shows.get(position).getShowTitle() + " from My Series?");
+                AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                alertDialog.setTitle("Are you sure you want to remove " + shows.get(position).getShowTitle() + " from My Series?");
 
-                    //Creates OnClickListener for the Dialog message
-                    DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
-                        @Override
-                        public void onClick(DialogInterface dialog, int button) {
-                            switch(button){
-                                //Removes the selected show from the My Series list
-                                case AlertDialog.BUTTON_POSITIVE:
-                                    btnToggleShow.setImageResource(R.drawable.ic_add_black_24dp);
-                                    btnToggleShow.setTag("Add");
-                                    if(saveImages) {
-                                        shows.remove(position);
-                                    }
-                                    pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), false);
-                                    break;
-                                case AlertDialog.BUTTON_NEGATIVE:
-                                    break;
-                            }
+                //Creates OnClickListener for the Dialog message
+                DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int button) {
+                        switch(button){
+                            //Removes the selected show from the My Series list
+                            case AlertDialog.BUTTON_POSITIVE:
+                                pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), false);
+                                shows.remove(position);
+                                notifyDataSetChanged();
+                                break;
+                            case AlertDialog.BUTTON_NEGATIVE:
+                                break;
                         }
-                    };
+                    }
+                };
 
-                    //Assigns button an OnClickListener for the AlertDialog and displays the AlertDialog
-                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES", dialogOnClickListener);
-                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO", dialogOnClickListener);
-                    alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.show();
-                }
+                //Assigns button an OnClickListener for the AlertDialog and displays the AlertDialog
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES", dialogOnClickListener);
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO", dialogOnClickListener);
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.show();
             }
         });
         return convertView;
-    }
-
-    //Method fetches all show keys (show ID's) associated with the user's key, and adds them to an ArrayList. The ArrayList is then passed to the getUserShowData method, which fetches the JSON data for each show from the TVMAze API
-    public void displayButtonText(String userKey, final String showID, final ImageButton btnAddShow){
-        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
-
-        //Adds Listeners for when the data is changed
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //Loops through all shows and sets the text of the Button to - if the user has added the show to 'My Series' already
-                Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
-                for(DataSnapshot snapshot : lstSnapshots){
-                    String showKey = snapshot.getKey();
-                    if(showKey.equals(showID) && (boolean) snapshot.getValue()){
-                        btnAddShow.setImageResource(R.drawable.ic_remove_black_24dp);
-                        btnAddShow.setTag("Remove");
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.i("FRB", "Error reading data");
-            }
-        });
     }
 
     //Method updates the shows that the user has added to 'My Series' in the Firebase database
