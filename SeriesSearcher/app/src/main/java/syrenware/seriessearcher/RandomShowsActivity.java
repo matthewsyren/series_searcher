@@ -29,7 +29,7 @@ public class RandomShowsActivity extends BaseActivity
 
         //Sets up Adapter to ListView
         lstShows = new ArrayList<>();
-        adapter = new SearchListViewAdapter(this, lstShows, false);
+        adapter = new SearchListViewAdapter(this, lstShows);
         listView = findViewById(R.id.list_view_random_shows);
         listView.setAdapter(adapter);
 

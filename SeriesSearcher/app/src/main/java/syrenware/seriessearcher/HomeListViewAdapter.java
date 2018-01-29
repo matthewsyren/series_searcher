@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -30,6 +31,7 @@ public class HomeListViewAdapter extends ArrayAdapter{
     //Declarations
     private ArrayList<Show> shows;
     private Context context;
+    private ViewHolder viewHolder;
 
     //Constructor
     public HomeListViewAdapter(Context context, ArrayList<Show> shows) {
@@ -41,41 +43,50 @@ public class HomeListViewAdapter extends ArrayAdapter{
     //Method populates the appropriate Views with the appropriate data (stored in the shows ArrayList)
     @Override
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
-        //Inflates the home_list_row view for the ListView
-        LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-        convertView = inflater.inflate(R.layout.home_list_row, parent, false);
+        if(convertView == null){
+            //Inflates the home_list_row View for the ListView
+            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+            convertView = inflater.inflate(R.layout.home_list_row, parent, false);
+            viewHolder = new ViewHolder();
 
-        //Component assignments
-        final ImageView image = convertView.findViewById(R.id.show_poster);
-        final TextView title = convertView.findViewById(R.id.show_title);
-        final TextView rating = convertView.findViewById(R.id.show_rating);
-        final TextView status = convertView.findViewById((R.id.show_status));
-        final TextView nextEpisode = convertView.findViewById((R.id.show_next_episode_date));
-        final ImageButton btnToggleShow = convertView.findViewById(R.id.button_toggle_show);
+            //Component assignments
+            viewHolder.poster = convertView.findViewById(R.id.image_show_poster);
+            viewHolder.title = convertView.findViewById(R.id.text_show_title);
+            viewHolder.rating = convertView.findViewById(R.id.text_show_rating);
+            viewHolder.status = convertView.findViewById((R.id.text_show_status));
+            viewHolder.nextEpisode = convertView.findViewById((R.id.text_show_next_episode_date));
+            viewHolder.toggleShow = convertView.findViewById(R.id.button_toggle_show);
+            convertView.setTag(viewHolder);
+        }
+        else{
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
 
         //Fetches images from TVMaze API if the user has not activated Data Saving Mode
         if(!User.getDataSavingPreference(context)){
             //Populates ImageView from URL if image hasn't been stored in the Show object yet. If the image has been stored, the ImageView is populated with the stored image from the Show object
             if(shows.get(position).getShowImageUrl() != null){
-                ImageLoad imageLoad = new ImageLoad(shows.get(position).getShowImageUrl(), image, context, shows.get(position).getShowId(), true);
-                imageLoad.execute();
+                Picasso.with(context).load(shows.get(position).getShowImageUrl()).into(viewHolder.poster);
+            }
+            else{
+                viewHolder.poster.setImageResource(R.mipmap.ic_launcher);
             }
         }
 
         //Displays the data in the appropriate Views
         Resources resources = context.getResources();
-        title.setText(shows.get(position).getShowTitle());
-        rating.setText(resources.getString(R.string.text_rating, shows.get(position).getShowRating()));
-        status.setText(resources.getString(R.string.text_status, shows.get(position).getShowStatus()));
-        nextEpisode.setText(resources.getString(R.string.text_next_episode, shows.get(position).getShowNextEpisode()));
+        viewHolder.title.setText(shows.get(position).getShowTitle());
+        viewHolder.rating.setText(resources.getString(R.string.text_rating, shows.get(position).getShowRating()));
+        viewHolder.status.setText(resources.getString(R.string.text_status, shows.get(position).getShowStatus()));
+        viewHolder.nextEpisode.setText(resources.getString(R.string.text_next_episode, shows.get(position).getShowNextEpisode()));
         final User user = new User(context);
 
         //Displays the remove button
-        btnToggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
-        btnToggleShow.setTag("Remove");
+        viewHolder.toggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
+        viewHolder.toggleShow.setTag("Remove");
 
         //Sets onCLickListener for the buttons contained in each row of the ListView
-        btnToggleShow.setOnClickListener(new View.OnClickListener() {
+        viewHolder.toggleShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog alertDialog = new AlertDialog.Builder(context).create();
@@ -88,6 +99,7 @@ public class HomeListViewAdapter extends ArrayAdapter{
                         switch(button){
                             //Removes the selected show from the My Series list
                             case AlertDialog.BUTTON_POSITIVE:
+                                //Updates FirebaseDatabase and UI
                                 pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), false);
                                 shows.remove(position);
                                 notifyDataSetChanged();
@@ -118,5 +130,16 @@ public class HomeListViewAdapter extends ArrayAdapter{
         //Generates the user's key and saves the value (the user's email address) to the Firebase database
         databaseReference.child(showID).setValue(showAdded);
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+    }
+
+    //ViewHolder class used to decrease the findViewById calls
+    static class ViewHolder{
+        //Component assignments
+        ImageView poster;
+        TextView title;
+        TextView rating;
+        TextView status;
+        TextView nextEpisode;
+        ImageButton toggleShow;
     }
 }

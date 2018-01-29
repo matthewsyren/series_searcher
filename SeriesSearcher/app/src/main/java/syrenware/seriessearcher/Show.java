@@ -12,8 +12,6 @@ import java.util.ArrayList;
 /**
  * Created by matthew on 2017/01/28.
  * Class holds the details that are retrieved for the TV Shows
- * showImage is stored in order to decrease data usage. When the user scrolls through a ListView that displays shows, the image would have to be fetched
- *           from the API multiple times, hence using lots of data. If it is stored in a variable, however, the data needs to be retrieved from the API only once.
  */
 
 @SuppressWarnings("WeakerAccess")
@@ -26,6 +24,7 @@ public class Show {
     private String showStatus;
     private String showNextEpisode;
     private String showRuntime;
+    private boolean showAdded;
 
     //Constructor
     public Show(int showId, String showTitle, String showRating, String showStatus, String showImageUrl) {
@@ -65,6 +64,10 @@ public class Show {
         return showRuntime;
     }
 
+    public boolean isShowAdded() {
+        return showAdded;
+    }
+
     //Mutator methods
     public void setShowNextEpisode(String showNextEpisode) {
         this.showNextEpisode = showNextEpisode;
@@ -72,6 +75,10 @@ public class Show {
 
     public void setShowRuntime(String showRuntime) {
         this.showRuntime = showRuntime;
+    }
+
+    public void setShowAdded(boolean showAdded) {
+        this.showAdded = showAdded;
     }
 
     //Method removes any HTML formatting from the summary field

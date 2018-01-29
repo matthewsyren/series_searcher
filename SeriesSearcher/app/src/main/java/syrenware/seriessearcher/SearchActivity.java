@@ -32,7 +32,7 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
         toggleProgressBar(View.INVISIBLE);
 
         //Sets a custom adapter for the list_view_search_results ListView to display the search results
-        adapter = new SearchListViewAdapter(this, lstShows, false);
+        adapter = new SearchListViewAdapter(this, lstShows);
         listView = findViewById(R.id.list_view_search_results);
         listView.setAdapter(adapter);
 

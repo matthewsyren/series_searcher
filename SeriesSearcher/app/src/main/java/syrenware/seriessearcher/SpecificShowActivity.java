@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -219,10 +222,7 @@ public class SpecificShowActivity extends AppCompatActivity
             if(!User.getDataSavingPreference(this)){
                 //Fetches image from the API
                 ImageView imgSpecificShow = findViewById(R.id.image_view_specific_show);
-                String showNumber = getIntent().getExtras().getString("showNumber");
-
-                ImageLoad image = new ImageLoad(imageUrl, imgSpecificShow, getApplicationContext(), Integer.parseInt(showNumber), false);
-                image.execute();
+                Picasso.with(this).load(imageUrl).into(imgSpecificShow);
             }
 
             //Fetches data about the show's previous and next episodes (which are accessed using different links)

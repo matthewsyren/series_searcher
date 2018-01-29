@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -34,59 +35,79 @@ public class SearchListViewAdapter extends ArrayAdapter{
     //Declarations
     private ArrayList<Show> shows;
     private Context context;
-    private boolean saveImages;
+    ViewHolder viewHolder;
 
     //Constructor
-    public SearchListViewAdapter(Context context, ArrayList<Show> shows, boolean saveImages) {
+    public SearchListViewAdapter(Context context, ArrayList<Show> shows) {
         super(context, R.layout.home_list_row,shows);
         this.context = context;
         this.shows = shows;
-        this.saveImages = saveImages;
     }
 
     //Method populates the appropriate Views with the appropriate data (stored in the shows ArrayList)
     @Override
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
-        //Inflates the home_list_row view for the ListView
-        LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-        convertView = inflater.inflate(R.layout.search_list_row, parent, false);
+        if(convertView == null){
+            //Inflates the search_list_row view for the ListView
+            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+            convertView = inflater.inflate(R.layout.search_list_row, parent, false);
+            viewHolder = new ViewHolder();
 
-        //Component assignments
-        final ImageView image = convertView.findViewById(R.id.show_poster);
-        final TextView title = convertView.findViewById(R.id.show_title);
-        final TextView rating = convertView.findViewById(R.id.show_rating);
-        final TextView status = convertView.findViewById((R.id.show_status));
-        final TextView runtime = convertView.findViewById((R.id.show_runtime));
-        final ImageButton btnToggleShow = convertView.findViewById(R.id.button_toggle_show);
+            //Component assignments
+            viewHolder.poster = convertView.findViewById(R.id.image_show_poster);
+            viewHolder.title = convertView.findViewById(R.id.text_show_title);
+            viewHolder.rating = convertView.findViewById(R.id.text_show_rating);
+            viewHolder.status = convertView.findViewById((R.id.text_show_status));
+            viewHolder.runtime = convertView.findViewById((R.id.text_show_runtime));
+            viewHolder.toggleShow = convertView.findViewById(R.id.button_toggle_show);
+            convertView.setTag(viewHolder);
+        }
+        else{
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
 
         //Fetches images from TVMaze API if the user has not activated Data Saving Mode
         if(!User.getDataSavingPreference(context)){
             //Populates ImageView from URL if image hasn't been stored in the Show object yet. If the image has been stored, the ImageView is populated with the stored image from the Show object
             if(shows.get(position).getShowImageUrl() != null){
-                ImageLoad imageLoad = new ImageLoad(shows.get(position).getShowImageUrl(), image, context, shows.get(position).getShowId(), saveImages);
-                imageLoad.execute();
+                Picasso.with(context).load(shows.get(position).getShowImageUrl()).into(viewHolder.poster);
+            }
+            else{
+                viewHolder.poster.setImageResource(R.mipmap.ic_launcher);
             }
         }
 
         //Displays the data in the appropriate Views
         Resources resources = context.getResources();
-        title.setText(shows.get(position).getShowTitle());
-        rating.setText(resources.getString(R.string.text_rating, shows.get(position).getShowRating()));
-        status.setText(resources.getString(R.string.text_status, shows.get(position).getShowStatus()));
-        runtime.setText(resources.getString(R.string.text_runtime, shows.get(position).getShowRuntime()));
+        viewHolder.title.setText(shows.get(position).getShowTitle());
+        viewHolder.rating.setText(resources.getString(R.string.text_rating, shows.get(position).getShowRating()));
+        viewHolder.status.setText(resources.getString(R.string.text_status, shows.get(position).getShowStatus()));
+        viewHolder.runtime.setText(resources.getString(R.string.text_runtime, shows.get(position).getShowRuntime()));
         final User user = new User(context);
-        displayButtonText(user.getUserKey(), "" + shows.get(position).getShowId(), btnToggleShow);
+        checkIfShowIsAdded(user.getUserKey(), "" + shows.get(position).getShowId(),position);
+
+        //Displays appropriate image for the ImageButton
+        if(shows.get(position).isShowAdded()){
+            viewHolder.toggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
+        }
+        else{
+            viewHolder.toggleShow.setImageResource(R.drawable.ic_add_black_24dp);
+        }
 
         //Sets onCLickListener for the buttons contained in each row of the ListView
-        btnToggleShow.setOnClickListener(new View.OnClickListener() {
+        viewHolder.toggleShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(btnToggleShow.getTag().equals("Add")){
-                    btnToggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
-                    btnToggleShow.setTag("Remove");
+                //Adds the Show to My Series if the Show isn't already there, or prompts the user to confirm the removal of the Show from My Series if the Show is already there
+                if(!shows.get(position).isShowAdded()){
+                    //Adds Show to My Series
+                    viewHolder.toggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
+                    shows.get(position).setShowAdded(true);
                     pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), true);
+                    notifyDataSetChanged();
                 }
                 else{
+                    //Prompts the user to confirm the removal of the Show from My Series
                     AlertDialog alertDialog = new AlertDialog.Builder(context).create();
                     alertDialog.setTitle("Are you sure you want to remove " + shows.get(position).getShowTitle() + " from My Series?");
 
@@ -97,12 +118,11 @@ public class SearchListViewAdapter extends ArrayAdapter{
                             switch(button){
                                 //Removes the selected show from the My Series list
                                 case AlertDialog.BUTTON_POSITIVE:
-                                    btnToggleShow.setImageResource(R.drawable.ic_add_black_24dp);
-                                    btnToggleShow.setTag("Add");
-                                    if(saveImages) {
-                                        shows.remove(position);
-                                    }
+                                    //Updates the FirebaseDatabase and the UI
                                     pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), false);
+                                    shows.get(position).setShowAdded(false);
+                                    viewHolder.toggleShow.setImageResource(R.drawable.ic_add_black_24dp);
+                                    notifyDataSetChanged();
                                     break;
                                 case AlertDialog.BUTTON_NEGATIVE:
                                     break;
@@ -121,10 +141,10 @@ public class SearchListViewAdapter extends ArrayAdapter{
         return convertView;
     }
 
-    //Method fetches all show keys (show ID's) associated with the user's key, and adds them to an ArrayList. The ArrayList is then passed to the getUserShowData method, which fetches the JSON data for each show from the TVMAze API
-    public void displayButtonText(String userKey, final String showID, final ImageButton btnAddShow){
+    //Method loops through all Shows that the user has added to My Series, and sets showAdded to true if the Show that is passed into the method has been added to My Series
+    public void checkIfShowIsAdded(String userKey, final String showID, final int position){
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
+        final DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
 
         //Adds Listeners for when the data is changed
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -135,11 +155,14 @@ public class SearchListViewAdapter extends ArrayAdapter{
                 for(DataSnapshot snapshot : lstSnapshots){
                     String showKey = snapshot.getKey();
                     if(showKey.equals(showID) && (boolean) snapshot.getValue()){
-                        btnAddShow.setImageResource(R.drawable.ic_delete_black_24dp);
-                        btnAddShow.setTag("Remove");
+                        //Sets showAdded to true so the appropriate image in the ImageButton will be displayed
+                        shows.get(position).setShowAdded(true);
                         break;
                     }
                 }
+
+                //Removes DatabaseListener
+                databaseReference.removeEventListener(this);
             }
 
             @Override
@@ -159,5 +182,16 @@ public class SearchListViewAdapter extends ArrayAdapter{
         //Generates the user's key and saves the value (the user's email address) to the Firebase database
         databaseReference.child(showID).setValue(showAdded);
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+    }
+
+    //ViewHolder class used to decrease the findViewById calls
+    static class ViewHolder{
+        //Component assignments
+        ImageView poster;
+        TextView title;
+        TextView rating;
+        TextView status;
+        TextView runtime;
+        ImageButton toggleShow;
     }
 }
