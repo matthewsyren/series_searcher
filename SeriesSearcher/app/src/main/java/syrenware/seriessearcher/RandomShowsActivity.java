@@ -19,6 +19,8 @@ public class RandomShowsActivity extends BaseActivity
     private ArrayList<Show> lstShows;
     private SearchListViewAdapter adapter;
     private ListView listView;
+    private int page;
+    private int startingShow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +38,14 @@ public class RandomShowsActivity extends BaseActivity
         //Displays the ProgressBar
         toggleProgressBar(View.VISIBLE);
 
-        //Fetches JSON from API (the Math.random() method chooses a random page from the API to fetch)
-        int page = (int) (Math.random() * 100 + 1);
+        //Fetches JSON from API (If a page on the API has already been determined, then it is fetched from the Bundle, otherwise the Math.random() method chooses a random page from the API to fetch)
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null && bundle.getInt("apiPage") != -1){
+            page = bundle.getInt("apiPage");
+        }
+        else{
+            page = (int) (Math.random() * 100 + 1);
+        }
         APIConnection api = new APIConnection();
         api.delegate = this;
         api.execute("http://api.tvmaze.com/shows?page=" + page);
@@ -62,8 +70,14 @@ public class RandomShowsActivity extends BaseActivity
                 //JSONArray stores the JSON returned from the TVMaze API
                 JSONArray jsonArray = new JSONArray(response);
 
-                //Math.random() is used to choose a random starting point to fetch data from the API. This allows the app to fetch different shows each time it runs
-                int startingShow = (int) (Math.random() * 230 + 1);
+                //Fetches previous list of Shows from the Bundle if a starting show has already been determined, otherwise Math.random() is used to choose a random starting point to fetch data from the API. This allows the app to fetch different shows each time it runs
+                Bundle bundle = getIntent().getExtras();
+                if(bundle != null && bundle.getInt("apiStartingShow") != -1){
+                    startingShow = bundle.getInt("apiStartingShow");
+                }
+                else{
+                    startingShow = (int) (Math.random() * 230 + 1);
+                }
                 int showCount = 0;
 
                 //Loops through the 20 randomly chosen shows returned from the TVMaze API
@@ -115,6 +129,8 @@ public class RandomShowsActivity extends BaseActivity
                         Intent intent = new Intent(RandomShowsActivity.this, SpecificShowActivity.class);
                         intent.putExtra("showNumber", "" + lstShows.get(pos).getShowId());
                         intent.putExtra("previousActivity", "RandomShowsActivity");
+                        intent.putExtra("apiPage", page);
+                        intent.putExtra("apiStartingShow", startingShow);
                         startActivity(intent);
                     }
                 });
@@ -135,7 +151,7 @@ public class RandomShowsActivity extends BaseActivity
     public void refreshOnClick(View view){
         try{
             finish();
-            startActivity(getIntent());
+            startActivity(new Intent(this, RandomShowsActivity.class));
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();

@@ -45,6 +45,7 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //Performs a search using the text the user has entered
                 searchShows();
             }
 
@@ -96,6 +97,8 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
             //JSONArray stores the JSON returned from the TVMaze API
             if(response != null){
                 JSONArray jsonArray = new JSONArray(response);
+                lstShows.clear();
+                adapter.notifyDataSetChanged();
 
                 //Loops through all Shows returned from the TVMaze API search result
                 for(int i = 0; i < jsonArray.length(); i++){

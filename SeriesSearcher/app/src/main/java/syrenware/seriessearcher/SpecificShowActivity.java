@@ -2,6 +2,7 @@ package syrenware.seriessearcher;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -47,7 +48,11 @@ public class SpecificShowActivity extends AppCompatActivity
                         intent = new Intent(SpecificShowActivity.this, HomeActivity.class);
                         break;
                     case "RandomShowsActivity":
+                        int page = bundle.getInt("apiPage", -1);
+                        int startingShow = bundle.getInt("apiStartingShow", -1);
                         intent = new Intent(SpecificShowActivity.this, RandomShowsActivity.class);
+                        intent.putExtra("apiPage", page);
+                        intent.putExtra("apiStartingShow", startingShow);
                         break;
                     case "SearchActivity":
                         intent = new Intent(SpecificShowActivity.this, SearchActivity.class);
@@ -110,7 +115,7 @@ public class SpecificShowActivity extends AppCompatActivity
                     String season = json.getString("season");
                     String episode = json.getString("number");
                     if(txtLatestEpisode.getText().toString().length() == 0) {
-                        txtLatestEpisode.setText("Latest Episode: Season: " + season + " Episode: " + episode);
+                        txtLatestEpisode.setText(getResources().getString(R.string.text_latest_episode,"Season " + season + ", Episode " + episode));
                     }
                     else{
                         String airDate = json.getString("airdate");
@@ -121,7 +126,7 @@ public class SpecificShowActivity extends AppCompatActivity
                             airDate = "(" + airDate + ")";
                         }
                         TextView txtNextEpisode = findViewById(R.id.text_show_next_episode);
-                        txtNextEpisode.setText("Next Episode: Season: " + season + " Episode: " + episode + " " + airDate);
+                        txtNextEpisode.setText(getResources().getString(R.string.text_next_episode,"Season " + season + ", Episode " + episode + " " + airDate));
 
                         //Hides ProgressBar
                         toggleProgressBar(View.INVISIBLE);
@@ -206,10 +211,11 @@ public class SpecificShowActivity extends AppCompatActivity
             txtRuntime.setText(resources.getString(R.string.text_runtime, runtime));
             txtRating.setText(resources.getString(R.string.text_rating, rating));
 
+            //Displays the genres separated by a comma
             if(arrGenres != null){
                 txtGenres.setText(resources.getString(R.string.text_genres, arrGenres.get(0)));
                 for(int i = 1; i < arrGenres.length(); i++){
-                    txtGenres.setText(txtGenres.getText() + ", " + arrGenres.get(i).toString());
+                    txtGenres.setText(resources.getString(R.string.text_genres_sections, txtGenres.getText(), arrGenres.get(i).toString()));
                 }
             }
             else{
@@ -222,7 +228,13 @@ public class SpecificShowActivity extends AppCompatActivity
             if(!User.getDataSavingPreference(this)){
                 //Fetches image from the API
                 ImageView imgSpecificShow = findViewById(R.id.image_view_specific_show);
-                Picasso.with(this).load(imageUrl).into(imgSpecificShow);
+                if(imageUrl != null){
+                    Picasso.with(this).load(imageUrl).into(imgSpecificShow);
+                    imgSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorImageBackground));
+                }
+                else{
+                    imgSpecificShow.setImageResource(R.color.colorGray);
+                }
             }
 
             //Fetches data about the show's previous and next episodes (which are accessed using different links)
