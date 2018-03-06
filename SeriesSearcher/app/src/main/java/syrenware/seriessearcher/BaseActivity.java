@@ -20,6 +20,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -29,9 +34,7 @@ import java.util.List;
  * Class provides a base for the NavigationDrawer that is shared amongst the activities
  */
 
-public class BaseActivity extends Activity
-        implements NavigationView.OnNavigationItemSelectedListener {
-
+public class BaseActivity extends Activity implements NavigationView.OnNavigationItemSelectedListener {
     //Declarations
     private NavigationView navigationView;
 
@@ -252,7 +255,14 @@ public class BaseActivity extends Activity
             editor.apply();
 
             //Takes the user back to the LoginActivity
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
+            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+            googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                }
+            });
         }
 
         //Closes NavigationDrawer

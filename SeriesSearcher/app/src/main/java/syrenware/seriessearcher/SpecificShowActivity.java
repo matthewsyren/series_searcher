@@ -17,9 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SpecificShowActivity extends AppCompatActivity
-                                  implements IAPIConnectionResponse{
-
+public class SpecificShowActivity extends AppCompatActivity implements IAPIConnectionResponse{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try{

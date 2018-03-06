@@ -22,8 +22,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends BaseActivity
-                          implements IAPIConnectionResponse {
+public class HomeActivity extends BaseActivity implements IAPIConnectionResponse {
     //Declarations
     private ArrayList<Show> lstShows = new ArrayList<>();
     private HomeListViewAdapter adapter;
@@ -177,7 +176,6 @@ public class HomeActivity extends BaseActivity
                             JSONObject links = json.getJSONObject("_links");
                             if(links.has("nextepisode")){
                                 String nextEpisodeLink = links.getJSONObject("nextepisode").getString("href");
-
                                 //Fetches data from the TVMaze API using the link
                                 APIConnection api = new APIConnection();
                                 api.delegate = this;
@@ -205,7 +203,10 @@ public class HomeActivity extends BaseActivity
 
                             //Sets the next episode date for the appropriate series
                             for(int s = 0; s < lstShows.size(); s++){
-                                if(url.toLowerCase().contains(lstShows.get(s).getShowTitle().toLowerCase().replace(" ", "-"))){
+                                String seriesName = lstShows.get(s).getShowTitle().toLowerCase();
+                                seriesName = seriesName.replaceAll("[^a-z A-Z]", "");
+                                seriesName = seriesName.replaceAll(" ", "-");
+                                if(url.toLowerCase().contains(seriesName)){
                                     lstShows.get(s).setShowNextEpisode(airDate);
                                     adapter.notifyDataSetChanged();
                                 }

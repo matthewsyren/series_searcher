@@ -15,16 +15,28 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity {
+    //Declarations
     private FirebaseAuth firebaseAuth;
+    private final int GOOGLE_SIGN_IN_KEY = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +54,62 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                 startActivity(intent);
             }
+
+            //Sets Listener for the Google Sign in Button
+            SignInButton buttonSignIn = findViewById(R.id.button_google_sign_in);
+            buttonSignIn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v)
+                {
+                    //Displays the Progress Bar and begins the process to sign in via a Google account
+                    toggleProgressBarVisibility(View.VISIBLE);
+                    signInWithGoogleOnClick();
+                }
+            });
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method signs the user in with their Google account
+    public void signInWithGoogleOnClick(){
+        try{
+            //Attempts to sign the user in using their Google account
+            GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
+            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+            Intent intent = googleSignInClient.getSignInIntent();
+            startActivityForResult(intent, GOOGLE_SIGN_IN_KEY);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //Signs the user in once they have chosen their Google account
+        if (requestCode == GOOGLE_SIGN_IN_KEY) {
+            try {
+                //Prepares the details required to sign in
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                final GoogleSignInAccount account = task.getResult(ApiException.class);
+                AuthCredential authCredential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+
+                //Signs the user in
+                firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        //Finishes signing the user in
+                        final User user = new User(account.getEmail(), "");
+                        user.setUserKey(getApplicationContext());
+                    }
+                });
+            }
+            catch (ApiException e) {
+                recreate();
+            }
         }
     }
 
@@ -53,6 +118,13 @@ public class LoginActivity extends AppCompatActivity {
         try{
             ProgressBar progressBar = findViewById(R.id.progress_bar);
             progressBar.setVisibility(visibility);
+            RelativeLayout relativeLayout = findViewById(R.id.layout_login);
+            if(visibility == View.VISIBLE){
+                relativeLayout.setVisibility(View.INVISIBLE);
+            }
+            else{
+                relativeLayout.setVisibility(View.VISIBLE);
+            }
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -72,47 +144,37 @@ public class LoginActivity extends AppCompatActivity {
 
             String email = txtEmail.getText().toString();
             String password = txtPassword.getText().toString();
-            final User user = new User(email, password);
-            final LoginActivity loginActivity = this;
 
-            //Displays ProgressBar
-            toggleProgressBarVisibility(View.VISIBLE);
+            if(email.length() == 0){
+                Toast.makeText(getApplicationContext(), "Please enter your email address or sign in via Google", Toast.LENGTH_LONG).show();
+            }
+            else if(password.length() == 0){
+                Toast.makeText(getApplicationContext(), "Please enter your password", Toast.LENGTH_LONG).show();
+            }
+            else{
+                final User user = new User(email, password);
+                final LoginActivity loginActivity = this;
 
-            //Tries to sign the user in using the Firebase authentication database
-            firebaseAuth.signInWithEmailAndPassword(user.getUserEmailAddress(), user.getUserPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    Log.d("TAG", "signInWithEmail:onComplete:" + task.isSuccessful());
-                    if(task.isSuccessful()){
-                        //Fetches the user's key from Firebase and then calls the writeToSharedPreferences method once the key is fetched
-                        user.setUserKey(loginActivity);
+                //Displays ProgressBar
+                toggleProgressBarVisibility(View.VISIBLE);
+
+                //Tries to sign the user in using the Firebase authentication database
+                firebaseAuth.signInWithEmailAndPassword(user.getUserEmailAddress(), user.getUserPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d("TAG", "signInWithEmail:onComplete:" + task.isSuccessful());
+                        if(task.isSuccessful()){
+                            //Fetches the user's key from Firebase and then calls the writeToSharedPreferences method once the key is fetched
+                            user.setUserKey(loginActivity);
+                        }
+                        else{
+                            Log.w("TAG", "signInWithEmail", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            toggleProgressBarVisibility(View.INVISIBLE);
+                        }
                     }
-                    else{
-                        Log.w("TAG", "signInWithEmail", task.getException());
-                        Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                        toggleProgressBarVisibility(View.INVISIBLE);
-                    }
-                }
-            });
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    //Method writes the user's data to SharedPreferences and then takes the user to the HomeActivity
-    public void writeDataToSharedPreferences(String email, String key){
-        try{
-            //Saves the user's data in SharedPreferences
-            SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("userEmail", email);
-            editor.putString("userKey", key);
-            editor.apply();
-
-            //Takes the user to the HomeActivity
-            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-            startActivity(intent);
+                });
+            }
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();

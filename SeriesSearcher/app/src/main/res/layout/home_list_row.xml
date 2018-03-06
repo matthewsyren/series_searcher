@@ -12,9 +12,8 @@
         <LinearLayout android:id="@+id/thumbnail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="3dip"
+            android:padding="2dip"
             android:layout_alignParentLeft="true"
-            android:layout_marginRight="5dip"
             android:layout_centerInParent="true">
 
             <ImageView

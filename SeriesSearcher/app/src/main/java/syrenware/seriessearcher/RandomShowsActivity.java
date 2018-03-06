@@ -2,25 +2,42 @@ package syrenware.seriessearcher;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class RandomShowsActivity extends BaseActivity
-        implements IAPIConnectionResponse {
+public class RandomShowsActivity extends BaseActivity implements IAPIConnectionResponse {
     //Declarations
     private ArrayList<Show> lstShows;
     private SearchListViewAdapter adapter;
     private ListView listView;
     private int page;
     private int startingShow;
+
+    //Setter method
+    public void setLstShows(ArrayList<Show> lstShows){
+        this.lstShows = lstShows;
+
+        //Updates the Adapter
+        adapter.notifyDataSetChanged();
+
+        //Hides ProgressBar
+        toggleProgressBar(View.INVISIBLE);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +61,7 @@ public class RandomShowsActivity extends BaseActivity
             page = bundle.getInt("apiPage");
         }
         else{
-            page = (int) (Math.random() * 100 + 1);
+            page = (int) (Math.random() * 100);
         }
         APIConnection api = new APIConnection();
         api.delegate = this;
@@ -113,8 +130,8 @@ public class RandomShowsActivity extends BaseActivity
                         //Instantiates a Show object and adds it to the list_view_random_shows ListView
                         Show show = new Show(id, name, rating, status, imageUrl);
                         show.setShowRuntime(runtime);
+                        show.setShowAdded(null);
                         lstShows.add(show);
-                        adapter.notifyDataSetChanged();
                         showCount++;
                     }
                     else{
@@ -122,6 +139,8 @@ public class RandomShowsActivity extends BaseActivity
                         break;
                     }
                 }
+                //Determines which Shows have been added to My Series by the user
+                Show.checkIfShowIsAdded(new User(this).getUserKey(), lstShows, null, this);
 
                 //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -138,9 +157,6 @@ public class RandomShowsActivity extends BaseActivity
             else{
                 Toast.makeText(getApplicationContext(), "Error fetching data, please check your internet connection", Toast.LENGTH_LONG).show();
             }
-
-            //Hides ProgressBar
-            toggleProgressBar(View.INVISIBLE);
         }
         catch(Exception jse){
             Toast.makeText(getApplicationContext(), jse.getMessage(), Toast.LENGTH_LONG).show();

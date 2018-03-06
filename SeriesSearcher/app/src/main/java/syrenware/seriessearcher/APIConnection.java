@@ -14,7 +14,6 @@ import java.net.URL;
 
 @SuppressWarnings("WeakerAccess")
 public class APIConnection extends AsyncTask<String, Void, String> {
-
     //Declares an object of the IAPIConnectionResponse interface, which will be used to send the JSON back to the  thread
     public IAPIConnectionResponse delegate = null;
 

@@ -16,9 +16,7 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
-public class SearchByEpisodeActivity extends AppCompatActivity
-                                     implements IAPIConnectionResponse {
-
+public class SearchByEpisodeActivity extends AppCompatActivity implements IAPIConnectionResponse {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try{

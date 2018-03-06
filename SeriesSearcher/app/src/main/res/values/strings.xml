@@ -67,4 +67,6 @@
 
     <!-- ListViewRow -->
     <string name="text_add_show">+</string>
+
+    <string name="text_or_sign_in_with">Or sign in with</string>
 </resources>

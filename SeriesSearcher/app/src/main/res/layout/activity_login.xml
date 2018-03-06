@@ -16,7 +16,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="2">
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -25,7 +25,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.6">
+            android:layout_weight="0.6"
+            android:id="@+id/layout_login">
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/text_input_layout_email_address"
                 android:layout_width="match_parent"
@@ -77,6 +78,7 @@
                 android:textColor="@color/colorPrimary"/>
 
             <TextView
+                android:id="@+id/button_forgot_password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/forgot_password"
@@ -85,6 +87,23 @@
                 android:textSize="@dimen/label_forgot_password_text_size"
                 android:onClick="forgotPasswordOnClick"
                 android:layout_below="@id/button_create_account_link"/>
+
+            <TextView
+                android:id="@+id/text_or"
+                android:layout_below="@+id/button_forgot_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="@string/text_or_sign_in_with"
+                android:textSize="30sp"
+                android:textColor="@color/colorBlack"/>
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/button_google_sign_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text_or"
+                android:layout_centerHorizontal="true" />
         </RelativeLayout>
     </LinearLayout>
 

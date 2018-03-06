@@ -26,8 +26,9 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:27.0.1'
     compile 'com.android.support:design:27.0.1'
-    compile 'com.google.firebase:firebase-auth:11.0.0'
-    compile 'com.google.firebase:firebase-database:11.0.0'
+    compile 'com.google.firebase:firebase-auth:11.8.0'
+    compile 'com.google.firebase:firebase-database:11.8.0'
+    compile 'com.google.android.gms:play-services-auth:11.8.0'
     compile group:'com.squareup.picasso', name:'picasso', version:'2.5.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'

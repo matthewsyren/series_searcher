@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class CreateAccountActivity extends AppCompatActivity {
+    //Declarations
     private FirebaseAuth firebaseAuth;
 
     @Override
@@ -43,6 +45,13 @@ public class CreateAccountActivity extends AppCompatActivity {
         try{
             ProgressBar progressBar = findViewById(R.id.progress_bar);
             progressBar.setVisibility(visibility);
+            RelativeLayout relativeLayout = findViewById(R.id.layout_create_account);
+            if(visibility == View.VISIBLE){
+                relativeLayout.setVisibility(View.INVISIBLE);
+            }
+            else{
+                relativeLayout.setVisibility(View.VISIBLE);
+            }
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -60,68 +69,46 @@ public class CreateAccountActivity extends AppCompatActivity {
             String password = txtPassword.getText().toString();
             String confirmPassword = txtConfirmPassword.getText().toString();
 
-            //Displays ProgressBar
-            toggleProgressBar(View.VISIBLE);
-
-            //Creates an account if the user's passwords match and they have entered valid data
-            if(password.equals(confirmPassword)){
-                final User user = new User(email, password);
-                firebaseAuth.createUserWithEmailAndPassword(user.getUserEmailAddress(), user.getUserPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            //Registers the user in the Firebase authentication for this app
-                            pushUser(user.getUserEmailAddress());
-                        }
-                        else if(task.getException().toString().contains("FirebaseAuthUserCollisionException")){
-                            Toast.makeText(CreateAccountActivity.this, "This email address has already been used to create an account, please use another email address", Toast.LENGTH_LONG).show();
-                            toggleProgressBar(View.INVISIBLE);
-                        }
-                        else if(task.getException().toString().contains("FirebaseAuthWeakPasswordException")){
-                            Toast.makeText(CreateAccountActivity.this, "Please enter a stronger password (your password must have at least 6 characters)", Toast.LENGTH_LONG).show();
-                            toggleProgressBar(View.INVISIBLE);
-                        }
-                        else{
-                            Toast.makeText(CreateAccountActivity.this, "An error occurred while trying to create your account, please try again", Toast.LENGTH_LONG).show();
-                            toggleProgressBar(View.INVISIBLE);
-                        }
-                    }
-                });
+            if(email.length() == 0){
+                Toast.makeText(getApplicationContext(), "Please enter your email address", Toast.LENGTH_LONG).show();
+            }
+            else if(password.length() == 0){
+                Toast.makeText(getApplicationContext(), "Please enter your password", Toast.LENGTH_LONG).show();
             }
             else{
-                Toast.makeText(getApplicationContext(), "Please ensure that your passwords match", Toast.LENGTH_LONG).show();
-                toggleProgressBar(View.INVISIBLE);
+                //Displays ProgressBar
+                toggleProgressBar(View.VISIBLE);
+
+                //Creates an account if the user's passwords match and they have entered valid data
+                if(password.equals(confirmPassword)){
+                    final User user = new User(email, password);
+                    firebaseAuth.createUserWithEmailAndPassword(user.getUserEmailAddress(), user.getUserPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()){
+                                //Registers the user in the Firebase authentication for this app
+                                user.pushUser(getApplicationContext());
+                            }
+                            else if(task.getException().toString().contains("FirebaseAuthUserCollisionException")){
+                                Toast.makeText(CreateAccountActivity.this, "This email address has already been used to create an account, please use another email address", Toast.LENGTH_LONG).show();
+                                toggleProgressBar(View.INVISIBLE);
+                            }
+                            else if(task.getException().toString().contains("FirebaseAuthWeakPasswordException")){
+                                Toast.makeText(CreateAccountActivity.this, "Please enter a stronger password (your password must have at least 6 characters)", Toast.LENGTH_LONG).show();
+                                toggleProgressBar(View.INVISIBLE);
+                            }
+                            else{
+                                Toast.makeText(CreateAccountActivity.this, "An error occurred while trying to create your account, please try again", Toast.LENGTH_LONG).show();
+                                toggleProgressBar(View.INVISIBLE);
+                            }
+                        }
+                    });
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Please ensure that your passwords match", Toast.LENGTH_LONG).show();
+                    toggleProgressBar(View.INVISIBLE);
+                }
             }
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    //Method generates a unique key for the created user, and writes the key and its value (the user's email) to the 'Users' child in the Firebase database
-    public void pushUser(String emailAddress){
-        try{
-            //Establishes a connection to the Firebase database
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference databaseReference = database.getReference().child("Users");
-
-            //Generates the user's key and saves the value (the user's email address) to the Firebase database
-            String key =  databaseReference.push().getKey();
-            databaseReference.child(key).setValue(emailAddress);
-
-            //Saves the user's email and key to the device's SharedPreferences
-            SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("userEmail", emailAddress);
-            editor.putString("userKey", key);
-            editor.putBoolean("dataSavingMode", false);
-            editor.apply();
-
-            Toast.makeText(getApplicationContext(), "Account successfully created!", Toast.LENGTH_LONG).show();
-
-            //Takes the user to the next activity
-            Intent intent = new Intent(CreateAccountActivity.this, HomeActivity.class);
-            startActivity(intent);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();

@@ -4,12 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,8 +27,19 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
     //Declarations
     private APIConnection api = new APIConnection();
     private ArrayList<Show> lstShows =  new ArrayList<>();
-    SearchListViewAdapter adapter;
-    ListView listView;
+    private SearchListViewAdapter adapter;
+    private ListView listView;
+
+    //Setter method
+    public void setLstShows(ArrayList<Show> lstShows){
+        this.lstShows = lstShows;
+
+        //Updates the Adapter
+        adapter.notifyDataSetChanged();
+
+        //Hides ProgressBar
+        toggleProgressBar(View.INVISIBLE);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,16 +92,18 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
         try{
             //Fetches user's input
             EditText txtSearch = findViewById(R.id.text_search_series);
-            String show = txtSearch.getText().toString();
+            String searchText = txtSearch.getText().toString();
 
             //Displays ProgressBar
             toggleProgressBar(View.VISIBLE);
 
             //Connects to the TVMaze API using the specific URL for the selected show
             api.cancel(true);
+            lstShows.clear();
+            adapter.notifyDataSetChanged();
             api = new APIConnection();
             api.delegate = this;
-            api.execute("http://api.tvmaze.com/search/shows?q=" + show);
+            api.execute("http://api.tvmaze.com/search/shows?q=" + searchText);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -98,7 +118,6 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
             if(response != null){
                 JSONArray jsonArray = new JSONArray(response);
                 lstShows.clear();
-                adapter.notifyDataSetChanged();
 
                 //Loops through all Shows returned from the TVMaze API search result
                 for(int i = 0; i < jsonArray.length(); i++){
@@ -134,10 +153,12 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
                         //Instantiates a Show object and adds it to the lstShows ArrayList
                         Show show = new Show(id, name, rating, status, imageUrl);
                         show.setShowRuntime(runtime);
+                        show.setShowAdded(null);
                         lstShows.add(show);
-                        adapter.notifyDataSetChanged();
                     }
                 }
+                //Determines which Shows have been added to My Series by the user
+                Show.checkIfShowIsAdded(new User(this).getUserKey(), lstShows, this, null);
 
                 //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -152,9 +173,6 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
             else{
                 Toast.makeText(getApplicationContext(), "Error fetching data, please check your internet connection", Toast.LENGTH_LONG).show();
             }
-
-            //Hides ProgressBar
-            toggleProgressBar(View.INVISIBLE);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();

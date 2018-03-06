@@ -35,7 +35,7 @@ public class SearchListViewAdapter extends ArrayAdapter{
     //Declarations
     private ArrayList<Show> shows;
     private Context context;
-    ViewHolder viewHolder;
+    private ViewHolder viewHolder;
 
     //Constructor
     public SearchListViewAdapter(Context context, ArrayList<Show> shows) {
@@ -84,13 +84,12 @@ public class SearchListViewAdapter extends ArrayAdapter{
         viewHolder.status.setText(resources.getString(R.string.text_status, shows.get(position).getShowStatus()));
         viewHolder.runtime.setText(resources.getString(R.string.text_runtime, shows.get(position).getShowRuntime()));
         final User user = new User(context);
-        checkIfShowIsAdded(user.getUserKey(), "" + shows.get(position).getShowId(),position);
 
         //Displays appropriate image for the ImageButton
-        if(shows.get(position).isShowAdded()){
+        if(shows.get(position).isShowAdded() != null && shows.get(position).isShowAdded()){
             viewHolder.toggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
         }
-        else{
+        else if(shows.get(position).isShowAdded() != null){
             viewHolder.toggleShow.setImageResource(R.drawable.ic_add_black_24dp);
         }
 
@@ -139,37 +138,6 @@ public class SearchListViewAdapter extends ArrayAdapter{
             }
         });
         return convertView;
-    }
-
-    //Method loops through all Shows that the user has added to My Series, and sets showAdded to true if the Show that is passed into the method has been added to My Series
-    public void checkIfShowIsAdded(String userKey, final String showID, final int position){
-        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
-
-        //Adds Listeners for when the data is changed
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //Loops through all shows and sets the text of the Button to - if the user has added the show to 'My Series' already
-                Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
-                for(DataSnapshot snapshot : lstSnapshots){
-                    String showKey = snapshot.getKey();
-                    if(showKey.equals(showID) && (boolean) snapshot.getValue()){
-                        //Sets showAdded to true so the appropriate image in the ImageButton will be displayed
-                        shows.get(position).setShowAdded(true);
-                        break;
-                    }
-                }
-
-                //Removes DatabaseListener
-                databaseReference.removeEventListener(this);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.i("FRB", "Error reading data");
-            }
-        });
     }
 
     //Method updates the shows that the user has added to 'My Series' in the Firebase database

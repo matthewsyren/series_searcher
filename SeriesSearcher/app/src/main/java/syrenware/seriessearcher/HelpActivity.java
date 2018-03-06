@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 public class HelpActivity extends BaseActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try{
