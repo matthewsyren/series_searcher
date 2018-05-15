@@ -1,4 +1,4 @@
-package syrenware.seriessearcher;
+package com.matthewsyren.seriessearcher;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,29 +27,76 @@ public class HomeActivity extends BaseActivity implements IAPIConnectionResponse
     private ArrayList<Show> lstShows = new ArrayList<>();
     private HomeListViewAdapter adapter;
     private ListView listView;
+    private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        //Sets the NavigationDrawer for the Activity and sets the selected item in the NavigationDrawer to Home
+        //Sets the NavigationDrawer for the Activity
         super.onCreateDrawer();
 
-        //Displays ProgressBar
-        toggleProgressBar(View.VISIBLE);
+        //Restores data if possible
+        if(savedInstanceState != null){
+            restoreData(savedInstanceState);
+        }
 
         //Sets a custom adapter for the list_view_search_results ListView to display the search results
         listView = findViewById(R.id.list_view_my_shows);
         adapter = new HomeListViewAdapter(this, lstShows);
         listView.setAdapter(adapter);
 
-        //Toggles the views visible based on whether the user has added shows to 'My Series'
-        toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
+        //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
+                Intent intent = new Intent(HomeActivity.this, SpecificShowActivity.class);
+                intent.putExtra("showNumber", "" + lstShows.get(pos).getShowId());
+                startActivity(intent);
+            }
+        });
 
-        //Gets the unique key used by Firebase to store information about the user signed in, and fetches data based on the keys fetched
-        User user = new User(this);
-        getUserShowKeys(user.getUserKey());
+        if(lstShows.size() == 0){
+            //Displays ProgressBar
+            toggleProgressBar(View.VISIBLE);
+
+            //Displays the ListView and hides other unnecessary Views
+            toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
+
+            //Gets the unique key used by Firebase to store information about the user signed in, and fetches data based on the keys fetched
+            User user = new User(this);
+            getUserShowKeys(user.getUserKey());
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //Sets the selected item in the NavigationDrawer to Home
+        super.setSelectedNavItem(R.id.nav_home);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if(lstShows.size() > 0){
+            outState.putParcelableArrayList(SHOWS_BUNDLE_KEY, lstShows);
+        }
+    }
+
+    //Restores any saved data
+    private void restoreData(Bundle savedInstanceState){
+        if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
+            lstShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
+
+            //Hides ProgressBar
+            toggleProgressBar(View.GONE);
+
+            //Displays the ListView and hides other unnecessary Views
+            toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
+        }
     }
 
     //Method toggles the visibility of the ProgressBar
@@ -214,16 +261,6 @@ public class HomeActivity extends BaseActivity implements IAPIConnectionResponse
                         }
                     }
                 }
-
-                //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
-                        Intent intent = new Intent(HomeActivity.this, SpecificShowActivity.class);
-                        intent.putExtra("showNumber", "" + lstShows.get(pos).getShowId());
-                        intent.putExtra("previousActivity", "HomeActivity");
-                        startActivity(intent);
-                    }
-                });
             }
             else{
                 Toast.makeText(getApplicationContext(), "Error fetching data, please check your internet connection", Toast.LENGTH_LONG).show();

@@ -1,4 +1,4 @@
-package syrenware.seriessearcher;
+package matthewsyren.seriessearcher;
 
 import org.junit.Test;
 

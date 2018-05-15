@@ -1,4 +1,4 @@
-package syrenware.seriessearcher;
+package com.matthewsyren.seriessearcher;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;

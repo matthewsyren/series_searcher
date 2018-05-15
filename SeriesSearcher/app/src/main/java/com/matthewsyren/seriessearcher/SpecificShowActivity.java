@@ -1,8 +1,7 @@
-package syrenware.seriessearcher;
+package com.matthewsyren.seriessearcher;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -25,39 +24,6 @@ public class SpecificShowActivity extends AppCompatActivity implements IAPIConne
             setContentView(R.layout.activity_specific_show);
 
             displayShowInformation();
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    //Method takes the user back to the Activity that they used to get to this Activity
-    @Override
-    public void onBackPressed() {
-        try{
-            super.onBackPressed();
-            Bundle bundle = getIntent().getExtras();
-            String previousActivity = bundle.getString("previousActivity");
-            Intent intent = null;
-
-            if(previousActivity != null){
-                switch(previousActivity){
-                    case "HomeActivity":
-                        intent = new Intent(SpecificShowActivity.this, HomeActivity.class);
-                        break;
-                    case "RandomShowsActivity":
-                        int page = bundle.getInt("apiPage", -1);
-                        int startingShow = bundle.getInt("apiStartingShow", -1);
-                        intent = new Intent(SpecificShowActivity.this, RandomShowsActivity.class);
-                        intent.putExtra("apiPage", page);
-                        intent.putExtra("apiStartingShow", startingShow);
-                        break;
-                    case "SearchActivity":
-                        intent = new Intent(SpecificShowActivity.this, SearchActivity.class);
-                        break;
-                }
-            }
-            startActivity(intent);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();

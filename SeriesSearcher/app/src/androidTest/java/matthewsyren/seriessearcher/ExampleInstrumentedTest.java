@@ -1,4 +1,4 @@
-package syrenware.seriessearcher;
+package matthewsyren.seriessearcher;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

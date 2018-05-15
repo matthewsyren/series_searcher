@@ -1,4 +1,4 @@
-package syrenware.seriessearcher;
+package com.matthewsyren.seriessearcher;
 
 import android.os.AsyncTask;
 import android.util.Log;

@@ -1,8 +1,9 @@
-package syrenware.seriessearcher;
+package com.matthewsyren.seriessearcher;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -10,10 +11,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -23,7 +20,8 @@ import java.util.ArrayList;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class Show {
+public class Show
+        implements Parcelable {
     //Declarations
     private int showId;
     private String showImageUrl;
@@ -151,4 +149,44 @@ public class Show {
             }
         });
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(showId);
+        dest.writeString(showImageUrl);
+        dest.writeString(showTitle);
+        dest.writeString(showRating);
+        dest.writeString(showStatus);
+        dest.writeString(showNextEpisode);
+        dest.writeString(showRuntime);
+        dest.writeByte((byte) ((showAdded != null && showAdded) ? 1 : 0));
+    }
+
+    protected Show(Parcel in) {
+        showId = in.readInt();
+        showImageUrl = in.readString();
+        showTitle = in.readString();
+        showRating = in.readString();
+        showStatus = in.readString();
+        showNextEpisode = in.readString();
+        showRuntime = in.readString();
+        showAdded = in.readByte() == 1;
+    }
+
+    public static final Creator<Show> CREATOR = new Creator<Show>() {
+        @Override
+        public Show createFromParcel(Parcel in) {
+            return new Show(in);
+        }
+
+        @Override
+        public Show[] newArray(int size) {
+            return new Show[size];
+        }
+    };
 }

@@ -1,4 +1,4 @@
-package syrenware.seriessearcher;
+package com.matthewsyren.seriessearcher;
 
 /**
  * Created by matthew on 2017/02/03.

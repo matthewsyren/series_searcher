@@ -1,22 +1,16 @@
-package syrenware.seriessearcher;
+package com.matthewsyren.seriessearcher;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,6 +23,7 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
     private ArrayList<Show> lstShows =  new ArrayList<>();
     private SearchListViewAdapter adapter;
     private ListView listView;
+    private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
 
     //Setter method
     public void setLstShows(ArrayList<Show> lstShows){
@@ -49,10 +44,23 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
         //Hides ProgressBar
         toggleProgressBar(View.INVISIBLE);
 
+        if(savedInstanceState != null){
+            restoreData(savedInstanceState);
+        }
+
         //Sets a custom adapter for the list_view_search_results ListView to display the search results
         adapter = new SearchListViewAdapter(this, lstShows);
         listView = findViewById(R.id.list_view_search_results);
         listView.setAdapter(adapter);
+
+        //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
+                Intent intent = new Intent(SearchActivity.this, SpecificShowActivity.class);
+                intent.putExtra("showNumber", "" + lstShows.get(pos).getShowId());
+                startActivity(intent);
+            }
+        });
 
         final EditText txtSearch = findViewById(R.id.text_search_series);
         txtSearch.addTextChangedListener(new TextWatcher() {
@@ -74,6 +82,33 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
         });
 
         super.onCreateDrawer();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //Sets the selected item in the NavigationDrawer to SearchActivity
+        super.setSelectedNavItem(R.id.nav_search);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if(lstShows.size() > 0){
+            outState.putParcelableArrayList(SHOWS_BUNDLE_KEY, lstShows);
+        }
+    }
+
+    //Restores any saved data
+    private void restoreData(Bundle savedInstanceState){
+        if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
+            lstShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
+
+            //Hides ProgressBar
+            toggleProgressBar(View.GONE);
+        }
     }
 
     //Method toggles the visibility of the ProgressBar
@@ -159,16 +194,6 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
                 }
                 //Determines which Shows have been added to My Series by the user
                 Show.checkIfShowIsAdded(new User(this).getUserKey(), lstShows, this, null);
-
-                //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
-                        Intent intent = new Intent(SearchActivity.this, SpecificShowActivity.class);
-                        intent.putExtra("showNumber", "" + lstShows.get(pos).getShowId());
-                        intent.putExtra("previousActivity", "SearchActivity");
-                        startActivity(intent);
-                    }
-                });
             }
             else{
                 Toast.makeText(getApplicationContext(), "Error fetching data, please check your internet connection", Toast.LENGTH_LONG).show();

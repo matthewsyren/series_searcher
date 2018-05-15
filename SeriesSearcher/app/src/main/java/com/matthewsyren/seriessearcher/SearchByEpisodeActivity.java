@@ -1,11 +1,10 @@
-package syrenware.seriessearcher;
+package com.matthewsyren.seriessearcher;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -17,11 +16,24 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 public class SearchByEpisodeActivity extends AppCompatActivity implements IAPIConnectionResponse {
+    private static final String EPISODE_NAME_BUNDLE_KEY = "episode_information_bundle_key";
+    private static final String EPISODE_AIR_DATE_BUNDLE_KEY = "episode_air_date_bundle_key";
+    private static final String EPISODE_RUNTIME_BUNDLE_KEY = "episode_runtime_bundle_key";
+    private static final String EPISODE_SUMMARY_BUNDLE_KEY = "episode_summary_bundle_key";
+    private static String sEpisodeName;
+    private static String sEpisodeAirDate;
+    private static String sEpisodeRuntime;
+    private static String sEpisodeSummary;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try{
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_search_by_episode);
+
+            if (savedInstanceState != null) {
+                restoreData(savedInstanceState);
+            }
 
             //Displays Back button in ActionBar
             ActionBar actionBar = getSupportActionBar();
@@ -36,6 +48,54 @@ public class SearchByEpisodeActivity extends AppCompatActivity implements IAPICo
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if(!TextUtils.isEmpty(sEpisodeName)){
+            outState.putString(EPISODE_NAME_BUNDLE_KEY, sEpisodeName);
+        }
+
+        if(!TextUtils.isEmpty(sEpisodeAirDate)){
+            outState.putString(EPISODE_AIR_DATE_BUNDLE_KEY, sEpisodeAirDate);
+        }
+
+        if(!TextUtils.isEmpty(sEpisodeRuntime)){
+            outState.putString(EPISODE_RUNTIME_BUNDLE_KEY, sEpisodeRuntime);
+        }
+
+        if(!TextUtils.isEmpty(sEpisodeSummary)){
+            outState.putString(EPISODE_SUMMARY_BUNDLE_KEY, sEpisodeSummary);
+        }
+    }
+
+    //Restores any saved data
+    private void restoreData(Bundle savedInstanceState){
+        if(savedInstanceState.containsKey(EPISODE_NAME_BUNDLE_KEY)){
+            sEpisodeName = savedInstanceState.getString(EPISODE_NAME_BUNDLE_KEY);
+            TextView txtEpisodeName = findViewById(R.id.text_show_episode_name);
+            txtEpisodeName.setText(getString(R.string.text_episode_name, sEpisodeName));
+        }
+
+        if(savedInstanceState.containsKey(EPISODE_AIR_DATE_BUNDLE_KEY)){
+            sEpisodeAirDate = savedInstanceState.getString(EPISODE_AIR_DATE_BUNDLE_KEY);
+            TextView txtEpisodeAirDate = findViewById(R.id.text_show_air_date);
+            txtEpisodeAirDate.setText(getString(R.string.text_episode_air_date, sEpisodeAirDate));
+        }
+
+        if(savedInstanceState.containsKey(EPISODE_RUNTIME_BUNDLE_KEY)){
+            sEpisodeRuntime = savedInstanceState.getString(EPISODE_RUNTIME_BUNDLE_KEY);
+            TextView txtEpisodeRuntime = findViewById(R.id.text_show_runtime);
+            txtEpisodeRuntime.setText(getString(R.string.text_episode_runtime, sEpisodeRuntime));
+        }
+
+        if(savedInstanceState.containsKey(EPISODE_SUMMARY_BUNDLE_KEY)){
+            sEpisodeSummary = savedInstanceState.getString(EPISODE_SUMMARY_BUNDLE_KEY);
+            TextView txtEpisodeSummary = findViewById(R.id.text_show_summary);
+            txtEpisodeSummary.setText(getString(R.string.text_episode_summary, sEpisodeSummary));
         }
     }
 
@@ -74,15 +134,7 @@ public class SearchByEpisodeActivity extends AppCompatActivity implements IAPICo
 
             //Takes the user back to the DeliveryControlActivity if the button that was pressed was the back button
             if (id == android.R.id.home) {
-                //Fetches the show number for the show that the user clicked on from the Bundle
-                Bundle bundle = getIntent().getExtras();
-                String showNumber = bundle.getString("showNumber");
-                String previousActivity = bundle.getString("previousActivity");
-
-                Intent intent = new Intent(SearchByEpisodeActivity.this, SpecificShowActivity.class);
-                intent.putExtra("showNumber", showNumber);
-                intent.putExtra("previousActivity", previousActivity);
-                startActivity(intent);
+                onBackPressed();
             }
         }
         catch(Exception exc){
@@ -161,11 +213,16 @@ public class SearchByEpisodeActivity extends AppCompatActivity implements IAPICo
                 }
 
                 //Displays values in TextViews
-                Resources resources = this.getResources();
-                txtEpisodeName.setText(resources.getString(R.string.text_episode_name, episodeName));
-                txtEpisodeAirDate.setText(resources.getString(R.string.text_episode_air_date, episodeAirDate));
-                txtEpisodeRuntime.setText(resources.getString(R.string.text_episode_runtime, episodeRuntime));
-                txtEpisodeSummary.setText(resources.getString(R.string.text_episode_summary, episodeSummary));
+                txtEpisodeName.setText(getString(R.string.text_episode_name, episodeName));
+                txtEpisodeAirDate.setText(getString(R.string.text_episode_air_date, episodeAirDate));
+                txtEpisodeRuntime.setText(getString(R.string.text_episode_runtime, episodeRuntime));
+                txtEpisodeSummary.setText(getString(R.string.text_episode_summary, episodeSummary));
+
+                //Assigns the variables to global variables for data restoration purposes
+                sEpisodeName = episodeName;
+                sEpisodeAirDate = episodeAirDate;
+                sEpisodeRuntime = episodeRuntime;
+                sEpisodeSummary = episodeSummary;
             }
             else{
                 Toast.makeText(getApplicationContext(), "No information about that episode was found...", Toast.LENGTH_LONG).show();

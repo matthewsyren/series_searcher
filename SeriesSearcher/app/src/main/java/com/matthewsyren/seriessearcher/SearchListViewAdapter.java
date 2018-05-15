@@ -1,4 +1,4 @@
-package syrenware.seriessearcher;
+package com.matthewsyren.seriessearcher;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -27,14 +27,14 @@ import java.util.ArrayList;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class HomeListViewAdapter extends ArrayAdapter{
+public class SearchListViewAdapter extends ArrayAdapter{
     //Declarations
     private ArrayList<Show> shows;
     private Context context;
     private ViewHolder viewHolder;
 
     //Constructor
-    public HomeListViewAdapter(Context context, ArrayList<Show> shows) {
+    public SearchListViewAdapter(Context context, ArrayList<Show> shows) {
         super(context, R.layout.home_list_row,shows);
         this.context = context;
         this.shows = shows;
@@ -44,9 +44,9 @@ public class HomeListViewAdapter extends ArrayAdapter{
     @Override
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         if(convertView == null){
-            //Inflates the home_list_row View for the ListView
+            //Inflates the search_list_row view for the ListView
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            convertView = inflater.inflate(R.layout.home_list_row, parent, false);
+            convertView = inflater.inflate(R.layout.search_list_row, parent, false);
             viewHolder = new ViewHolder();
 
             //Component assignments
@@ -54,7 +54,7 @@ public class HomeListViewAdapter extends ArrayAdapter{
             viewHolder.title = convertView.findViewById(R.id.text_show_title);
             viewHolder.rating = convertView.findViewById(R.id.text_show_rating);
             viewHolder.status = convertView.findViewById((R.id.text_show_status));
-            viewHolder.nextEpisode = convertView.findViewById((R.id.text_show_next_episode_date));
+            viewHolder.runtime = convertView.findViewById((R.id.text_show_runtime));
             viewHolder.toggleShow = convertView.findViewById(R.id.button_toggle_show);
             convertView.setTag(viewHolder);
         }
@@ -78,43 +78,59 @@ public class HomeListViewAdapter extends ArrayAdapter{
         viewHolder.title.setText(shows.get(position).getShowTitle());
         viewHolder.rating.setText(resources.getString(R.string.text_rating, shows.get(position).getShowRating()));
         viewHolder.status.setText(resources.getString(R.string.text_status, shows.get(position).getShowStatus()));
-        viewHolder.nextEpisode.setText(resources.getString(R.string.text_next_episode, shows.get(position).getShowNextEpisode()));
+        viewHolder.runtime.setText(resources.getString(R.string.text_runtime, shows.get(position).getShowRuntime()));
         final User user = new User(context);
 
-        //Displays the remove button
-        viewHolder.toggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
-        viewHolder.toggleShow.setTag("Remove");
+        //Displays appropriate image for the ImageButton
+        if(shows.get(position).isShowAdded() != null && shows.get(position).isShowAdded()){
+            viewHolder.toggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
+        }
+        else if(shows.get(position).isShowAdded() != null){
+            viewHolder.toggleShow.setImageResource(R.drawable.ic_add_black_24dp);
+        }
 
         //Sets onCLickListener for the buttons contained in each row of the ListView
         viewHolder.toggleShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-                alertDialog.setTitle("Are you sure you want to remove " + shows.get(position).getShowTitle() + " from My Series?");
+                //Adds the Show to My Series if the Show isn't already there, or prompts the user to confirm the removal of the Show from My Series if the Show is already there
+                if(!shows.get(position).isShowAdded()){
+                    //Adds Show to My Series
+                    viewHolder.toggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
+                    shows.get(position).setShowAdded(true);
+                    pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), true);
+                    notifyDataSetChanged();
+                }
+                else{
+                    //Prompts the user to confirm the removal of the Show from My Series
+                    AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                    alertDialog.setTitle("Are you sure you want to remove " + shows.get(position).getShowTitle() + " from My Series?");
 
-                //Creates OnClickListener for the Dialog message
-                DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
-                    @Override
-                    public void onClick(DialogInterface dialog, int button) {
-                        switch(button){
-                            //Removes the selected show from the My Series list
-                            case AlertDialog.BUTTON_POSITIVE:
-                                //Updates FirebaseDatabase and UI
-                                pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), false);
-                                shows.remove(position);
-                                notifyDataSetChanged();
-                                break;
-                            case AlertDialog.BUTTON_NEGATIVE:
-                                break;
+                    //Creates OnClickListener for the Dialog message
+                    DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialog, int button) {
+                            switch(button){
+                                //Removes the selected show from the My Series list
+                                case AlertDialog.BUTTON_POSITIVE:
+                                    //Updates the FirebaseDatabase and the UI
+                                    pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), false);
+                                    shows.get(position).setShowAdded(false);
+                                    viewHolder.toggleShow.setImageResource(R.drawable.ic_add_black_24dp);
+                                    notifyDataSetChanged();
+                                    break;
+                                case AlertDialog.BUTTON_NEGATIVE:
+                                    break;
+                            }
                         }
-                    }
-                };
+                    };
 
-                //Assigns button an OnClickListener for the AlertDialog and displays the AlertDialog
-                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES", dialogOnClickListener);
-                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO", dialogOnClickListener);
-                alertDialog.setCanceledOnTouchOutside(false);
-                alertDialog.show();
+                    //Assigns button an OnClickListener for the AlertDialog and displays the AlertDialog
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES", dialogOnClickListener);
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO", dialogOnClickListener);
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.show();
+                }
             }
         });
         return convertView;
@@ -139,7 +155,7 @@ public class HomeListViewAdapter extends ArrayAdapter{
         TextView title;
         TextView rating;
         TextView status;
-        TextView nextEpisode;
+        TextView runtime;
         ImageButton toggleShow;
     }
 }
