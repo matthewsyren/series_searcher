@@ -222,21 +222,22 @@ public class BaseActivity extends Activity implements NavigationView.OnNavigatio
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Intent intent = null;
 
         if(id == R.id.nav_home){
-            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+            intent = new Intent(getApplicationContext(), HomeActivity.class);
         }
-        if(id == R.id.nav_random_shows){
-            startActivity(new Intent(getApplicationContext(), RandomShowsActivity.class));
+        else if(id == R.id.nav_random_shows){
+            intent = new Intent(getApplicationContext(), RandomShowsActivity.class);
         }
         else if(id == R.id.nav_search){
-            startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+            intent = new Intent(getApplicationContext(), SearchActivity.class);
         }
         else if(id == R.id.nav_disclaimer){
-            startActivity(new Intent(getApplicationContext(), DisclaimerActivity.class));
+            intent = new Intent(getApplicationContext(), DisclaimerActivity.class);
         }
         else if(id == R.id.nav_help){
-            startActivity(new Intent(getApplicationContext(), HelpActivity.class));
+            intent = new Intent(getApplicationContext(), HelpActivity.class);
         }
         else if(id == R.id.nav_data_saving_mode){
             setCurrentSelectedNavItem();
@@ -262,6 +263,12 @@ public class BaseActivity extends Activity implements NavigationView.OnNavigatio
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 }
             });
+        }
+
+        //Takes the user to the appropriate Activity
+        if(intent != null){
+            finish();
+            startActivity(intent);
         }
 
         //Closes NavigationDrawer
