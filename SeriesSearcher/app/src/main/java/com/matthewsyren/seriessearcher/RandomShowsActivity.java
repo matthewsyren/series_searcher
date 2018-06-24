@@ -2,6 +2,8 @@ package com.matthewsyren.seriessearcher;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -89,6 +91,25 @@ public class RandomShowsActivity extends BaseActivity implements IAPIConnectionR
 
         if(lstShows.size() > 0){
             outState.putParcelableArrayList(SHOWS_BUNDLE_KEY, lstShows);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_random_shows, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id){
+            case R.id.mi_refresh:
+                refreshActivity();
+                return true;
+             default:
+                 return super.onOptionsItemSelected(item);
         }
     }
 
@@ -186,7 +207,7 @@ public class RandomShowsActivity extends BaseActivity implements IAPIConnectionR
     }
 
     //Method refreshes the Activity in order to fetch 20 new randomised series
-    public void refreshOnClick(View view){
+    public void refreshActivity(){
         try{
             finish();
             startActivity(new Intent(this, RandomShowsActivity.class));

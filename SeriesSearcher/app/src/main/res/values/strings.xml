@@ -11,12 +11,14 @@
     <string name="navigation_drawer_help">Help</string>
     <string name="navigation_drawer_data_saving_mode">Data Saving Mode</string>
     <string name="navigation_drawer_sign_out">Sign Out</string>
-
     <string name="action_settings">Settings</string>
 
     <!-- HomeActivity -->
     <string name="button_add_shows">Add Series</string>
     <string name="label_home_message">You currently have no shows added to \'My Shows\'</string>
+
+    <!-- RandomShowsActivity -->
+    <string name="refresh">Refresh</string>
 
     <!-- SpecificShowActivity -->
     <string name="text_premiered">Premiered: %s</string>
@@ -39,7 +41,10 @@
     <string name="title_activity_random_shows">Random Series</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="title_activity_specific_show">SpecificShowActivity</string>
+    <string name="title_activity_disclaimer">Disclaimer</string>
+    <string name="title_activity_help">Help</string>
 
+    <!-- Login and CreateAccount Activities -->
     <string name="prompt_email">Email address</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_confirm_password">Confirm password</string>
@@ -56,13 +61,11 @@
     <string name="text_episode_air_date">Air Date: %s</string>
     <string name="text_episode_runtime">Runtime: %s</string>
     <string name="text_episode_summary">Summary: %s</string>
-    <string name="title_activity_help">HelpActivity</string>
 
     <!-- HelpActivity -->
     <string name="text_help">This app allows you to search for information about your favourite TV series. To search for a specific series, just click on \'Search\' in the menu, and start typing. \n\nTo view a list of randomised series, click on the \'Random Series\' item in the menu. \n\nIf you see a series that you would like to add to your favourite series, simply click on the \'+\' button that appears next to the series\' name. All of your favourite series are accessible via the \'My Series\' item in the menu. To remove an item from your favourite series, click on the \'-\' button that appears next to the series\' name. \n\nIf you click on a series, more information is displayed about it. If you would like to search for a specific episode, click on the search button after clicking on the specific series. Here, you will be able to enter a season and episode number, and the app will display any information it has for that specific episode. \n\nIf you choose to activate Data Saving Mode, images will not be downloaded. </string>
 
     <!-- DisclaimerActivity -->
-    <string name="title_activity_disclaimer">DisclaimerActivity</string>
     <string name="text_disclaimer">This app gets all its information about series from TVmaze (available at www.tvmaze.com)</string>
 
     <!-- ListViewRow -->

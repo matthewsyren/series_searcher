@@ -19,17 +19,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
+            app:contentScrim="?android:attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="?android:attr/actionBarSize"
                 app:layout_collapseMode="parallax"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:contentScrim="?attr/colorPrimary"
-                android:minHeight="?attr/actionBarSize"/>
+                app:contentScrim="?android:attr/colorPrimary"
+                android:minHeight="?android:attr/actionBarSize"/>
 
             <ImageView
                 android:id="@+id/image_view_specific_show"
