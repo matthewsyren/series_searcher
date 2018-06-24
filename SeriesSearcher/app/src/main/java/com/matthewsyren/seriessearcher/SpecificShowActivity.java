@@ -19,47 +19,32 @@ import org.json.JSONObject;
 public class SpecificShowActivity extends AppCompatActivity implements IAPIConnectionResponse{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        try{
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_specific_show);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_specific_show);
 
-            displayShowInformation();
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        displayShowInformation();
     }
 
     //Method displays the information on the Activity
     public void displayShowInformation(){
-        try{
-            //Fetches the link for the show that the user clicked on from the Bundle
-            Bundle bundle = getIntent().getExtras();
-            String showNumber = bundle.getString("showNumber");
-            String showLink = "http://api.tvmaze.com/shows/" + showNumber;
+        //Fetches the link for the show that the user clicked on from the Bundle
+        Bundle bundle = getIntent().getExtras();
+        String showNumber = bundle.getString("showNumber");
+        String showLink = "http://api.tvmaze.com/shows/" + showNumber;
 
-            //Displays ProgressBar
-            toggleProgressBar(View.VISIBLE);
+        //Displays ProgressBar
+        toggleProgressBar(View.VISIBLE);
 
-            //Fetches data from the TVMaze API using the link
-            APIConnection api = new APIConnection();
-            api.delegate = this;
-            api.execute(showLink);
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        //Fetches data from the TVMaze API using the link
+        APIConnection api = new APIConnection();
+        api.delegate = this;
+        api.execute(showLink);
     }
 
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
-        try{
-            ProgressBar progressBar = findViewById(R.id.progress_bar);
-            progressBar.setVisibility(visibility);
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        ProgressBar progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(visibility);
     }
 
     //Method parses the JSON returned from the API and displays the data
@@ -101,8 +86,8 @@ public class SpecificShowActivity extends AppCompatActivity implements IAPIConne
                 Toast.makeText(getApplicationContext(), "Error fetching data, please try again", Toast.LENGTH_LONG).show();
             }
         }
-        catch(JSONException jse){
-            Toast.makeText(getApplicationContext(), jse.getMessage(), Toast.LENGTH_LONG).show();
+        catch(JSONException j){
+            Toast.makeText(getApplicationContext(), j.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -234,24 +219,19 @@ public class SpecificShowActivity extends AppCompatActivity implements IAPIConne
 
     //Method takes the user to the SearchByEpisodeActivity
     public void searchByEpisodeOnClick(View view) {
-        try {
-            //Fetches the show name
-            TextView txtShowName = findViewById(R.id.text_show_title);
-            String showName = txtShowName.getText().toString();
+        //Fetches the show name
+        TextView txtShowName = findViewById(R.id.text_show_title);
+        String showName = txtShowName.getText().toString();
 
-            //Fetches the link for the show that the user clicked on from the Bundle
-            Bundle bundle = getIntent().getExtras();
-            String showNumber = bundle.getString("showNumber");
-            String previousActivity = bundle.getString("previousActivity");
+        //Fetches the link for the show that the user clicked on from the Bundle
+        Bundle bundle = getIntent().getExtras();
+        String showNumber = bundle.getString("showNumber");
+        String previousActivity = bundle.getString("previousActivity");
 
-            Intent intent = new Intent(SpecificShowActivity.this, SearchByEpisodeActivity.class);
-            intent.putExtra("showTitle", showName);
-            intent.putExtra("showNumber", showNumber);
-            intent.putExtra("previousActivity", previousActivity);
-            startActivity(intent);
-        }
-        catch (Exception exc) {
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        Intent intent = new Intent(SpecificShowActivity.this, SearchByEpisodeActivity.class);
+        intent.putExtra("showTitle", showName);
+        intent.putExtra("showNumber", showNumber);
+        intent.putExtra("previousActivity", previousActivity);
+        startActivity(intent);
     }
 }

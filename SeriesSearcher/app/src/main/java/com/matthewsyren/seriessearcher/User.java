@@ -92,65 +92,46 @@ public class User {
 
     //Method returns the value which states whether the user has chosen Data Saving Mode
     public static boolean getDataSavingPreference(Context context){
-        boolean dataSavingMode = false;
-
-        try{
-            SharedPreferences sharedPreferences = context.getSharedPreferences("", Context.MODE_PRIVATE);
-            dataSavingMode = sharedPreferences.getBoolean("dataSavingMode", false);
-        }
-        catch(Exception exc){
-            Toast.makeText(context, exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-        return dataSavingMode;
+        SharedPreferences sharedPreferences = context.getSharedPreferences("", Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean("dataSavingMode", false);
     }
 
     //Method generates a unique key for the created user, and writes the key and its value (the user's email) to the 'Users' child in the Firebase database
     public void pushUser(Context context){
-        try{
-            //Establishes a connection to the Firebase database
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference databaseReference = database.getReference().child("Users");
+        //Establishes a connection to the Firebase database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference().child("Users");
 
-            //Generates the user's key and saves the value (the user's email address) to the Firebase database
-            String key =  databaseReference.push().getKey();
-            databaseReference.child(key).setValue(userEmailAddress);
+        //Generates the user's key and saves the value (the user's email address) to the Firebase database
+        String key =  databaseReference.push().getKey();
+        databaseReference.child(key).setValue(userEmailAddress);
 
-            //Saves the user's email and key to the device's SharedPreferences
-            SharedPreferences preferences = context.getSharedPreferences("", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("userEmail", userEmailAddress.replace("@googlemail.com", "@gmail.com"));
-            editor.putString("userKey", key);
-            editor.putBoolean("dataSavingMode", false);
-            editor.apply();
+        //Saves the user's email and key to the device's SharedPreferences
+        SharedPreferences preferences = context.getSharedPreferences("", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("userEmail", userEmailAddress.replace("@googlemail.com", "@gmail.com"));
+        editor.putString("userKey", key);
+        editor.putBoolean("dataSavingMode", false);
+        editor.apply();
 
-            Toast.makeText(context, "Account successfully created!", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Account successfully created!", Toast.LENGTH_LONG).show();
 
-            //Takes the user to the next activity
-            Intent intent = new Intent(context, HomeActivity.class);
-            context.startActivity(intent);
-        }
-        catch(Exception exc){
-            Toast.makeText(context, exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        //Takes the user to the next activity
+        Intent intent = new Intent(context, HomeActivity.class);
+        context.startActivity(intent);
     }
 
     //Method writes the user's data to SharedPreferences and then takes the user to the HomeActivity
     public void writeDataToSharedPreferences(String key, Context context){
-        try{
-            //Saves the user's data in SharedPreferences
-            SharedPreferences preferences = context.getSharedPreferences("", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("userEmail", userEmailAddress);
-            editor.putString("userKey", key);
-            editor.apply();
+        //Saves the user's data in SharedPreferences
+        SharedPreferences preferences = context.getSharedPreferences("", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("userEmail", userEmailAddress);
+        editor.putString("userKey", key);
+        editor.apply();
 
-            //Takes the user to the HomeActivity
-            Intent intent = new Intent(context, HomeActivity.class);
-            context.startActivity(intent);
-        }
-        catch(Exception exc){
-            Toast.makeText(context.getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        //Takes the user to the HomeActivity
+        Intent intent = new Intent(context, HomeActivity.class);
+        context.startActivity(intent);
     }
 }

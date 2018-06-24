@@ -89,18 +89,15 @@ public class Show
 
     //Method removes any HTML formatting from the summary field
     public static String formatSummary(Context context, String summary){
-        try{
-            boolean htmlIncluded = summary.contains("<");
-            while(htmlIncluded){
-                String beforeHTML = summary.substring(0, summary.indexOf("<"));
-                String afterHTML = summary.substring(summary.indexOf(">") + 1);
-                summary = beforeHTML + afterHTML;
-                htmlIncluded = summary.contains("<");
-            }
+        boolean htmlIncluded = summary.contains("<");
+
+        while(htmlIncluded){
+            String beforeHTML = summary.substring(0, summary.indexOf("<"));
+            String afterHTML = summary.substring(summary.indexOf(">") + 1);
+            summary = beforeHTML + afterHTML;
+            htmlIncluded = summary.contains("<");
         }
-        catch(Exception exc){
-            Toast.makeText(context, exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+
         return summary;
     }
 

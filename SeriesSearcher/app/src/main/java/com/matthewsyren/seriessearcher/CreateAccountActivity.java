@@ -20,92 +20,78 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        try{
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_create_account);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create_account);
 
-            //Hides ProgressBar
-            toggleProgressBar(View.INVISIBLE);
+        //Hides ProgressBar
+        toggleProgressBar(View.INVISIBLE);
 
-            firebaseAuth = FirebaseAuth.getInstance();
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
-        try{
-            ProgressBar progressBar = findViewById(R.id.progress_bar);
-            progressBar.setVisibility(visibility);
-            RelativeLayout relativeLayout = findViewById(R.id.layout_create_account);
-            if(visibility == View.VISIBLE){
-                relativeLayout.setVisibility(View.INVISIBLE);
-            }
-            else{
-                relativeLayout.setVisibility(View.VISIBLE);
-            }
+        ProgressBar progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(visibility);
+        RelativeLayout relativeLayout = findViewById(R.id.layout_create_account);
+
+        if(visibility == View.VISIBLE){
+            relativeLayout.setVisibility(View.INVISIBLE);
         }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        else{
+            relativeLayout.setVisibility(View.VISIBLE);
         }
     }
 
     //Method creates an account for the user
     public void createAccountOnClick(View view){
-        try{
-            EditText txtEmail = findViewById(R.id.text_create_account_email);
-            EditText txtPassword = findViewById(R.id.text_create_account_password);
-            EditText txtConfirmPassword = findViewById(R.id.text_create_account_confirm_password);
+        EditText txtEmail = findViewById(R.id.text_create_account_email);
+        EditText txtPassword = findViewById(R.id.text_create_account_password);
+        EditText txtConfirmPassword = findViewById(R.id.text_create_account_confirm_password);
 
-            String email = txtEmail.getText().toString();
-            String password = txtPassword.getText().toString();
-            String confirmPassword = txtConfirmPassword.getText().toString();
+        String email = txtEmail.getText().toString();
+        String password = txtPassword.getText().toString();
+        String confirmPassword = txtConfirmPassword.getText().toString();
 
-            if(email.length() == 0){
-                Toast.makeText(getApplicationContext(), "Please enter your email address", Toast.LENGTH_LONG).show();
-            }
-            else if(password.length() == 0){
-                Toast.makeText(getApplicationContext(), "Please enter your password", Toast.LENGTH_LONG).show();
+        if(email.length() == 0){
+            Toast.makeText(getApplicationContext(), "Please enter your email address", Toast.LENGTH_LONG).show();
+        }
+        else if(password.length() == 0){
+            Toast.makeText(getApplicationContext(), "Please enter your password", Toast.LENGTH_LONG).show();
+        }
+        else{
+            //Displays ProgressBar
+            toggleProgressBar(View.VISIBLE);
+
+            //Creates an account if the user's passwords match and they have entered valid data
+            if(password.equals(confirmPassword)){
+                final User user = new User(email, password);
+                firebaseAuth.createUserWithEmailAndPassword(user.getUserEmailAddress(), user.getUserPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            //Registers the user in the Firebase authentication for this app
+                            user.pushUser(getApplicationContext());
+                        }
+                        else if(task.getException().toString().contains("FirebaseAuthUserCollisionException")){
+                            Toast.makeText(CreateAccountActivity.this, "This email address has already been used to create an account, please use another email address", Toast.LENGTH_LONG).show();
+                            toggleProgressBar(View.INVISIBLE);
+                        }
+                        else if(task.getException().toString().contains("FirebaseAuthWeakPasswordException")){
+                            Toast.makeText(CreateAccountActivity.this, "Please enter a stronger password (your password must have at least 6 characters)", Toast.LENGTH_LONG).show();
+                            toggleProgressBar(View.INVISIBLE);
+                        }
+                        else{
+                            Toast.makeText(CreateAccountActivity.this, "An error occurred while trying to create your account, please try again", Toast.LENGTH_LONG).show();
+                            toggleProgressBar(View.INVISIBLE);
+                        }
+                    }
+                });
             }
             else{
-                //Displays ProgressBar
-                toggleProgressBar(View.VISIBLE);
-
-                //Creates an account if the user's passwords match and they have entered valid data
-                if(password.equals(confirmPassword)){
-                    final User user = new User(email, password);
-                    firebaseAuth.createUserWithEmailAndPassword(user.getUserEmailAddress(), user.getUserPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()){
-                                //Registers the user in the Firebase authentication for this app
-                                user.pushUser(getApplicationContext());
-                            }
-                            else if(task.getException().toString().contains("FirebaseAuthUserCollisionException")){
-                                Toast.makeText(CreateAccountActivity.this, "This email address has already been used to create an account, please use another email address", Toast.LENGTH_LONG).show();
-                                toggleProgressBar(View.INVISIBLE);
-                            }
-                            else if(task.getException().toString().contains("FirebaseAuthWeakPasswordException")){
-                                Toast.makeText(CreateAccountActivity.this, "Please enter a stronger password (your password must have at least 6 characters)", Toast.LENGTH_LONG).show();
-                                toggleProgressBar(View.INVISIBLE);
-                            }
-                            else{
-                                Toast.makeText(CreateAccountActivity.this, "An error occurred while trying to create your account, please try again", Toast.LENGTH_LONG).show();
-                                toggleProgressBar(View.INVISIBLE);
-                            }
-                        }
-                    });
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "Please ensure that your passwords match", Toast.LENGTH_LONG).show();
-                    toggleProgressBar(View.INVISIBLE);
-                }
+                Toast.makeText(getApplicationContext(), "Please ensure that your passwords match", Toast.LENGTH_LONG).show();
+                toggleProgressBar(View.INVISIBLE);
             }
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

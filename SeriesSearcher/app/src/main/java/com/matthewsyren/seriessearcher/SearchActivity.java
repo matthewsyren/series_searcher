@@ -3,7 +3,6 @@ package com.matthewsyren.seriessearcher;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -113,36 +113,26 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
 
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
-        try{
-            ProgressBar progressBar = findViewById(R.id.progress_bar);
-            progressBar.setVisibility(visibility);
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        ProgressBar progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(visibility);
     }
 
     //Method retrieves the text that the user searches for in text_search, and then searches for that text using the API
     public void searchShows(){
-        try{
-            //Fetches user's input
-            EditText txtSearch = findViewById(R.id.text_search_series);
-            String searchText = txtSearch.getText().toString();
+        //Fetches user's input
+        EditText txtSearch = findViewById(R.id.text_search_series);
+        String searchText = txtSearch.getText().toString();
 
-            //Displays ProgressBar
-            toggleProgressBar(View.VISIBLE);
+        //Displays ProgressBar
+        toggleProgressBar(View.VISIBLE);
 
-            //Connects to the TVMaze API using the specific URL for the selected show
-            api.cancel(true);
-            lstShows.clear();
-            adapter.notifyDataSetChanged();
-            api = new APIConnection();
-            api.delegate = this;
-            api.execute("http://api.tvmaze.com/search/shows?q=" + searchText);
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        //Connects to the TVMaze API using the specific URL for the selected show
+        api.cancel(true);
+        lstShows.clear();
+        adapter.notifyDataSetChanged();
+        api = new APIConnection();
+        api.delegate = this;
+        api.execute("http://api.tvmaze.com/search/shows?q=" + searchText);
     }
 
     //Method parses the JSON returned from the API, and populates the list_view_search_results ListView with the data
@@ -199,8 +189,8 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
                 Toast.makeText(getApplicationContext(), "Error fetching data, please check your internet connection", Toast.LENGTH_LONG).show();
             }
         }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        catch(JSONException j){
+            Toast.makeText(getApplicationContext(), j.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

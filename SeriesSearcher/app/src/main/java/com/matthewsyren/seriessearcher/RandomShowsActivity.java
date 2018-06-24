@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -125,13 +126,8 @@ public class RandomShowsActivity extends BaseActivity implements IAPIConnectionR
 
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
-        try{
-            ProgressBar progressBar = findViewById(R.id.progress_bar);
-            progressBar.setVisibility(visibility);
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        ProgressBar progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(visibility);
     }
 
     //Method fetches the JSON from the APIConnection class, and parses it
@@ -201,19 +197,14 @@ public class RandomShowsActivity extends BaseActivity implements IAPIConnectionR
                 Toast.makeText(getApplicationContext(), "Error fetching data, please check your internet connection", Toast.LENGTH_LONG).show();
             }
         }
-        catch(Exception jse){
-            Toast.makeText(getApplicationContext(), jse.getMessage(), Toast.LENGTH_LONG).show();
+        catch(JSONException j){
+            Toast.makeText(getApplicationContext(), j.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
     //Method refreshes the Activity in order to fetch 20 new randomised series
     public void refreshActivity(){
-        try{
-            finish();
-            startActivity(new Intent(this, RandomShowsActivity.class));
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        finish();
+        startActivity(new Intent(this, RandomShowsActivity.class));
     }
 }

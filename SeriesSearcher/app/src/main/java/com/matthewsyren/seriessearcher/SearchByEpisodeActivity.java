@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SearchByEpisodeActivity extends AppCompatActivity implements IAPIConnectionResponse {
@@ -27,28 +28,23 @@ public class SearchByEpisodeActivity extends AppCompatActivity implements IAPICo
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        try{
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_search_by_episode);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_search_by_episode);
 
-            if (savedInstanceState != null) {
-                restoreData(savedInstanceState);
-            }
-
-            //Displays Back button in ActionBar
-            ActionBar actionBar = getSupportActionBar();
-            if(actionBar != null){
-                actionBar.setDisplayHomeAsUpEnabled(true);
-            }
-
-            //Hides ProgressBar
-            toggleProgressBar(View.INVISIBLE);
-
-            displayShowTitle();
+        if (savedInstanceState != null) {
+            restoreData(savedInstanceState);
         }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+
+        //Displays Back button in ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        //Hides ProgressBar
+        toggleProgressBar(View.INVISIBLE);
+
+        displayShowTitle();
     }
 
     @Override
@@ -101,44 +97,29 @@ public class SearchByEpisodeActivity extends AppCompatActivity implements IAPICo
 
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
-        try{
-            ProgressBar progressBar = findViewById(R.id.progress_bar);
-            progressBar.setVisibility(visibility);
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        ProgressBar progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(visibility);
     }
 
     //Method displays the title of the show
     public void displayShowTitle(){
-        try{
-            //Fetches the show title from the Bundle
-            Bundle bundle = getIntent().getExtras();
-            String showTitle = bundle.getString("showTitle");
+        //Fetches the show title from the Bundle
+        Bundle bundle = getIntent().getExtras();
+        String showTitle = bundle.getString("showTitle");
 
-            TextView txtShowTitle = findViewById(R.id.text_show_title);
-            txtShowTitle.setText(showTitle);
-            setTitle("Search for episode");
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        TextView txtShowTitle = findViewById(R.id.text_show_title);
+        txtShowTitle.setText(showTitle);
+        setTitle("Search for episode");
     }
 
     //Takes the user back to the DeliveryControlActivity when the back button is pressed
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        try{
-            int id = item.getItemId();
+        int id = item.getItemId();
 
-            //Takes the user back to the DeliveryControlActivity if the button that was pressed was the back button
-            if (id == android.R.id.home) {
-                onBackPressed();
-            }
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        //Takes the user back to the DeliveryControlActivity if the button that was pressed was the back button
+        if (id == android.R.id.home) {
+            onBackPressed();
         }
 
         return super.onOptionsItemSelected(item);
@@ -171,10 +152,6 @@ public class SearchByEpisodeActivity extends AppCompatActivity implements IAPICo
         }
         catch(NumberFormatException nfe){
             Toast.makeText(getApplicationContext(), "Please only enter whole numbers, and don't leave any fields empty", Toast.LENGTH_LONG).show();
-            toggleProgressBar(View.INVISIBLE);
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
             toggleProgressBar(View.INVISIBLE);
         }
     }
@@ -235,8 +212,8 @@ public class SearchByEpisodeActivity extends AppCompatActivity implements IAPICo
             //Hides ProgressBar
             toggleProgressBar(View.INVISIBLE);
         }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        catch(JSONException j){
+            Toast.makeText(getApplicationContext(), j.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

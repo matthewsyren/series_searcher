@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -101,13 +102,8 @@ public class HomeActivity extends BaseActivity implements IAPIConnectionResponse
 
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
-        try{
-            ProgressBar progressBar = findViewById(R.id.progress_bar);
-            progressBar.setVisibility(visibility);
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        ProgressBar progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(visibility);
     }
 
     //Method takes user to SearchActivity
@@ -168,18 +164,13 @@ public class HomeActivity extends BaseActivity implements IAPIConnectionResponse
 
     //Method sets the visibility of the views based on the parameters passed in
     public void toggleViewVisibility(int listViewVisibility, int otherViewVisibility){
-        try{
-            TextView txtNoShows = findViewById(R.id.text_no_shows);
-            Button btnAddShows = findViewById(R.id.button_add_shows);
-            ListView lstMyShows = findViewById(R.id.list_view_my_shows);
+        TextView txtNoShows = findViewById(R.id.text_no_shows);
+        Button btnAddShows = findViewById(R.id.button_add_shows);
+        ListView lstMyShows = findViewById(R.id.list_view_my_shows);
 
-            txtNoShows.setVisibility(otherViewVisibility);
-            btnAddShows.setVisibility(otherViewVisibility);
-            lstMyShows.setVisibility(listViewVisibility);
-        }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        txtNoShows.setVisibility(otherViewVisibility);
+        btnAddShows.setVisibility(otherViewVisibility);
+        lstMyShows.setVisibility(listViewVisibility);
     }
 
     //Method parses the JSON returned from the API and displays the information in the list_view_my_shows ListView
@@ -269,8 +260,8 @@ public class HomeActivity extends BaseActivity implements IAPIConnectionResponse
             //Hides ProgressBar
             toggleProgressBar(View.INVISIBLE);
         }
-        catch(Exception exc){
-            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        catch(JSONException j){
+            Toast.makeText(getApplicationContext(), j.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }
