@@ -29,7 +29,18 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class LoginActivity extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class LoginActivity
+        extends AppCompatActivity {
+    //View bindings
+    @BindView(R.id.button_google_sign_in) SignInButton mButtonGoogleSignIn;
+    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.layout_login) RelativeLayout mLayoutLogin;
+    @BindView(R.id.text_login_email) EditText mTextLoginEmail;
+    @BindView(R.id.text_login_password) EditText mTextLoginPassword;
+
     //Declarations
     private FirebaseAuth firebaseAuth;
     private final int GOOGLE_SIGN_IN_KEY = 1;
@@ -38,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
         firebaseAuth = FirebaseAuth.getInstance();
 
         //Hides ProgressBar
@@ -51,8 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         //Sets Listener for the Google Sign in Button
-        SignInButton buttonSignIn = findViewById(R.id.button_google_sign_in);
-        buttonSignIn.setOnClickListener(new View.OnClickListener() {
+        mButtonGoogleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Displays the Progress Bar and begins the process to sign in via a Google account
@@ -100,14 +111,13 @@ public class LoginActivity extends AppCompatActivity {
 
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBarVisibility(int visibility){
-        ProgressBar progressBar = findViewById(R.id.progress_bar);
-        progressBar.setVisibility(visibility);
-        RelativeLayout relativeLayout = findViewById(R.id.layout_login);
+        mProgressBar.setVisibility(visibility);
+
         if(visibility == View.VISIBLE){
-            relativeLayout.setVisibility(View.INVISIBLE);
+            mLayoutLogin.setVisibility(View.INVISIBLE);
         }
         else{
-            relativeLayout.setVisibility(View.VISIBLE);
+            mLayoutLogin.setVisibility(View.VISIBLE);
         }
     }
 
@@ -118,11 +128,8 @@ public class LoginActivity extends AppCompatActivity {
 
     //Method checks the information that the user has entered, and logs the user in if the information matches information in the Firebase authentication database
     public void loginOnClick(View view){
-        EditText txtEmail = findViewById(R.id.text_login_email);
-        EditText txtPassword = findViewById(R.id.text_login_password);
-
-        String email = txtEmail.getText().toString();
-        String password = txtPassword.getText().toString();
+        String email = mTextLoginEmail.getText().toString();
+        String password = mTextLoginPassword.getText().toString();
 
         if(email.length() == 0){
             Toast.makeText(getApplicationContext(), "Please enter your email address or sign in via Google", Toast.LENGTH_LONG).show();

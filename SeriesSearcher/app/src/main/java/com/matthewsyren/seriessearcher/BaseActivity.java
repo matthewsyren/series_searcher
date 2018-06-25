@@ -25,41 +25,49 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by matthew on 2017/02/04.
  * Class provides a base for the NavigationDrawer that is shared amongst the activities
  */
 
-public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    //Declarations
-    private NavigationView navigationView;
+public class BaseActivity
+        extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
+    //View bindings
+    @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
+    @BindView(R.id.nav_view) NavigationView mNavigationView;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
 
     protected void onCreateDrawer() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setNavigationItemSelectedListener(this);
-        setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
+        setSupportActionBar(mToolbar);
         displayUserDetails();
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this,
-                drawer,
-                toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close);
-
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        //Registers the appropriate listeners
         registerListeners();
     }
 
     //Method registers listeners for the appropriate Views
     public void registerListeners(){
+        //Sets up the OnItemSelectedListener
+        mNavigationView.setNavigationItemSelectedListener(this);
+
+        //Sets up the DrawerListener
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                mToolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+
+        mDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
         //Registers an OnCheckedChangedListener for the Data Saving Mode Switch, and displays the appropriate
-        final Menu menu = navigationView.getMenu();
+        final Menu menu = mNavigationView.getMenu();
         final MenuItem menuItem = menu.findItem(R.id.nav_data_saving_mode);
 
         View actionView = menuItem.getActionView();
@@ -104,22 +112,20 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
     //Method displays the user's details in the NavigationDrawer
     public void displayUserDetails(){
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        View view =  navigationView.getHeaderView(0);
+        View view = mNavigationView.getHeaderView(0);
         TextView textView = view.findViewById(R.id.textView);
         textView.setText(new User(this).getUserEmailAddress());
     }
 
     //Method sets the selected item in the Navigation Drawer
     public void setSelectedNavItem(int id){
-        navigationView.setCheckedItem(id);
+        mNavigationView.setCheckedItem(id);
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         }
         else {
             super.onBackPressed();
@@ -180,8 +186,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         }
 
         //Closes NavigationDrawer
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 }

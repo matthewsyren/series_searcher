@@ -23,17 +23,28 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends BaseActivity implements IAPIConnectionResponse {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class HomeActivity
+        extends BaseActivity
+        implements IAPIConnectionResponse {
+    //View bindings
+    @BindView(R.id.list_view_my_shows) ListView mListViewMyShows;
+    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.text_no_shows) TextView mTextNoShows;
+    @BindView(R.id.button_add_shows) Button mButtonAddShows;
+
     //Declarations
     private ArrayList<Show> lstShows = new ArrayList<>();
     private HomeListViewAdapter adapter;
-    private ListView listView;
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        ButterKnife.bind(this);
 
         //Sets the NavigationDrawer for the Activity
         super.onCreateDrawer();
@@ -44,12 +55,11 @@ public class HomeActivity extends BaseActivity implements IAPIConnectionResponse
         }
 
         //Sets a custom adapter for the list_view_search_results ListView to display the search results
-        listView = findViewById(R.id.list_view_my_shows);
         adapter = new HomeListViewAdapter(this, lstShows);
-        listView.setAdapter(adapter);
+        mListViewMyShows.setAdapter(adapter);
 
         //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListViewMyShows.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                 Intent intent = new Intent(HomeActivity.this, SpecificShowActivity.class);
                 intent.putExtra("showNumber", "" + lstShows.get(pos).getShowId());
@@ -102,8 +112,7 @@ public class HomeActivity extends BaseActivity implements IAPIConnectionResponse
 
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
-        ProgressBar progressBar = findViewById(R.id.progress_bar);
-        progressBar.setVisibility(visibility);
+        mProgressBar.setVisibility(visibility);
     }
 
     //Method takes user to SearchActivity
@@ -164,13 +173,9 @@ public class HomeActivity extends BaseActivity implements IAPIConnectionResponse
 
     //Method sets the visibility of the views based on the parameters passed in
     public void toggleViewVisibility(int listViewVisibility, int otherViewVisibility){
-        TextView txtNoShows = findViewById(R.id.text_no_shows);
-        Button btnAddShows = findViewById(R.id.button_add_shows);
-        ListView lstMyShows = findViewById(R.id.list_view_my_shows);
-
-        txtNoShows.setVisibility(otherViewVisibility);
-        btnAddShows.setVisibility(otherViewVisibility);
-        lstMyShows.setVisibility(listViewVisibility);
+        mTextNoShows.setVisibility(otherViewVisibility);
+        mButtonAddShows.setVisibility(otherViewVisibility);
+        mListViewMyShows.setVisibility(listViewVisibility);
     }
 
     //Method parses the JSON returned from the API and displays the information in the list_view_my_shows ListView

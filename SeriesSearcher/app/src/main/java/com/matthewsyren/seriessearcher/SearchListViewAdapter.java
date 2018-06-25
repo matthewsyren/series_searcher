@@ -27,7 +27,8 @@ import java.util.ArrayList;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class SearchListViewAdapter extends ArrayAdapter{
+public class SearchListViewAdapter
+        extends ArrayAdapter{
     //Declarations
     private ArrayList<Show> shows;
     private Context context;

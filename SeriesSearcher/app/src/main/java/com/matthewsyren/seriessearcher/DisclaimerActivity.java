@@ -2,7 +2,8 @@ package com.matthewsyren.seriessearcher;
 
 import android.os.Bundle;
 
-public class DisclaimerActivity extends BaseActivity {
+public class DisclaimerActivity
+        extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

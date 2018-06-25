@@ -16,11 +16,31 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SpecificShowActivity extends AppCompatActivity implements IAPIConnectionResponse{
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class SpecificShowActivity
+        extends AppCompatActivity
+        implements IAPIConnectionResponse{
+    //View bindings
+    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.text_show_next_episode) TextView mTextShowNextEpisode;
+    @BindView(R.id.text_show_latest_episode) TextView mTextShowLatestEpisode;
+    @BindView(R.id.text_show_title) TextView mTextShowTitle;
+    @BindView(R.id.image_view_specific_show) ImageView mImageViewSpecificShow;
+    @BindView(R.id.text_show_premiered) TextView mTextShowPremiered;
+    @BindView(R.id.text_show_language) TextView mTextShowLanguage;
+    @BindView(R.id.text_show_status) TextView mTextShowStatus;
+    @BindView(R.id.text_show_genres) TextView mTextShowGenres;
+    @BindView(R.id.text_show_runtime) TextView mTextShowRuntime;
+    @BindView(R.id.text_show_rating) TextView mTextShowRating;
+    @BindView(R.id.text_show_summary) TextView mTextShowSummary;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_specific_show);
+        ButterKnife.bind(this);
 
         displayShowInformation();
     }
@@ -43,8 +63,7 @@ public class SpecificShowActivity extends AppCompatActivity implements IAPIConne
 
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
-        ProgressBar progressBar = findViewById(R.id.progress_bar);
-        progressBar.setVisibility(visibility);
+        mProgressBar.setVisibility(visibility);
     }
 
     //Method parses the JSON returned from the API and displays the data
@@ -60,22 +79,22 @@ public class SpecificShowActivity extends AppCompatActivity implements IAPIConne
                     displayShowInformation(json);
                 }
                 else if(json.has("season")){
-                    TextView txtLatestEpisode = findViewById(R.id.text_show_latest_episode);
                     String season = json.getString("season");
                     String episode = json.getString("number");
-                    if(txtLatestEpisode.getText().toString().length() == 0) {
-                        txtLatestEpisode.setText(getResources().getString(R.string.text_latest_episode,"Season " + season + ", Episode " + episode));
+
+                    if(mTextShowLatestEpisode.getText().toString().length() == 0) {
+                        mTextShowLatestEpisode.setText(getResources().getString(R.string.text_latest_episode,"Season " + season + ", Episode " + episode));
                     }
                     else{
                         String airDate = json.getString("airdate");
+
                         if(airDate == null){
                             airDate = "";
                         }
                         else{
                             airDate = "(" + airDate + ")";
                         }
-                        TextView txtNextEpisode = findViewById(R.id.text_show_next_episode);
-                        txtNextEpisode.setText(getResources().getString(R.string.text_next_episode,"Season " + season + ", Episode " + episode + " " + airDate));
+                        mTextShowNextEpisode.setText(getResources().getString(R.string.text_next_episode,"Season " + season + ", Episode " + episode + " " + airDate));
 
                         //Hides ProgressBar
                         toggleProgressBar(View.INVISIBLE);
@@ -139,50 +158,37 @@ public class SpecificShowActivity extends AppCompatActivity implements IAPIConne
                 summary = "N/A";
             }
 
-            //Assigns GUI components to variables
-            TextView txtName = findViewById(R.id.text_show_title);
-            TextView txtPremiered = findViewById(R.id.text_show_premiered);
-            TextView txtLanguage = findViewById(R.id.text_show_language);
-            TextView txtStatus = findViewById(R.id.text_show_status);
-            TextView txtRuntime = findViewById(R.id.text_show_runtime);
-            TextView txtGenres = findViewById(R.id.text_show_genres);
-            TextView txtRating = findViewById(R.id.text_show_rating);
-            TextView txtSummary = findViewById(R.id.text_show_summary);
-            TextView txtPreviousEpisode = findViewById(R.id.text_show_latest_episode);
-            TextView txtNextEpisode = findViewById(R.id.text_show_next_episode);
-
             //Displays the JSON data in the GUI components
             Resources resources = this.getResources();
-            txtName.setText(name);
-            txtPremiered.setText(resources.getString(R.string.text_premiered, premiered));
-            txtLanguage.setText(resources.getString(R.string.text_language, language));
-            txtStatus.setText(resources.getString(R.string.text_status, status));
-            txtRuntime.setText(resources.getString(R.string.text_runtime, runtime));
-            txtRating.setText(resources.getString(R.string.text_rating, rating));
+            mTextShowTitle.setText(name);
+            mTextShowPremiered.setText(resources.getString(R.string.text_premiered, premiered));
+            mTextShowLanguage.setText(resources.getString(R.string.text_language, language));
+            mTextShowStatus.setText(resources.getString(R.string.text_status, status));
+            mTextShowRuntime.setText(resources.getString(R.string.text_runtime, runtime));
+            mTextShowRating.setText(resources.getString(R.string.text_rating, rating));
 
             //Displays the genres separated by a comma
             if(arrGenres != null){
-                txtGenres.setText(resources.getString(R.string.text_genres, arrGenres.get(0)));
+                mTextShowGenres.setText(resources.getString(R.string.text_genres, arrGenres.get(0)));
                 for(int i = 1; i < arrGenres.length(); i++){
-                    txtGenres.setText(resources.getString(R.string.text_genres_sections, txtGenres.getText(), arrGenres.get(i).toString()));
+                    mTextShowGenres.setText(resources.getString(R.string.text_genres_sections, mTextShowGenres.getText(), arrGenres.get(i).toString()));
                 }
             }
             else{
-                txtGenres.setText("N/A");
+                mTextShowGenres.setText("N/A");
             }
             summary = Show.formatSummary(this, summary);
-            txtSummary.setText(resources.getString(R.string.text_summary, summary));
+            mTextShowSummary.setText(resources.getString(R.string.text_summary, summary));
 
             //Displays the image if the user hasn't enabled data saving mode
             if(!User.getDataSavingPreference(this)){
                 //Fetches image from the API
-                ImageView imgSpecificShow = findViewById(R.id.image_view_specific_show);
                 if(imageUrl != null){
-                    Picasso.with(this).load(imageUrl).into(imgSpecificShow);
-                    imgSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorImageBackground));
+                    Picasso.with(this).load(imageUrl).into(mImageViewSpecificShow);
+                    mImageViewSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorImageBackground));
                 }
                 else{
-                    imgSpecificShow.setImageResource(R.color.colorGray);
+                    mImageViewSpecificShow.setImageResource(R.color.colorGray);
                 }
             }
 
@@ -197,7 +203,7 @@ public class SpecificShowActivity extends AppCompatActivity implements IAPIConne
                 api.execute(previousEpisodeLink);
             }
             else{
-                txtPreviousEpisode.setText(resources.getString(R.string.text_latest_episode, "N/A"));
+                mTextShowLatestEpisode.setText(resources.getString(R.string.text_latest_episode, "N/A"));
             }
             if(links.has("nextepisode")){
                 String nextEpisodeLink = links.getJSONObject("nextepisode").getString("href");
@@ -208,7 +214,7 @@ public class SpecificShowActivity extends AppCompatActivity implements IAPIConne
                 api.execute(nextEpisodeLink);
             }
             else{
-                txtNextEpisode.setText(resources.getString(R.string.text_next_episode, "N/A"));
+                mTextShowNextEpisode.setText(resources.getString(R.string.text_next_episode, "N/A"));
                 toggleProgressBar(View.INVISIBLE);
             }
         }
@@ -220,8 +226,7 @@ public class SpecificShowActivity extends AppCompatActivity implements IAPIConne
     //Method takes the user to the SearchByEpisodeActivity
     public void searchByEpisodeOnClick(View view) {
         //Fetches the show name
-        TextView txtShowName = findViewById(R.id.text_show_title);
-        String showName = txtShowName.getText().toString();
+        String showName = mTextShowTitle.getText().toString();
 
         //Fetches the link for the show that the user clicked on from the Bundle
         Bundle bundle = getIntent().getExtras();

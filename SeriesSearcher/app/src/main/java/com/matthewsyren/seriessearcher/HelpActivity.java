@@ -2,7 +2,8 @@ package com.matthewsyren.seriessearcher;
 
 import android.os.Bundle;
 
-public class HelpActivity extends BaseActivity {
+public class HelpActivity
+        extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

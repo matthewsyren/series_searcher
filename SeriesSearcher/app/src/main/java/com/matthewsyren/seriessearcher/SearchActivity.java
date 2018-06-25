@@ -17,29 +17,31 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class SearchActivity extends BaseActivity implements IAPIConnectionResponse {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class SearchActivity
+        extends BaseActivity
+        implements IAPIConnectionResponse {
+    //View bindings
+    @BindView(R.id.list_view_search_results) ListView mListViewSearchResults;
+    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.text_search_series) EditText mTextSearchSeries;
+
     //Declarations
     private APIConnection api = new APIConnection();
     private ArrayList<Show> lstShows =  new ArrayList<>();
     private SearchListViewAdapter adapter;
-    private ListView listView;
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
-
-    //Setter method
-    public void setLstShows(ArrayList<Show> lstShows){
-        this.lstShows = lstShows;
-
-        //Updates the Adapter
-        adapter.notifyDataSetChanged();
-
-        //Hides ProgressBar
-        toggleProgressBar(View.INVISIBLE);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        ButterKnife.bind(this);
+
+        //Sets the NavigationDrawer for the Activity
+        super.onCreateDrawer();
 
         //Hides ProgressBar
         toggleProgressBar(View.INVISIBLE);
@@ -50,11 +52,10 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
 
         //Sets a custom adapter for the list_view_search_results ListView to display the search results
         adapter = new SearchListViewAdapter(this, lstShows);
-        listView = findViewById(R.id.list_view_search_results);
-        listView.setAdapter(adapter);
+        mListViewSearchResults.setAdapter(adapter);
 
         //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListViewSearchResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                 Intent intent = new Intent(SearchActivity.this, SpecificShowActivity.class);
                 intent.putExtra("showNumber", "" + lstShows.get(pos).getShowId());
@@ -62,8 +63,7 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
             }
         });
 
-        final EditText txtSearch = findViewById(R.id.text_search_series);
-        txtSearch.addTextChangedListener(new TextWatcher() {
+        mTextSearchSeries.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -80,8 +80,6 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
 
             }
         });
-
-        super.onCreateDrawer();
     }
 
     @Override
@@ -113,15 +111,13 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
 
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
-        ProgressBar progressBar = findViewById(R.id.progress_bar);
-        progressBar.setVisibility(visibility);
+        mProgressBar.setVisibility(visibility);
     }
 
     //Method retrieves the text that the user searches for in text_search, and then searches for that text using the API
     public void searchShows(){
         //Fetches user's input
-        EditText txtSearch = findViewById(R.id.text_search_series);
-        String searchText = txtSearch.getText().toString();
+        String searchText = mTextSearchSeries.getText().toString();
 
         //Displays ProgressBar
         toggleProgressBar(View.VISIBLE);
@@ -192,5 +188,16 @@ public class SearchActivity extends BaseActivity implements IAPIConnectionRespon
         catch(JSONException j){
             Toast.makeText(getApplicationContext(), j.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    //Setter method
+    public void setLstShows(ArrayList<Show> lstShows){
+        this.lstShows = lstShows;
+
+        //Updates the Adapter
+        adapter.notifyDataSetChanged();
+
+        //Hides ProgressBar
+        toggleProgressBar(View.INVISIBLE);
     }
 }

@@ -14,7 +14,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class CreateAccountActivity extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class CreateAccountActivity
+        extends AppCompatActivity {
+    //View bindings
+    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.layout_create_account) RelativeLayout mLayoutCreateAccount;
+    @BindView(R.id.text_create_account_email) EditText mTextCreateAccountEmail;
+    @BindView(R.id.text_create_account_password) EditText mTextCreateAccountPassword;
+    @BindView(R.id.text_create_account_confirm_password) EditText mTextCreateAccountConfirmPassword;
+
     //Declarations
     private FirebaseAuth firebaseAuth;
 
@@ -22,6 +33,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
+        ButterKnife.bind(this);
 
         //Hides ProgressBar
         toggleProgressBar(View.INVISIBLE);
@@ -31,27 +43,21 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
-        ProgressBar progressBar = findViewById(R.id.progress_bar);
-        progressBar.setVisibility(visibility);
-        RelativeLayout relativeLayout = findViewById(R.id.layout_create_account);
+        mProgressBar.setVisibility(visibility);
 
         if(visibility == View.VISIBLE){
-            relativeLayout.setVisibility(View.INVISIBLE);
+            mLayoutCreateAccount.setVisibility(View.INVISIBLE);
         }
         else{
-            relativeLayout.setVisibility(View.VISIBLE);
+            mLayoutCreateAccount.setVisibility(View.VISIBLE);
         }
     }
 
     //Method creates an account for the user
     public void createAccountOnClick(View view){
-        EditText txtEmail = findViewById(R.id.text_create_account_email);
-        EditText txtPassword = findViewById(R.id.text_create_account_password);
-        EditText txtConfirmPassword = findViewById(R.id.text_create_account_confirm_password);
-
-        String email = txtEmail.getText().toString();
-        String password = txtPassword.getText().toString();
-        String confirmPassword = txtConfirmPassword.getText().toString();
+        String email = mTextCreateAccountEmail.getText().toString();
+        String password = mTextCreateAccountPassword.getText().toString();
+        String confirmPassword = mTextCreateAccountConfirmPassword.getText().toString();
 
         if(email.length() == 0){
             Toast.makeText(getApplicationContext(), "Please enter your email address", Toast.LENGTH_LONG).show();

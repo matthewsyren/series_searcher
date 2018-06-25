@@ -27,7 +27,8 @@ import java.util.ArrayList;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class HomeListViewAdapter extends ArrayAdapter{
+public class HomeListViewAdapter
+        extends ArrayAdapter{
     //Declarations
     private ArrayList<Show> shows;
     private Context context;

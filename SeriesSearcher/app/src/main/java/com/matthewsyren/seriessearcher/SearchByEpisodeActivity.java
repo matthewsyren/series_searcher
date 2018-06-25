@@ -16,7 +16,23 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SearchByEpisodeActivity extends AppCompatActivity implements IAPIConnectionResponse {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class SearchByEpisodeActivity
+        extends AppCompatActivity
+        implements IAPIConnectionResponse {
+    //View bindings
+    @BindView(R.id.text_show_title) TextView mTextShowTitle;
+    @BindView(R.id.text_show_episode_name) TextView mTextShowEpisodeName;
+    @BindView(R.id.text_show_air_date) TextView mTextShowAirDate;
+    @BindView(R.id.text_show_runtime) TextView mTextShowRuntime;
+    @BindView(R.id.text_show_summary) TextView mTextShowSummary;
+    @BindView(R.id.text_show_season) EditText mTextShowSeason;
+    @BindView(R.id.text_show_episode) EditText mTextShowEpisode;
+    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
+
+    //Variables
     private static final String EPISODE_NAME_BUNDLE_KEY = "episode_information_bundle_key";
     private static final String EPISODE_AIR_DATE_BUNDLE_KEY = "episode_air_date_bundle_key";
     private static final String EPISODE_RUNTIME_BUNDLE_KEY = "episode_runtime_bundle_key";
@@ -30,6 +46,7 @@ public class SearchByEpisodeActivity extends AppCompatActivity implements IAPICo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_by_episode);
+        ButterKnife.bind(this);
 
         if (savedInstanceState != null) {
             restoreData(savedInstanceState);
@@ -72,33 +89,28 @@ public class SearchByEpisodeActivity extends AppCompatActivity implements IAPICo
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(EPISODE_NAME_BUNDLE_KEY)){
             sEpisodeName = savedInstanceState.getString(EPISODE_NAME_BUNDLE_KEY);
-            TextView txtEpisodeName = findViewById(R.id.text_show_episode_name);
-            txtEpisodeName.setText(getString(R.string.text_episode_name, sEpisodeName));
+            mTextShowEpisodeName.setText(getString(R.string.text_episode_name, sEpisodeName));
         }
 
         if(savedInstanceState.containsKey(EPISODE_AIR_DATE_BUNDLE_KEY)){
             sEpisodeAirDate = savedInstanceState.getString(EPISODE_AIR_DATE_BUNDLE_KEY);
-            TextView txtEpisodeAirDate = findViewById(R.id.text_show_air_date);
-            txtEpisodeAirDate.setText(getString(R.string.text_episode_air_date, sEpisodeAirDate));
+            mTextShowAirDate.setText(getString(R.string.text_episode_air_date, sEpisodeAirDate));
         }
 
         if(savedInstanceState.containsKey(EPISODE_RUNTIME_BUNDLE_KEY)){
             sEpisodeRuntime = savedInstanceState.getString(EPISODE_RUNTIME_BUNDLE_KEY);
-            TextView txtEpisodeRuntime = findViewById(R.id.text_show_runtime);
-            txtEpisodeRuntime.setText(getString(R.string.text_episode_runtime, sEpisodeRuntime));
+            mTextShowRuntime.setText(getString(R.string.text_episode_runtime, sEpisodeRuntime));
         }
 
         if(savedInstanceState.containsKey(EPISODE_SUMMARY_BUNDLE_KEY)){
             sEpisodeSummary = savedInstanceState.getString(EPISODE_SUMMARY_BUNDLE_KEY);
-            TextView txtEpisodeSummary = findViewById(R.id.text_show_summary);
-            txtEpisodeSummary.setText(getString(R.string.text_episode_summary, sEpisodeSummary));
+            mTextShowSummary.setText(getString(R.string.text_episode_summary, sEpisodeSummary));
         }
     }
 
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
-        ProgressBar progressBar = findViewById(R.id.progress_bar);
-        progressBar.setVisibility(visibility);
+        mProgressBar.setVisibility(visibility);
     }
 
     //Method displays the title of the show
@@ -107,8 +119,7 @@ public class SearchByEpisodeActivity extends AppCompatActivity implements IAPICo
         Bundle bundle = getIntent().getExtras();
         String showTitle = bundle.getString("showTitle");
 
-        TextView txtShowTitle = findViewById(R.id.text_show_title);
-        txtShowTitle.setText(showTitle);
+        mTextShowTitle.setText(showTitle);
         setTitle("Search for episode");
     }
 
@@ -142,8 +153,10 @@ public class SearchByEpisodeActivity extends AppCompatActivity implements IAPICo
             //Fetches the show title from the Bundle and assigns input values to the variables
             Bundle bundle = getIntent().getExtras();
             String showNumber = bundle.getString("showNumber");
-            int season = Integer.parseInt(txtSeason.getText().toString());
-            int episode = Integer.parseInt(txtEpisode.getText().toString());
+
+            //Gets the user's input
+            int season = Integer.parseInt(mTextShowSeason.getText().toString());
+            int episode = Integer.parseInt(mTextShowEpisode.getText().toString());
 
             //Fetches information from the TVMaze API
             APIConnection api = new APIConnection();
@@ -160,12 +173,6 @@ public class SearchByEpisodeActivity extends AppCompatActivity implements IAPICo
     @Override
     public void parseJsonResponse(String response) {
         try{
-            //Assigns Views to variables
-            TextView txtEpisodeName = findViewById(R.id.text_show_episode_name);
-            TextView txtEpisodeAirDate = findViewById(R.id.text_show_air_date);
-            TextView txtEpisodeRuntime = findViewById(R.id.text_show_runtime);
-            TextView txtEpisodeSummary = findViewById(R.id.text_show_summary);
-
             if(response != null){
                 //Assigns JSON data to variables
                 JSONObject jsonObject = new JSONObject(response);
@@ -190,10 +197,10 @@ public class SearchByEpisodeActivity extends AppCompatActivity implements IAPICo
                 }
 
                 //Displays values in TextViews
-                txtEpisodeName.setText(getString(R.string.text_episode_name, episodeName));
-                txtEpisodeAirDate.setText(getString(R.string.text_episode_air_date, episodeAirDate));
-                txtEpisodeRuntime.setText(getString(R.string.text_episode_runtime, episodeRuntime));
-                txtEpisodeSummary.setText(getString(R.string.text_episode_summary, episodeSummary));
+                mTextShowEpisodeName.setText(getString(R.string.text_episode_name, episodeName));
+                mTextShowAirDate.setText(getString(R.string.text_episode_air_date, episodeAirDate));
+                mTextShowRuntime.setText(getString(R.string.text_episode_runtime, episodeRuntime));
+                mTextShowSummary.setText(getString(R.string.text_episode_summary, episodeSummary));
 
                 //Assigns the variables to global variables for data restoration purposes
                 sEpisodeName = episodeName;
@@ -203,10 +210,10 @@ public class SearchByEpisodeActivity extends AppCompatActivity implements IAPICo
             }
             else{
                 Toast.makeText(getApplicationContext(), "No information about that episode was found...", Toast.LENGTH_LONG).show();
-                txtEpisodeAirDate.setText("");
-                txtEpisodeName.setText("");
-                txtEpisodeRuntime.setText("");
-                txtEpisodeSummary.setText("");
+                mTextShowAirDate.setText("");
+                mTextShowEpisodeName.setText("");
+                mTextShowRuntime.setText("");
+                mTextShowSummary.setText("");
             }
 
             //Hides ProgressBar

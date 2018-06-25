@@ -16,30 +16,30 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class RandomShowsActivity extends BaseActivity implements IAPIConnectionResponse {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class RandomShowsActivity
+        extends BaseActivity
+        implements IAPIConnectionResponse {
+    //View bindings
+    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.list_view_random_shows) ListView mListViewRandomShows;
+
     //Declarations
     private ArrayList<Show> lstShows = new ArrayList<>();
     private SearchListViewAdapter adapter;
-    private ListView listView;
     private int page;
     private int startingShow;
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
-
-    //Setter method
-    public void setLstShows(ArrayList<Show> lstShows){
-        this.lstShows = lstShows;
-
-        //Updates the Adapter
-        adapter.notifyDataSetChanged();
-
-        //Hides ProgressBar
-        toggleProgressBar(View.INVISIBLE);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_random_shows);
+        ButterKnife.bind(this);
+
+        //Sets the NavigationDrawer for the Activity
         super.onCreateDrawer();
 
         if(savedInstanceState != null){
@@ -48,11 +48,10 @@ public class RandomShowsActivity extends BaseActivity implements IAPIConnectionR
 
         //Sets up Adapter to ListView
         adapter = new SearchListViewAdapter(this, lstShows);
-        listView = findViewById(R.id.list_view_random_shows);
-        listView.setAdapter(adapter);
+        mListViewRandomShows.setAdapter(adapter);
 
         //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListViewRandomShows.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                 Intent intent = new Intent(RandomShowsActivity.this, SpecificShowActivity.class);
                 intent.putExtra("showNumber", "" + lstShows.get(pos).getShowId());
@@ -126,8 +125,7 @@ public class RandomShowsActivity extends BaseActivity implements IAPIConnectionR
 
     //Method toggles the visibility of the ProgressBar
     public void toggleProgressBar(int visibility){
-        ProgressBar progressBar = findViewById(R.id.progress_bar);
-        progressBar.setVisibility(visibility);
+        mProgressBar.setVisibility(visibility);
     }
 
     //Method fetches the JSON from the APIConnection class, and parses it
@@ -206,5 +204,16 @@ public class RandomShowsActivity extends BaseActivity implements IAPIConnectionR
     public void refreshActivity(){
         finish();
         startActivity(new Intent(this, RandomShowsActivity.class));
+    }
+
+    //Setter method
+    public void setLstShows(ArrayList<Show> lstShows){
+        this.lstShows = lstShows;
+
+        //Updates the Adapter
+        adapter.notifyDataSetChanged();
+
+        //Hides ProgressBar
+        toggleProgressBar(View.INVISIBLE);
     }
 }
