@@ -146,10 +146,6 @@ public class SearchByEpisodeActivity
             InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-            //Gets user's input
-            EditText txtSeason = findViewById(R.id.text_show_season);
-            EditText txtEpisode = findViewById(R.id.text_show_episode);
-
             //Fetches the show title from the Bundle and assigns input values to the variables
             Bundle bundle = getIntent().getExtras();
             String showNumber = bundle.getString("showNumber");
