@@ -22,7 +22,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_email"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:imeOptions="flagNoExtractUi"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -36,7 +37,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fab_margin"
                 android:hint="@string/prompt_password"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword"
+                android:imeOptions="flagNoExtractUi"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -50,7 +52,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fab_margin"
                 android:hint="@string/prompt_confirm_password"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword"
+                android:imeOptions="flagNoExtractUi"/>
         </android.support.design.widget.TextInputLayout>
 
         <Button

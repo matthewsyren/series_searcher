@@ -28,7 +28,7 @@
                 android:textColorHint="@color/colorGray"
                 android:layout_marginLeft="@dimen/app_bar_margin"
                 android:layout_marginRight="@dimen/app_bar_margin"
-                android:imeOptions="actionSearch"
+                android:imeOptions="flagNoExtractUi"
                 android:hint="@string/label_search"
                 android:maxLines="1"
                 android:inputType="text"
