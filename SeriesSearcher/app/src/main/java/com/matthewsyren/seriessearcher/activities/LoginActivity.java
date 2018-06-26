@@ -1,4 +1,4 @@
-package com.matthewsyren.seriessearcher;
+package com.matthewsyren.seriessearcher.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -28,6 +28,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.matthewsyren.seriessearcher.R;
+import com.matthewsyren.seriessearcher.models.User;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -11,36 +11,36 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.matthewsyren.seriessearcher.HomeActivity"
+            android:name="com.matthewsyren.seriessearcher.activities.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.matthewsyren.seriessearcher.RandomShowsActivity"
+            android:name="com.matthewsyren.seriessearcher.activities.RandomShowsActivity"
             android:label="@string/title_activity_random_shows"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.matthewsyren.seriessearcher.SearchActivity"
+            android:name="com.matthewsyren.seriessearcher.activities.SearchActivity"
             android:label="@string/title_activity_search"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.matthewsyren.seriessearcher.SpecificShowActivity"
+            android:name="com.matthewsyren.seriessearcher.activities.SpecificShowActivity"
             android:label="@string/title_activity_specific_show"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.matthewsyren.seriessearcher.LoginActivity">
+        <activity android:name="com.matthewsyren.seriessearcher.activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.matthewsyren.seriessearcher.CreateAccountActivity" />
-        <activity android:name="com.matthewsyren.seriessearcher.SearchByEpisodeActivity" />
+        <activity android:name="com.matthewsyren.seriessearcher.activities.CreateAccountActivity" />
+        <activity android:name="com.matthewsyren.seriessearcher.activities.SearchByEpisodeActivity" />
         <activity
-            android:name="com.matthewsyren.seriessearcher.HelpActivity"
+            android:name="com.matthewsyren.seriessearcher.activities.HelpActivity"
             android:label="@string/title_activity_help"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.matthewsyren.seriessearcher.DisclaimerActivity"
+            android:name="com.matthewsyren.seriessearcher.activities.DisclaimerActivity"
             android:label="@string/title_activity_disclaimer"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>

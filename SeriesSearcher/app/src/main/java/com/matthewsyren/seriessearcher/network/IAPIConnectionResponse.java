@@ -1,4 +1,4 @@
-package com.matthewsyren.seriessearcher;
+package com.matthewsyren.seriessearcher.network;
 
 /**
  * Created by matthew on 2017/02/03.

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.matthewsyren.seriessearcher.SpecificShowActivity"
+    tools:context="com.matthewsyren.seriessearcher.activities.SpecificShowActivity"
     tools:showIn="@layout/activity_specific_show">
 
     <RelativeLayout

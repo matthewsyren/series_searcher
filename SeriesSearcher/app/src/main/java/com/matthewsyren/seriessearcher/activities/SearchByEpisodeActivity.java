@@ -1,4 +1,4 @@
-package com.matthewsyren.seriessearcher;
+package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +12,11 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.matthewsyren.seriessearcher.R;
+import com.matthewsyren.seriessearcher.models.Show;
+import com.matthewsyren.seriessearcher.network.APIConnection;
+import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
 
 import org.json.JSONException;
 import org.json.JSONObject;

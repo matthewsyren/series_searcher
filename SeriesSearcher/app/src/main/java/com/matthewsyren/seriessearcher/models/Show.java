@@ -1,4 +1,4 @@
-package com.matthewsyren.seriessearcher;
+package com.matthewsyren.seriessearcher.models;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -10,6 +10,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.matthewsyren.seriessearcher.activities.RandomShowsActivity;
+import com.matthewsyren.seriessearcher.activities.SearchActivity;
 
 import java.util.ArrayList;
 

@@ -1,6 +1,8 @@
-package com.matthewsyren.seriessearcher;
+package com.matthewsyren.seriessearcher.activities;
 
 import android.os.Bundle;
+
+import com.matthewsyren.seriessearcher.R;
 
 public class HelpActivity
         extends BaseActivity {

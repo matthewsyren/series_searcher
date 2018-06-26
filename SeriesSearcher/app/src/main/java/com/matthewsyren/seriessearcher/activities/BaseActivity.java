@@ -1,4 +1,4 @@
-package com.matthewsyren.seriessearcher;
+package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +24,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.matthewsyren.seriessearcher.R;
+import com.matthewsyren.seriessearcher.models.User;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

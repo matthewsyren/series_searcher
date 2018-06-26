@@ -1,4 +1,4 @@
-package com.matthewsyren.seriessearcher;
+package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +16,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.matthewsyren.seriessearcher.R;
+import com.matthewsyren.seriessearcher.adapters.HomeListViewAdapter;
+import com.matthewsyren.seriessearcher.models.Show;
+import com.matthewsyren.seriessearcher.models.User;
+import com.matthewsyren.seriessearcher.network.APIConnection;
+import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;

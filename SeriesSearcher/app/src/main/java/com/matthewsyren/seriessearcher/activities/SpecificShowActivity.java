@@ -1,4 +1,4 @@
-package com.matthewsyren.seriessearcher;
+package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -10,6 +10,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.matthewsyren.seriessearcher.R;
+import com.matthewsyren.seriessearcher.models.Show;
+import com.matthewsyren.seriessearcher.models.User;
+import com.matthewsyren.seriessearcher.network.APIConnection;
+import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -21,7 +26,7 @@ import butterknife.ButterKnife;
 
 public class SpecificShowActivity
         extends AppCompatActivity
-        implements IAPIConnectionResponse{
+        implements IAPIConnectionResponse {
     //View bindings
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.text_show_next_episode) TextView mTextShowNextEpisode;
