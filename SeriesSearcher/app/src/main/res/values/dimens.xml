@@ -13,7 +13,6 @@
     <dimen name="login_button_width">200dp</dimen>
     <dimen name="app_bar_margin">25dp</dimen>
     <dimen name="app_bar_text_size">24sp</dimen>
-    <dimen name="progress_bar_diameter">80dp</dimen>
     <dimen name="button_padding">15dp</dimen>
     <dimen name="specific_show_text_margin">10dp</dimen>
     <dimen name="app_bar_search_padding">3dp</dimen>
