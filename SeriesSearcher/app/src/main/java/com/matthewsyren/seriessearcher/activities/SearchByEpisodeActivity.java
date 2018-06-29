@@ -125,7 +125,7 @@ public class SearchByEpisodeActivity
         String showTitle = bundle.getString("showTitle");
 
         mTextShowTitle.setText(showTitle);
-        setTitle("Search for episode");
+        setTitle(getString(R.string.title_activity_search_by_episode));
     }
 
     //Takes the user back to the DeliveryControlActivity when the back button is pressed
@@ -165,7 +165,7 @@ public class SearchByEpisodeActivity
             api.execute("http://api.tvmaze.com/shows/" + showNumber + "/episodebynumber?season=" + season + "&number="  + episode);
         }
         catch(NumberFormatException nfe){
-            Toast.makeText(getApplicationContext(), "Please only enter whole numbers, and don't leave any fields empty", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.error_enter_whole_number, Toast.LENGTH_LONG).show();
             toggleProgressBar(View.INVISIBLE);
         }
     }
@@ -185,16 +185,16 @@ public class SearchByEpisodeActivity
 
                 //Replaces any empty data with "N/A"
                 if(episodeName.equalsIgnoreCase("null") || episodeName.length() == 0) {
-                    episodeName = "N/A";
+                    episodeName = getString(R.string.n_a);
                 }
                 if(episodeAirDate.equalsIgnoreCase("null") || episodeAirDate.length() == 0){
-                    episodeAirDate = "N/A";
+                    episodeAirDate = getString(R.string.n_a);
                 }
                 if(episodeRuntime.equalsIgnoreCase("null") || episodeRuntime.length() == 0){
-                    episodeRuntime = "N/A";
+                    episodeRuntime = getString(R.string.n_a);
                 }
                 if(episodeSummary.equalsIgnoreCase("null") || episodeSummary.length() == 0){
-                    episodeSummary = "N/A";
+                    episodeSummary = getString(R.string.n_a);
                 }
 
                 //Displays values in TextViews
@@ -210,7 +210,7 @@ public class SearchByEpisodeActivity
                 sEpisodeSummary = episodeSummary;
             }
             else{
-                Toast.makeText(getApplicationContext(), "No information about that episode was found...", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.error_no_episode_information_found, Toast.LENGTH_LONG).show();
                 mTextShowAirDate.setText("");
                 mTextShowEpisodeName.setText("");
                 mTextShowRuntime.setText("");
@@ -221,7 +221,7 @@ public class SearchByEpisodeActivity
             toggleProgressBar(View.INVISIBLE);
         }
         catch(JSONException j){
-            Toast.makeText(getApplicationContext(), j.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
         }
     }
 }

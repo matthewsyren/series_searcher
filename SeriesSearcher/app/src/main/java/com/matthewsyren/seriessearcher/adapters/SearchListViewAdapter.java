@@ -108,7 +108,7 @@ public class SearchListViewAdapter
                 else{
                     //Prompts the user to confirm the removal of the Show from My Series
                     AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-                    alertDialog.setTitle("Are you sure you want to remove " + shows.get(position).getShowTitle() + " from My Series?");
+                    alertDialog.setTitle(context.getString(R.string.series_removal_confirmation, shows.get(position).getShowTitle()));
 
                     //Creates OnClickListener for the Dialog message
                     DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
@@ -130,8 +130,8 @@ public class SearchListViewAdapter
                     };
 
                     //Assigns button an OnClickListener for the AlertDialog and displays the AlertDialog
-                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES", dialogOnClickListener);
-                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO", dialogOnClickListener);
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.yes), dialogOnClickListener);
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, context.getString(R.string.no), dialogOnClickListener);
                     alertDialog.setCanceledOnTouchOutside(false);
                     alertDialog.show();
                 }
@@ -145,7 +145,7 @@ public class SearchListViewAdapter
         //Establishes a connection to the Firebase database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference().child(userKey);
-        String message = showAdded ? showTitle + " added to My Series" : showTitle + " removed from My Series";
+        String message = showAdded ? context.getString(R.string.added_to_my_series, showTitle) : context.getString(R.string.removed_from_my_series, showTitle);
 
         //Generates the user's key and saves the value (the user's email address) to the Firebase database
         databaseReference.child(showID).setValue(showAdded);

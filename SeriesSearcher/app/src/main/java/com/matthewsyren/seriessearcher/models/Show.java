@@ -143,7 +143,7 @@ public class Show
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Log.i("FRB", "Error reading data");
+
             }
         });
     }

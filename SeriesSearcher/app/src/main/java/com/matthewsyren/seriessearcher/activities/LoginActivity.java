@@ -134,10 +134,10 @@ public class LoginActivity
         String password = mTextLoginPassword.getText().toString();
 
         if(email.length() == 0){
-            Toast.makeText(getApplicationContext(), "Please enter your email address or sign in via Google", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.enter_email_address, Toast.LENGTH_LONG).show();
         }
         else if(password.length() == 0){
-            Toast.makeText(getApplicationContext(), "Please enter your password", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.enter_password, Toast.LENGTH_LONG).show();
         }
         else{
             final User user = new User(email, password);
@@ -155,7 +155,7 @@ public class LoginActivity
                         user.setUserKey(loginActivity);
                     }
                     else{
-                        Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, R.string.authentication_failed, Toast.LENGTH_SHORT).show();
                         toggleProgressBarVisibility(View.INVISIBLE);
                     }
                 }
@@ -171,7 +171,7 @@ public class LoginActivity
 
     //Method initiates the password recovery feature of this app
     public void forgotPasswordOnClick(View view){
-        displayInputMessage("Please enter your email address. An email with a link to reset your password will be sent to you.");
+        displayInputMessage(getString(R.string.dialog_reset_password));
     }
 
     //Method displays an AlertDialog to get an email address from the user
@@ -207,17 +207,17 @@ public class LoginActivity
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         //Displays message telling the user the email has been sent successfully
-                                        Toast.makeText(getApplicationContext(), "Email sent", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), R.string.email_sent, Toast.LENGTH_LONG).show();
                                     }
                                     else{
                                         String exceptionMessage = task.getException().toString();
 
                                         //Displays appropriate error messages based on the exception message details
                                         if(exceptionMessage.contains("FirebaseAuthInvalidUserException")){
-                                            Toast.makeText(getApplicationContext(), "There is no account associated with that email address, please enter the email address you used to create an account for this app", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), R.string.error_no_account_associated_with_email, Toast.LENGTH_LONG).show();
                                         }
                                         else if(exceptionMessage.contains("FirebaseAuthInvalidCredentialsException")){
-                                            Toast.makeText(getApplicationContext(), "The email you entered is invalid, please ensure that the email address you enter exists", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), R.string.error_email_invalid, Toast.LENGTH_LONG).show();
                                         }
                                     }
                                     toggleProgressBarVisibility(View.INVISIBLE);
@@ -226,7 +226,7 @@ public class LoginActivity
                         }
                         else{
                             //Asks the user to enter a valid email address
-                            displayInputMessage("Please enter your email address");
+                            displayInputMessage(getString(R.string.enter_email_address));
                         }
                         break;
                     }
@@ -234,7 +234,7 @@ public class LoginActivity
             };
 
             //Assigns button and OnClickListener for the AlertDialog and displays the AlertDialog
-            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", dialogOnClickListener);
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), dialogOnClickListener);
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.show();
     }

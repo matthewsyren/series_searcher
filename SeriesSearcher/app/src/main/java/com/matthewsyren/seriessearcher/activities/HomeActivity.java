@@ -152,7 +152,7 @@ public class HomeActivity
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Log.i("Data", "Failed to read data, please check your internet connection");
+
             }
         });
     }
@@ -219,7 +219,7 @@ public class HomeActivity
 
                             //Ensures that the data returned in the JSON is valid
                             if(rating.equalsIgnoreCase("null") || rating.length() == 0){
-                                rating = "N/A";
+                                rating = getString(R.string.n_a);
                             }
 
                             JSONObject links = json.getJSONObject("_links");
@@ -233,7 +233,7 @@ public class HomeActivity
 
                             //Instantiates a Show object and adds it to the lstShows ArrayList
                             Show show = new Show(id, name, rating, status, imageUrl);
-                            show.setShowNextEpisode("N/A");
+                            show.setShowNextEpisode(getString(R.string.n_a));
                             lstShows.add(show);
                             adapter.notifyDataSetChanged();
                         }
@@ -244,7 +244,7 @@ public class HomeActivity
 
                             //Sets the next episode information
                             if(airDate == null){
-                                airDate = "N/A";
+                                airDate = getString(R.string.n_a);
                             }
                             else{
                                 airDate = airDate + " (S: " + season + " E: " + episode + ")";
@@ -265,14 +265,14 @@ public class HomeActivity
                 }
             }
             else{
-                Toast.makeText(getApplicationContext(), "Error fetching data, please check your internet connection", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.error_fetching_data_no_internet_connection, Toast.LENGTH_LONG).show();
             }
 
             //Hides ProgressBar
             toggleProgressBar(View.INVISIBLE);
         }
         catch(JSONException j){
-            Toast.makeText(getApplicationContext(), j.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
         }
     }
 }

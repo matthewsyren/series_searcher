@@ -62,10 +62,10 @@ public class CreateAccountActivity
         String confirmPassword = mTextCreateAccountConfirmPassword.getText().toString();
 
         if(email.length() == 0){
-            Toast.makeText(getApplicationContext(), "Please enter your email address", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.enter_email_address, Toast.LENGTH_LONG).show();
         }
         else if(password.length() == 0){
-            Toast.makeText(getApplicationContext(), "Please enter your password", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.enter_password, Toast.LENGTH_LONG).show();
         }
         else{
             //Displays ProgressBar
@@ -82,22 +82,22 @@ public class CreateAccountActivity
                             user.pushUser(getApplicationContext());
                         }
                         else if(task.getException().toString().contains("FirebaseAuthUserCollisionException")){
-                            Toast.makeText(CreateAccountActivity.this, "This email address has already been used to create an account, please use another email address", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CreateAccountActivity.this, R.string.email_address_taken, Toast.LENGTH_LONG).show();
                             toggleProgressBar(View.INVISIBLE);
                         }
                         else if(task.getException().toString().contains("FirebaseAuthWeakPasswordException")){
-                            Toast.makeText(CreateAccountActivity.this, "Please enter a stronger password (your password must have at least 6 characters)", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CreateAccountActivity.this, R.string.stronger_password, Toast.LENGTH_LONG).show();
                             toggleProgressBar(View.INVISIBLE);
                         }
                         else{
-                            Toast.makeText(CreateAccountActivity.this, "An error occurred while trying to create your account, please try again", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CreateAccountActivity.this, R.string.error_create_account, Toast.LENGTH_LONG).show();
                             toggleProgressBar(View.INVISIBLE);
                         }
                     }
                 });
             }
             else{
-                Toast.makeText(getApplicationContext(), "Please ensure that your passwords match", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.passwords_do_not_match, Toast.LENGTH_LONG).show();
                 toggleProgressBar(View.INVISIBLE);
             }
         }

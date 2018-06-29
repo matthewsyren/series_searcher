@@ -172,10 +172,10 @@ public class SearchActivity
 
                         //Ensures that the data returned in the JSON is valid
                         if(rating.equalsIgnoreCase("null") || rating.length() == 0){
-                            rating = "N/A";
+                            rating = getString(R.string.n_a);
                         }
                         if(runtime.equalsIgnoreCase("null") || runtime.length() == 0){
-                            runtime = "N/A";
+                            runtime = getString(R.string.n_a);
                         }
 
                         //Instantiates a Show object and adds it to the lstShows ArrayList
@@ -189,11 +189,11 @@ public class SearchActivity
                 Show.checkIfShowIsAdded(new User(this).getUserKey(), lstShows, this, null);
             }
             else{
-                Toast.makeText(getApplicationContext(), "Error fetching data, please check your internet connection", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.error_fetching_data_no_internet_connection, Toast.LENGTH_LONG).show();
             }
         }
         catch(JSONException j){
-            Toast.makeText(getApplicationContext(), j.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
         }
     }
 

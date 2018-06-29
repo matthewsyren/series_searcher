@@ -105,10 +105,10 @@ public class BaseActivity
 
         //Displays a message confirming the user's action
         if(!currentPreference){
-            Toast.makeText(getApplicationContext(), "Data Saving Mode activated - Images will not be downloaded while in Data Saving Mode", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.data_saving_mode_activated, Toast.LENGTH_LONG).show();
         }
         else{
-            Toast.makeText(getApplicationContext(), "Data Saving Mode deactivated", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.data_saving_mode_deactivated, Toast.LENGTH_LONG).show();
         }
     }
 

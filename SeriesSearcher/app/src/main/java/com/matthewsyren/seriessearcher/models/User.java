@@ -11,6 +11,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.activities.HomeActivity;
 
 /**
@@ -85,8 +86,7 @@ public class User {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.i("Data", "Failed to read data");
+
             }
         });
     }
@@ -115,7 +115,7 @@ public class User {
         editor.putBoolean("dataSavingMode", false);
         editor.apply();
 
-        Toast.makeText(context, "Account successfully created!", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, R.string.account_created, Toast.LENGTH_LONG).show();
 
         //Takes the user to the next activity
         Intent intent = new Intent(context, HomeActivity.class);

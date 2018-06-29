@@ -107,11 +107,11 @@ public class SpecificShowActivity
                 }
             }
             else{
-                Toast.makeText(getApplicationContext(), "Error fetching data, please try again", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.error_fetching_data_no_internet_connection, Toast.LENGTH_LONG).show();
             }
         }
         catch(JSONException j){
-            Toast.makeText(getApplicationContext(), j.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -145,22 +145,22 @@ public class SpecificShowActivity
 
             //Replaces null values/empty Strings with "N/A"
             if(premiered.equalsIgnoreCase("null") || premiered.length() == 0){
-                premiered = "N/A";
+                premiered = getString(R.string.n_a);
             }
             if(language.equalsIgnoreCase("null") || language.length() == 0){
-                language = "N/A";
+                language = getString(R.string.n_a);
             }
             if(rating.equalsIgnoreCase("null") || rating.length() == 0){
-                rating = "N/A";
+                rating = getString(R.string.n_a);
             }
             if(runtime.equalsIgnoreCase("null") || runtime.length() == 0){
-                runtime = "N/A";
+                runtime = getString(R.string.n_a);
             }
             if(status.equalsIgnoreCase("null") || status.length() == 0){
-                status = "N/A";
+                status = getString(R.string.n_a);
             }
             if(summary.equalsIgnoreCase("null") || summary.length() == 0){
-                summary = "N/A";
+                summary = getString(R.string.n_a);
             }
 
             //Displays the JSON data in the GUI components
@@ -180,7 +180,7 @@ public class SpecificShowActivity
                 }
             }
             else{
-                mTextShowGenres.setText("N/A");
+                mTextShowGenres.setText(getString(R.string.n_a));
             }
             summary = Show.formatSummary(this, summary);
             mTextShowSummary.setText(resources.getString(R.string.text_summary, summary));
