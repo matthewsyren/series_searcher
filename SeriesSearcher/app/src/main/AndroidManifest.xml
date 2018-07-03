@@ -34,7 +34,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name="com.matthewsyren.seriessearcher.activities.CreateAccountActivity" />
         <activity android:name="com.matthewsyren.seriessearcher.activities.SearchByEpisodeActivity" />
-        <activity android:name="com.matthewsyren.seriessearcher.activities.LoginActivity"/>
         <activity
             android:name="com.matthewsyren.seriessearcher.activities.HelpActivity"
             android:label="@string/title_activity_help"
