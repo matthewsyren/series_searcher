@@ -43,5 +43,7 @@
             android:name="com.matthewsyren.seriessearcher.activities.DisclaimerActivity"
             android:label="@string/title_activity_disclaimer"
             android:theme="@style/AppTheme.NoActionBar"/>
+
+        <service android:name=".services.FirebaseService" />
     </application>
 </manifest>
