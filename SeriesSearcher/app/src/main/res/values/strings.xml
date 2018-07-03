@@ -20,6 +20,7 @@
     <!-- HomeActivity -->
     <string name="button_add_shows">Add Series</string>
     <string name="label_home_message">You currently have no shows added to \'My Shows\'</string>
+    <string name="sign_in_cancelled">Sign in cancelled</string>
 
     <!-- RandomShowsActivity -->
     <string name="refresh">Refresh</string>
@@ -90,6 +91,7 @@
     <string name="text_add_show">+</string>
 
     <!-- Shared -->
+    <string name="error_no_internet_connection">Your device is not connected to the Internet, please connect to the Internet</string>
     <string name="error_fetching_data_no_internet_connection">Error fetching data, please check your internet connection</string>
     <string name="n_a">N/A</string>
     <string name="error_occurred">An error occurred, please try again</string>

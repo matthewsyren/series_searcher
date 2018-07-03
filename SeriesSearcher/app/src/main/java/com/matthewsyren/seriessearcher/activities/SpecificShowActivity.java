@@ -12,9 +12,9 @@ import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.Show;
-import com.matthewsyren.seriessearcher.models.User;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -186,7 +186,7 @@ public class SpecificShowActivity
             mTextShowSummary.setText(resources.getString(R.string.text_summary, summary));
 
             //Displays the image if the user hasn't enabled data saving mode
-            if(!User.getDataSavingPreference(this)){
+            if(!UserAccountUtilities.getDataSavingPreference(this)){
                 //Fetches image from the API
                 if(imageUrl != null){
                     Picasso.with(this).load(imageUrl).into(mImageViewSpecificShow);

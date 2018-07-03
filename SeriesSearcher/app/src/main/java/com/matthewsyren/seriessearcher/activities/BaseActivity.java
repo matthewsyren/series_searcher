@@ -18,14 +18,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.matthewsyren.seriessearcher.R;
-import com.matthewsyren.seriessearcher.models.User;
+import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,7 +70,7 @@ public class BaseActivity
 
         View actionView = menuItem.getActionView();
         final Switch navSwitch = actionView.findViewById(R.id.switch_data_saving_mode);
-        navSwitch.setChecked(User.getDataSavingPreference(this));
+        navSwitch.setChecked(UserAccountUtilities.getDataSavingPreference(this));
 
         navSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -95,7 +91,7 @@ public class BaseActivity
     //Method changes the user's preferences for Data Saving Mode
     public void toggleDataSavingPreference(){
         //Fetches the user's current preferences for Data Saving Mode
-        boolean currentPreference = User.getDataSavingPreference(getApplicationContext());
+        boolean currentPreference = UserAccountUtilities.getDataSavingPreference(getApplicationContext());
 
         //Saves the user's new preference for Data Saving Mode
         SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
@@ -116,7 +112,11 @@ public class BaseActivity
     public void displayUserDetails(){
         View view = mNavigationView.getHeaderView(0);
         TextView textView = view.findViewById(R.id.textView);
-        textView.setText(new User(this).getUserEmailAddress());
+        String emailAddress = UserAccountUtilities.getUserEmailAddress();
+
+        if(emailAddress != null){
+            textView.setText(emailAddress);
+        }
     }
 
     //Method sets the selected item in the Navigation Drawer
@@ -127,7 +127,7 @@ public class BaseActivity
     @Override
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
+            closeNavigationDrawer();
         }
         else {
             super.onBackPressed();
@@ -170,25 +170,26 @@ public class BaseActivity
             editor.putString("userKey", null);
             editor.apply();
 
-            //Takes the user back to the LoginActivity
-            GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
-            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
-            googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                }
-            });
+            //Signs the user out
+            AuthUI.getInstance()
+                    .signOut(this);
+
+            intent = new Intent(getApplicationContext(), HomeActivity.class);
         }
 
         //Takes the user to the appropriate Activity
         if(intent != null){
-            finish();
             startActivity(intent);
+            finish();
         }
 
         //Closes NavigationDrawer
-        mDrawerLayout.closeDrawer(GravityCompat.START);
+        closeNavigationDrawer();
         return true;
+    }
+
+    //Closes the NavigationDrawer
+    protected void closeNavigationDrawer(){
+        mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 }

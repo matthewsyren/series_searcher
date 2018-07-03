@@ -19,7 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.Show;
-import com.matthewsyren.seriessearcher.models.User;
+import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class SearchListViewAdapter
         }
 
         //Fetches images from TVMaze API if the user has not activated Data Saving Mode
-        if(!User.getDataSavingPreference(context)){
+        if(!UserAccountUtilities.getDataSavingPreference(context)){
             //Populates ImageView from URL if image hasn't been stored in the Show object yet. If the image has been stored, the ImageView is populated with the stored image from the Show object
             if(shows.get(position).getShowImageUrl() != null){
                 Picasso.with(context).load(shows.get(position).getShowImageUrl()).into(viewHolder.poster);
@@ -83,7 +83,6 @@ public class SearchListViewAdapter
         viewHolder.rating.setText(resources.getString(R.string.text_rating, shows.get(position).getShowRating()));
         viewHolder.status.setText(resources.getString(R.string.text_status, shows.get(position).getShowStatus()));
         viewHolder.runtime.setText(resources.getString(R.string.text_runtime, shows.get(position).getShowRuntime()));
-        final User user = new User(context);
 
         //Displays appropriate image for the ImageButton
         if(shows.get(position).isShowAdded() != null && shows.get(position).isShowAdded()){
@@ -102,7 +101,7 @@ public class SearchListViewAdapter
                     //Adds Show to My Series
                     viewHolder.toggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
                     shows.get(position).setShowAdded(true);
-                    pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), true);
+                    pushUserShowSelection(UserAccountUtilities.getUserKey(context), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), true);
                     notifyDataSetChanged();
                 }
                 else{
@@ -118,7 +117,7 @@ public class SearchListViewAdapter
                                 //Removes the selected show from the My Series list
                                 case AlertDialog.BUTTON_POSITIVE:
                                     //Updates the FirebaseDatabase and the UI
-                                    pushUserShowSelection(user.getUserKey(), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), false);
+                                    pushUserShowSelection(UserAccountUtilities.getUserKey(context), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), false);
                                     shows.get(position).setShowAdded(false);
                                     viewHolder.toggleShow.setImageResource(R.drawable.ic_add_black_24dp);
                                     notifyDataSetChanged();

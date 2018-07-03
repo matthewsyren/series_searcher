@@ -2,7 +2,10 @@ package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.ResultReceiver;
+import android.support.annotation.NonNull;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -11,6 +14,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.IdpResponse;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,15 +27,17 @@ import com.google.firebase.database.ValueEventListener;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.adapters.HomeListViewAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
-import com.matthewsyren.seriessearcher.models.User;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.services.FirebaseService;
+import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +55,11 @@ public class HomeActivity
     private ArrayList<Show> lstShows = new ArrayList<>();
     private HomeListViewAdapter adapter;
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+
+    //Request codes
+    private static final int SIGN_IN_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +71,151 @@ public class HomeActivity
         super.onCreateDrawer();
 
         //Restores data if possible
-        if(savedInstanceState != null){
+        if(savedInstanceState != null && FirebaseAuth.getInstance().getCurrentUser() != null){
             restoreData(savedInstanceState);
         }
 
+        //Checks if the user is signed in, and signs them in if they aren't
+        setUpAuthListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //Sets the selected item in the NavigationDrawer to Home
+        super.setSelectedNavItem(R.id.nav_home);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        //Removes the AuthStateListener
+        if(mAuthStateListener != null){
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if(lstShows.size() > 0){
+            outState.putParcelableArrayList(SHOWS_BUNDLE_KEY, lstShows);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == SIGN_IN_REQUEST_CODE){
+            //Adapted from https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md?Response%20codes#response-codes
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+
+            if(resultCode == RESULT_CANCELED){
+                if(response != null && response.getError() != null && response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
+                    //Displays a message if there is no Internet connection
+                    Toast.makeText(getApplicationContext(), R.string.error_no_internet_connection, Toast.LENGTH_LONG).show();
+                }
+                else{
+                    //Displays a message if the user cancels the sign in
+                    Toast.makeText(getApplicationContext(), getString(R.string.sign_in_cancelled), Toast.LENGTH_LONG).show();
+                }
+
+                //Closes the app
+                finish();
+            }
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        final int id = item.getItemId();
+
+        switch (id){
+            case R.id.nav_sign_out:
+                //Signs the user out
+                AuthUI.getInstance()
+                        .signOut(this);
+
+                //Closes the NavigationDrawer
+                super.closeNavigationDrawer();
+                return true;
+        }
+        return super.onNavigationItemSelected(item);
+    }
+
+    //Restores any saved data
+    private void restoreData(Bundle savedInstanceState){
+        if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
+            lstShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
+
+            //Hides ProgressBar
+            toggleProgressBar(View.GONE);
+
+            //Displays the ListView and hides other unnecessary Views
+            toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
+        }
+    }
+
+    //Checks if the user is signed in, and signs them in if they aren't signed in already
+    private void setUpAuthListener(){
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                if(firebaseUser == null){
+                    //Performs sign out tasks
+                    signOut();
+
+                    //Takes the user to the sign in screen
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(false)
+                                    .setAvailableProviders(Arrays.asList(
+                                            new AuthUI.IdpConfig.EmailBuilder().build(),
+                                            new AuthUI.IdpConfig.GoogleBuilder().build()))
+                                    .build(),
+                            SIGN_IN_REQUEST_CODE
+                    );
+                }
+                else{
+                    //Requests the user's key if it hasn't been set, otherwise requests their series
+                    if(UserAccountUtilities.getUserKey(getApplicationContext()) == null){
+                        UserAccountUtilities.requestUserKey(getApplicationContext(), new DataReceiver(new Handler()));
+                    }
+                    else{
+                        setUpActivity();
+                    }
+                }
+            }
+        };
+
+        //Adds the AuthStateListener
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    //Performs tasks when the user signs out
+    private void signOut(){
+        //Clears the user's key from SharedPreferences
+        UserAccountUtilities.setUserKey(this, null);
+
+        //Clears the user's series
+        if(lstShows != null){
+            lstShows.clear();
+
+            if(adapter != null){
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    //Sets up the Activity once the user signs in
+    private void setUpActivity(){
         //Sets a custom adapter for the list_view_search_results ListView to display the search results
         adapter = new HomeListViewAdapter(this, lstShows);
         mListViewMyShows.setAdapter(adapter);
@@ -81,38 +237,7 @@ public class HomeActivity
             toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
 
             //Gets the unique key used by Firebase to store information about the user signed in, and fetches data based on the keys fetched
-            User user = new User(this);
-            getUserShowKeys(user.getUserKey());
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        //Sets the selected item in the NavigationDrawer to Home
-        super.setSelectedNavItem(R.id.nav_home);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        if(lstShows.size() > 0){
-            outState.putParcelableArrayList(SHOWS_BUNDLE_KEY, lstShows);
-        }
-    }
-
-    //Restores any saved data
-    private void restoreData(Bundle savedInstanceState){
-        if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
-            lstShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
-
-            //Hides ProgressBar
-            toggleProgressBar(View.GONE);
-
-            //Displays the ListView and hides other unnecessary Views
-            toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
+            getUserShowKeys(UserAccountUtilities.getUserKey(this));
         }
     }
 
@@ -273,6 +398,33 @@ public class HomeActivity
         }
         catch(JSONException j){
             Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Used to retrieve results from the FirebaseService
+    private class DataReceiver
+            extends ResultReceiver {
+
+        //Constructor
+        DataReceiver(Handler handler) {
+            super(handler);
+        }
+
+        //Performs the appropriate action based on the result
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            super.onReceiveResult(resultCode, resultData);
+
+            if(resultCode == FirebaseService.ACTION_GET_USER_KEY_RESULT_CODE){
+                //Gets the user's key
+                String key = resultData.getString(FirebaseService.USER_KEY_EXTRA);
+
+                if(key != null){
+                    //Saves the key to SharedPreferences and initialises the map
+                    UserAccountUtilities.setUserKey(getApplicationContext(), key);
+                    setUpActivity();
+                }
+            }
         }
     }
 }

@@ -13,9 +13,9 @@ import android.widget.Toast;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.adapters.SearchListViewAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
-import com.matthewsyren.seriessearcher.models.User;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -196,7 +196,7 @@ public class RandomShowsActivity
                     }
                 }
                 //Determines which Shows have been added to My Series by the user
-                Show.checkIfShowIsAdded(new User(this).getUserKey(), lstShows, null, this);
+                Show.checkIfShowIsAdded(UserAccountUtilities.getUserKey(this), lstShows, null, this);
             }
             else{
                 Toast.makeText(getApplicationContext(), R.string.error_fetching_data_no_internet_connection, Toast.LENGTH_LONG).show();
