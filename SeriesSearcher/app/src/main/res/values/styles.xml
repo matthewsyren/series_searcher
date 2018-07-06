@@ -26,4 +26,9 @@
         <item name="android:textSize">@dimen/specific_show_activity_heading_text_size</item>
         <item name="android:textColor">@color/colorBlack</item>
     </style>
+
+    <style name="ButtonStyle">
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:background">@color/colorAccent</item>
+    </style>
 </resources>

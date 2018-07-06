@@ -58,10 +58,9 @@
             android:layout_height="wrap_content"
             android:text="@string/button_search"
             android:layout_below="@id/text_input_layout_episode"
-            android:background="@drawable/button"
             android:onClick="searchByEpisodeOnClick"
             android:layout_centerHorizontal="true"
-            android:textColor="@color/colorPrimary"/>
+            style="@style/ButtonStyle"/>
 
         <TextView
             android:id="@+id/text_show_episode_name"

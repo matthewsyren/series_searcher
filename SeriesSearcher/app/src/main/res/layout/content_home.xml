@@ -27,8 +27,7 @@
         android:layout_centerInParent="true"
         android:text="@string/button_add_shows"
         android:onClick="openSearchShows"
-        android:background="@drawable/button"
-        android:textColor="@color/colorPrimary"/>
+        style="@style/ButtonStyle"/>
 
     <ListView
         android:id="@+id/list_view_my_shows"
