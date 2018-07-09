@@ -3,6 +3,8 @@ package com.matthewsyren.seriessearcher.activities;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,6 +17,7 @@ import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -26,7 +29,7 @@ import butterknife.ButterKnife;
 
 public class SpecificShowActivity
         extends AppCompatActivity
-        implements IAPIConnectionResponse {
+        implements IAPIConnectionResponse{
     //View bindings
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.text_show_next_episode) TextView mTextShowNextEpisode;
@@ -40,6 +43,8 @@ public class SpecificShowActivity
     @BindView(R.id.text_show_runtime) TextView mTextShowRuntime;
     @BindView(R.id.text_show_rating) TextView mTextShowRating;
     @BindView(R.id.text_show_summary) TextView mTextShowSummary;
+    @BindView(R.id.app_bar) AppBarLayout mAppBar;
+    @BindView(R.id.cl_specific_show) CoordinatorLayout mClSpecificShow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,16 @@ public class SpecificShowActivity
         ButterKnife.bind(this);
 
         displayShowInformation();
+    }
+
+    /*
+     * Scrolls the Activity by the specified height
+     * Adapted from https://stackoverflow.com/questions/33058496/set-starting-height-of-collapsingtoolbarlayout
+     */
+    private void scrollActivity(int height){
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mAppBar.getLayoutParams();
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) layoutParams.getBehavior();
+        behavior.onNestedPreScroll(mClSpecificShow, mAppBar, null, 0, height, new int[]{0, 0}, 0);
     }
 
     //Method displays the information on the Activity
@@ -189,7 +204,24 @@ public class SpecificShowActivity
             if(!UserAccountUtilities.getDataSavingPreference(this)){
                 //Fetches image from the API
                 if(imageUrl != null){
-                    Picasso.with(this).load(imageUrl).into(mImageViewSpecificShow);
+                    Picasso.with(this).load(imageUrl)
+                            .into(mImageViewSpecificShow, new Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    mAppBar.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            //Scrolls the Activity by half the image's height
+                                            scrollActivity(mAppBar.getHeight() / 2);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onError() {
+
+                                }
+                            });
                     mImageViewSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorImageBackground));
                 }
                 else{
