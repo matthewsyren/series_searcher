@@ -19,7 +19,7 @@
 
     <!-- HomeActivity -->
     <string name="button_add_shows">Add Series</string>
-    <string name="label_home_message">You currently have no shows added to \'My Shows\'</string>
+    <string name="label_home_message">You currently have no shows added to \'My Series\'</string>
     <string name="sign_in_cancelled">Sign in cancelled</string>
 
     <!-- RandomShowsActivity -->
