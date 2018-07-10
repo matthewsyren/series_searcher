@@ -70,7 +70,12 @@ public class HomeListViewAdapter
         if(!UserAccountUtilities.getDataSavingPreference(context)){
             //Populates ImageView from URL if image hasn't been stored in the Show object yet. If the image has been stored, the ImageView is populated with the stored image from the Show object
             if(shows.get(position).getShowImageUrl() != null){
-                Picasso.with(context).load(shows.get(position).getShowImageUrl()).into(viewHolder.poster);
+                Picasso.with(context)
+                        .load(shows.get(position)
+                                .getShowImageUrl())
+                        .error(R.color.colorGray)
+                        .placeholder(R.color.colorGray)
+                        .into(viewHolder.poster);
             }
             else{
                 viewHolder.poster.setImageResource(R.mipmap.ic_launcher);

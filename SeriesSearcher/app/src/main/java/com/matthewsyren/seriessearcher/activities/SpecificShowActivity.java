@@ -204,7 +204,10 @@ public class SpecificShowActivity
             if(!UserAccountUtilities.getDataSavingPreference(this)){
                 //Fetches image from the API
                 if(imageUrl != null){
-                    Picasso.with(this).load(imageUrl)
+                    Picasso.with(this)
+                            .load(imageUrl)
+                            .error(R.color.colorGray)
+                            .placeholder(R.color.colorGray)
                             .into(mImageViewSpecificShow, new Callback() {
                                 @Override
                                 public void onSuccess() {
