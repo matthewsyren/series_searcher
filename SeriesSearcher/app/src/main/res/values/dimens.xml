@@ -17,4 +17,5 @@
     <dimen name="specific_show_text_margin">10dp</dimen>
     <dimen name="app_bar_search_padding">3dp</dimen>
     <dimen name="label_forgot_password_text_size">22sp</dimen>
+    <dimen name="specific_show_activity_title_margin">80dp</dimen>
 </resources>
