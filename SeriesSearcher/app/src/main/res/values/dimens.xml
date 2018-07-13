@@ -9,6 +9,7 @@
     <dimen name="app_bar_height">300dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="specific_show_activity_text_size">16sp</dimen>
+    <dimen name="other_text_size">16sp</dimen>
     <dimen name="specific_show_activity_heading_text_size">20sp</dimen>
     <dimen name="login_button_width">200dp</dimen>
     <dimen name="app_bar_margin">25dp</dimen>
