@@ -1,9 +1,7 @@
 package com.matthewsyren.seriessearcher.models;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -89,7 +87,7 @@ public class Show
     }
 
     //Method removes any HTML formatting from the summary field
-    public static String formatSummary(Context context, String summary){
+    public static String formatSummary(String summary){
         boolean htmlIncluded = summary.contains("<");
 
         while(htmlIncluded){

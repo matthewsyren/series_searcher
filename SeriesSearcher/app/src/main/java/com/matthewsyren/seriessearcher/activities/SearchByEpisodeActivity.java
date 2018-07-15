@@ -181,7 +181,7 @@ public class SearchByEpisodeActivity
                 String episodeAirDate = jsonObject.getString("airdate");
                 String episodeRuntime = jsonObject.getString("runtime");
                 String episodeSummary = jsonObject.getString("summary");
-                episodeSummary = Show.formatSummary(this, episodeSummary);
+                episodeSummary = Show.formatSummary(episodeSummary);
 
                 //Replaces any empty data with "N/A"
                 if(episodeName.equalsIgnoreCase("null") || episodeName.length() == 0) {

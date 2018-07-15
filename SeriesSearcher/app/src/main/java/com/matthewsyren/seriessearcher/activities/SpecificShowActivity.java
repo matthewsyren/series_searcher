@@ -197,7 +197,7 @@ public class SpecificShowActivity
             else{
                 mTextShowGenres.setText(getString(R.string.n_a));
             }
-            summary = Show.formatSummary(this, summary);
+            summary = Show.formatSummary(summary);
             mTextShowSummary.setText(resources.getString(R.string.text_summary, summary));
 
             //Displays the image if the user hasn't enabled data saving mode
