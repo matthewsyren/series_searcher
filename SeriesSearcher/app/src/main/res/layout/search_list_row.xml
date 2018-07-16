@@ -20,7 +20,8 @@
             <ImageView
                 android:id="@+id/image_show_poster"
                 android:layout_width="75dip"
-                android:layout_height="75dip" />
+                android:layout_height="75dip"
+                android:transitionName="@string/transition_image"/>
         </LinearLayout>
 
         <!-- Textual information that relates to image -->

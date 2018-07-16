@@ -1,5 +1,6 @@
 package com.matthewsyren.seriessearcher.activities;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -7,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -66,7 +68,11 @@ public class SearchActivity
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                 Intent intent = new Intent(SearchActivity.this, SpecificShowActivity.class);
                 intent.putExtra("showNumber", "" + lstShows.get(pos).getShowId());
-                startActivity(intent);
+                ImageView imageView = v.findViewById(R.id.image_show_poster);
+                Bundle bundle = ActivityOptions
+                        .makeSceneTransitionAnimation(SearchActivity.this, imageView, imageView.getTransitionName())
+                        .toBundle();
+                startActivity(intent, bundle);
             }
         });
 

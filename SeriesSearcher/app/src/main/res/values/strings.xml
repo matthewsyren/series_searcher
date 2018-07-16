@@ -101,4 +101,5 @@
     <string name="added_to_my_series">%s added to My Series</string>
     <string name="removed_from_my_series">%s removed from My Series</string>
     <string name="series_removal_confirmation">Are you sure you want to remove %s from My Series?</string>
+    <string name="transition_image">Transition image</string>
 </resources>
