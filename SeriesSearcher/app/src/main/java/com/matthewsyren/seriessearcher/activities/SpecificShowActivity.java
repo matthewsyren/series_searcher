@@ -17,7 +17,6 @@ import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -192,20 +191,20 @@ public class SpecificShowActivity
             summary = Show.formatSummary(summary);
             mTextShowSummary.setText(resources.getString(R.string.text_summary, summary));
 
-            //Displays the image if the user hasn't enabled data saving mode
-            if(!UserAccountUtilities.getDataSavingPreference(this)){
-                //Fetches image from the API
-                if(imageUrl != null){
-                    Picasso.with(this)
-                            .load(imageUrl)
-                            .error(R.color.colorGray)
-                            .placeholder(R.color.colorGray)
-                            .into(mImageViewSpecificShow);
-                    mImageViewSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorImageBackground));
-                }
-                else{
-                    mImageViewSpecificShow.setImageResource(R.color.colorGray);
-                }
+            //Displays a default image if the show doesn't have a poster or the user has enabled data saving mode, otherwise displays a default image
+            if(UserAccountUtilities.getDataSavingPreference(this) || imageUrl == null){
+                //Displays a default image
+                mImageViewSpecificShow.setScaleType(ImageView.ScaleType.CENTER);
+                mImageViewSpecificShow.setImageResource(R.mipmap.ic_launcher);
+            }
+            else{
+                //Displays the show's poster
+                Picasso.with(this)
+                        .load(imageUrl)
+                        .error(R.color.colorGray)
+                        .placeholder(R.color.colorGray)
+                        .into(mImageViewSpecificShow);
+                mImageViewSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorImageBackground));
             }
 
             //Fetches data about the show's previous and next episodes (which are accessed using different links)
