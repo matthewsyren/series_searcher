@@ -66,20 +66,18 @@ public class HomeListViewAdapter
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        //Fetches images from TVMaze API if the user has not activated Data Saving Mode
-        if(!UserAccountUtilities.getDataSavingPreference(context)){
-            //Populates ImageView from URL if image hasn't been stored in the Show object yet. If the image has been stored, the ImageView is populated with the stored image from the Show object
-            if(shows.get(position).getShowImageUrl() != null){
-                Picasso.with(context)
-                        .load(shows.get(position)
-                                .getShowImageUrl())
-                        .error(R.color.colorGray)
-                        .placeholder(R.color.colorGray)
-                        .into(viewHolder.poster);
-            }
-            else{
-                viewHolder.poster.setImageResource(R.mipmap.ic_launcher);
-            }
+        //Displays the app's launcher icon if the show has no poster or if data saving mode has been activated
+        if(UserAccountUtilities.getDataSavingPreference(context) || shows.get(position).getShowImageUrl() == null){
+            viewHolder.poster.setImageResource(R.mipmap.ic_launcher);
+        }
+        else{
+            //Displays the image for the show if the show has a poster and data saving mode hasn't been activated
+            Picasso.with(context)
+                    .load(shows.get(position)
+                            .getShowImageUrl())
+                    .error(R.color.colorGray)
+                    .placeholder(R.color.colorGray)
+                    .into(viewHolder.poster);
         }
 
         //Displays the data in the appropriate Views
