@@ -55,14 +55,6 @@ public class SpecificShowActivity
         displayShowInformation();
     }
 
-    /*
-     * Scrolls the Activity by the specified height
-     * Adapted from https://stackoverflow.com/questions/33058496/set-starting-height-of-collapsingtoolbarlayout
-     */
-    private void scrollActivity(int height){
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mAppBar.getLayoutParams();
-        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) layoutParams.getBehavior();
-        behavior.onNestedPreScroll(mClSpecificShow, mAppBar, null, 0, height, new int[]{0, 0}, 0);
     }
 
     //Method displays the information on the Activity
@@ -208,23 +200,7 @@ public class SpecificShowActivity
                             .load(imageUrl)
                             .error(R.color.colorGray)
                             .placeholder(R.color.colorGray)
-                            .into(mImageViewSpecificShow, new Callback() {
-                                @Override
-                                public void onSuccess() {
-                                    mAppBar.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            //Scrolls the Activity by half the image's height
-                                            scrollActivity(mAppBar.getHeight() / 2);
-                                        }
-                                    });
-                                }
-
-                                @Override
-                                public void onError() {
-
-                                }
-                            });
+                            .into(mImageViewSpecificShow);
                     mImageViewSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorImageBackground));
                 }
                 else{
