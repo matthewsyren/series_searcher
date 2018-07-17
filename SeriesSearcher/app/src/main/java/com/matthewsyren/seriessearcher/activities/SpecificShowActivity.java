@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -54,6 +55,17 @@ public class SpecificShowActivity
         displayShowInformation();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //Displays the ProgressBar if the show's information hasn't been fetched yet
+        if(TextUtils.isEmpty(mTextShowTitle.getText().toString())){
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+        else{
+            mProgressBar.setVisibility(View.GONE);
+        }
     }
 
     //Method displays the information on the Activity
