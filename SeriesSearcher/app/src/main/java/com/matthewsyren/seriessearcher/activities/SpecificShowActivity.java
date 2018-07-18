@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -45,6 +46,7 @@ public class SpecificShowActivity
     @BindView(R.id.text_show_summary) TextView mTextShowSummary;
     @BindView(R.id.app_bar) AppBarLayout mAppBar;
     @BindView(R.id.cl_specific_show) CoordinatorLayout mClSpecificShow;
+    @BindView(R.id.button_search_by_episode) FloatingActionButton mButtonSearchByEpisode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +68,14 @@ public class SpecificShowActivity
         else{
             mProgressBar.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        //Hides the FloatingActionButton
+        mButtonSearchByEpisode.setVisibility(View.GONE);
     }
 
     //Method displays the information on the Activity
