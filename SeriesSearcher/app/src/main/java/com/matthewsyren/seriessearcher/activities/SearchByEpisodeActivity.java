@@ -128,12 +128,12 @@ public class SearchByEpisodeActivity
         setTitle(getString(R.string.title_activity_search_by_episode));
     }
 
-    //Takes the user back to the DeliveryControlActivity when the back button is pressed
+    //Takes the user back to the previous Activity when the back button is pressed
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //Takes the user back to the DeliveryControlActivity if the button that was pressed was the back button
+        //Takes the user back to the previous Activity if the button that was pressed was the back button
         if (id == android.R.id.home) {
             onBackPressed();
         }
