@@ -7,4 +7,7 @@
     <color name="colorBlack">#000000</color>
     <color name="colorGray">#D3D3D3</color>
     <color name="colorImageBackground">#006975</color>
+    <color name="gradientStartColor">#e6000000</color>
+    <color name="gradientCenterColor">#00000000</color>
+    <color name="gradientEndColor">#00000000</color>
 </resources>
