@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -45,7 +45,7 @@ public class SpecificShowActivity
     @BindView(R.id.text_show_rating) TextView mTextShowRating;
     @BindView(R.id.text_show_summary) TextView mTextShowSummary;
     @BindView(R.id.app_bar) AppBarLayout mAppBar;
-    @BindView(R.id.cl_specific_show) CoordinatorLayout mClSpecificShow;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.button_search_by_episode) FloatingActionButton mButtonSearchByEpisode;
 
     @Override
@@ -54,6 +54,8 @@ public class SpecificShowActivity
         setContentView(R.layout.activity_specific_show);
         ButterKnife.bind(this);
 
+        //Displays the back arrow icon and display't the show's information
+        setUpBackArrowIcon();
         displayShowInformation();
     }
 
@@ -76,6 +78,36 @@ public class SpecificShowActivity
 
         //Hides the FloatingActionButton
         mButtonSearchByEpisode.setVisibility(View.GONE);
+    }
+
+    //Displays a back arrow icon and adds functionality to the icon
+    private void setUpBackArrowIcon(){
+        //Displays a back arrow icon
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_shadow);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        /*
+         * Adds OffsetChangedListener to the AppBarLayout, which will display the appropriate icons when the AppBar is collapsed or expanded
+         * Adapted from https://stackoverflow.com/questions/31682310/android-collapsingtoolbarlayout-collapse-listener?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+         */
+        mAppBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (Math.abs(verticalOffset) - appBarLayout.getTotalScrollRange() == 0) {
+                    //Displays a back Button icon with no shadow when the AppBar is collapsed
+                    mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+                }
+                else {
+                    //Displays a back Button icon with a shadow when the AppBar is expanded (in order to make the icon visible regardless of the image behind it)
+                    mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_shadow);
+                }
+            }
+        });
     }
 
     //Method displays the information on the Activity
@@ -194,6 +226,7 @@ public class SpecificShowActivity
             //Displays the JSON data in the GUI components
             Resources resources = this.getResources();
             mTextShowTitle.setText(name);
+            mToolbar.setTitle(name);
             mTextShowPremiered.setText(resources.getString(R.string.text_premiered, premiered));
             mTextShowLanguage.setText(resources.getString(R.string.text_language, language));
             mTextShowStatus.setText(resources.getString(R.string.text_status, status));
