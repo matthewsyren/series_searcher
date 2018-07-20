@@ -7,7 +7,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -35,7 +34,6 @@ public class SpecificShowActivity
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.text_show_next_episode) TextView mTextShowNextEpisode;
     @BindView(R.id.text_show_latest_episode) TextView mTextShowLatestEpisode;
-    @BindView(R.id.text_show_title) TextView mTextShowTitle;
     @BindView(R.id.image_view_specific_show) ImageView mImageViewSpecificShow;
     @BindView(R.id.text_show_premiered) TextView mTextShowPremiered;
     @BindView(R.id.text_show_language) TextView mTextShowLanguage;
@@ -64,7 +62,7 @@ public class SpecificShowActivity
         super.onResume();
 
         //Displays the ProgressBar if the show's information hasn't been fetched yet
-        if(TextUtils.isEmpty(mTextShowTitle.getText().toString())){
+        if(mToolbar.getTitle() == null){
             mProgressBar.setVisibility(View.VISIBLE);
         }
         else{
@@ -225,7 +223,6 @@ public class SpecificShowActivity
 
             //Displays the JSON data in the GUI components
             Resources resources = this.getResources();
-            mTextShowTitle.setText(name);
             mToolbar.setTitle(name);
             mTextShowPremiered.setText(resources.getString(R.string.text_premiered, premiered));
             mTextShowLanguage.setText(resources.getString(R.string.text_language, language));
@@ -296,7 +293,11 @@ public class SpecificShowActivity
     //Method takes the user to the SearchByEpisodeActivity
     public void searchByEpisodeOnClick(View view) {
         //Fetches the show name
-        String showName = mTextShowTitle.getText().toString();
+        String showName = null;
+
+        if(mToolbar.getTitle() != null){
+            showName = mToolbar.getTitle().toString();
+        }
 
         //Fetches the link for the show that the user clicked on from the Bundle
         Bundle bundle = getIntent().getExtras();
