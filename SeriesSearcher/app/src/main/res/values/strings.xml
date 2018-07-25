@@ -49,28 +49,6 @@
     <string name="title_activity_help">Help</string>
     <string name="title_activity_search_by_episode">Search for episode</string>
 
-    <!-- Login and CreateAccount Activities -->
-    <string name="text_or_sign_in_with">Or sign in with Google</string>
-    <string name="prompt_email">Email address</string>
-    <string name="prompt_password">Password</string>
-    <string name="prompt_confirm_password">Confirm password</string>
-    <string name="login">Login</string>
-    <string name="create_account">Create Account</string>
-    <string name="forgot_password">Forgot Password</string>
-    <string name="enter_email_address">Please enter your email address</string>
-    <string name="enter_password">Please enter your password</string>
-    <string name="email_address_taken">This email address has already been used to create an account, please use another email address</string>
-    <string name="stronger_password">Please enter a stronger password (your password must have at least 6 characters)</string>
-    <string name="passwords_do_not_match">Please ensure that your passwords match</string>
-    <string name="error_create_account">An error occurred while trying to create your account, please try again</string>
-    <string name="authentication_failed">Authentication failed</string>
-    <string name="dialog_reset_password">Please enter your email address. An email with a link to reset your password will be sent to you.</string>
-    <string name="email_sent">Email sent</string>
-    <string name="error_no_account_associated_with_email">There is no account associated with that email address, please enter the email address you used to create an account for this app</string>
-    <string name="error_email_invalid">The email you entered is invalid, please ensure that the email address you enter exists</string>
-    <string name="ok">OK</string>
-    <string name="account_created">Account successfully created!</string>
-
     <!-- SearchByEpisodeActivity -->
     <string name="button_search">Search</string>
     <string name="text_season">Season</string>
