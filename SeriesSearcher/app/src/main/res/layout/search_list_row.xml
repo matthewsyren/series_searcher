@@ -33,7 +33,7 @@
             android:typeface="sans"
             android:textSize="@dimen/list_row_title_text_size"
             android:textStyle="bold"
-            android:layout_toLeftOf="@+id/linear_layout_button"/>\
+            android:layout_toLeftOf="@+id/linear_layout_button"/>
 
         <TextView
             android:id="@+id/text_show_rating"
