@@ -46,6 +46,7 @@ public class SearchListViewAdapter
 
     //Method populates the appropriate Views with the appropriate data (stored in the shows ArrayList)
     @Override
+    @NonNull
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         if(convertView == null){
             //Inflates the search_list_row view for the ListView

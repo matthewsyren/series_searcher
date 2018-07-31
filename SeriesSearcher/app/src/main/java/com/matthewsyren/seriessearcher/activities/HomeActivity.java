@@ -266,7 +266,7 @@ public class HomeActivity
         //Adds Listeners for when the data is changed
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //Loops through all shows and adds each show key to the lstShows ArrayList
                 Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
                 ArrayList<String> lstShows = new ArrayList<>();
@@ -282,7 +282,7 @@ public class HomeActivity
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });

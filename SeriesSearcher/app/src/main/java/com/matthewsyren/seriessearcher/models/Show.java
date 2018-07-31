@@ -2,6 +2,7 @@ package com.matthewsyren.seriessearcher.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -108,7 +109,7 @@ public class Show
         //Adds Listeners for when the data is changed
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //Loops through all shows and sets the text of the Button to - if the user has added the show to 'My Series' already
                 Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
                 for(DataSnapshot snapshot : lstSnapshots){
@@ -140,7 +141,7 @@ public class Show
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
