@@ -82,4 +82,5 @@
     <string name="series_removal_confirmation">Are you sure you want to remove %s from My Series?</string>
     <string name="transition_image">Transition image</string>
     <string name="content_description_show_poster">The poster for the series</string>
+    <string name="content_description_button_toggle_show">An icon that shows the user whether they have added a show to My Series or not</string>
 </resources>

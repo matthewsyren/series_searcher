@@ -89,7 +89,8 @@
                 android:text="@string/text_add_show"
                 android:textColor="@color/colorPrimary"
                 android:focusable="false"
-                android:background="@drawable/button" />
+                android:background="@drawable/button"
+                android:contentDescription="@string/content_description_button_toggle_show"/>
         </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>
