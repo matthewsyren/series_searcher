@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    android:id="@+id/cl_land_specific_show"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.matthewsyren.seriessearcher.activities.SpecificShowActivity">
+
+    <ImageView
+        android:id="@+id/image_view_specific_show"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:transitionName="@string/transition_image"
+        android:contentDescription="@string/content_description_show_poster"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/image_view_specific_show"
+        app:layout_constraintTop_toTopOf="parent">
+        <include
+            layout="@layout/content_specific_show_wrapper" />
+    </FrameLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/button_search_by_episode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_search_black_24dp"
+        android:onClick="searchByEpisodeOnClick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:id="@+id/nsv_specific_show"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.matthewsyren.seriessearcher.activities.SpecificShowActivity"
+    tools:showIn="@layout/activity_specific_show">
+    <include layout="@layout/content_specific_show" />
+</ScrollView>
