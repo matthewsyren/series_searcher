@@ -30,7 +30,8 @@
                 app:layout_collapseMode="parallax"
                 android:scaleType="centerCrop"
                 android:transitionName="@string/transition_image"
-                android:contentDescription="@string/content_description_show_poster" />
+                android:contentDescription="@string/content_description_show_poster"
+                android:background="@color/colorImageBackground"/>
 
             <View
                 android:layout_width="match_parent"
