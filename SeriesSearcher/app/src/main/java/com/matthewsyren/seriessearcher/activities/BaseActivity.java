@@ -140,41 +140,42 @@ public class BaseActivity
         int id = item.getItemId();
         Intent intent = null;
 
-        if(id == R.id.nav_home){
-            intent = new Intent(getApplicationContext(), HomeActivity.class);
-        }
-        else if(id == R.id.nav_random_shows){
-            intent = new Intent(getApplicationContext(), RandomShowsActivity.class);
-        }
-        else if(id == R.id.nav_search){
-            intent = new Intent(getApplicationContext(), SearchActivity.class);
-        }
-        else if(id == R.id.nav_disclaimer){
-            intent = new Intent(getApplicationContext(), DisclaimerActivity.class);
-        }
-        else if(id == R.id.nav_help){
-            intent = new Intent(getApplicationContext(), HelpActivity.class);
-        }
-        else if(id == R.id.nav_data_saving_mode){
-            return false;
-        }
-        else if(id == R.id.nav_sign_out){
-            //Signs the user out of Firebase
-            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-            firebaseAuth.signOut();
+        switch (id) {
+            case R.id.nav_home:
+                intent = new Intent(getApplicationContext(), HomeActivity.class);
+                break;
+            case R.id.nav_random_shows:
+                intent = new Intent(getApplicationContext(), RandomShowsActivity.class);
+                break;
+            case R.id.nav_search:
+                intent = new Intent(getApplicationContext(), SearchActivity.class);
+                break;
+            case R.id.nav_disclaimer:
+                intent = new Intent(getApplicationContext(), DisclaimerActivity.class);
+                break;
+            case R.id.nav_help:
+                intent = new Intent(getApplicationContext(), HelpActivity.class);
+                break;
+            case R.id.nav_data_saving_mode:
+                return false;
+            case R.id.nav_sign_out:
+                //Signs the user out of Firebase
+                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                firebaseAuth.signOut();
 
-            //Removes the user's email and key from SharedPreferences
-            SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("userEmail", null);
-            editor.putString("userKey", null);
-            editor.apply();
+                //Removes the user's email and key from SharedPreferences
+                SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("userEmail", null);
+                editor.putString("userKey", null);
+                editor.apply();
 
-            //Signs the user out
-            AuthUI.getInstance()
-                    .signOut(this);
+                //Signs the user out
+                AuthUI.getInstance()
+                        .signOut(this);
 
-            intent = new Intent(getApplicationContext(), HomeActivity.class);
+                intent = new Intent(getApplicationContext(), HomeActivity.class);
+                break;
         }
 
         //Takes the user to the appropriate Activity
