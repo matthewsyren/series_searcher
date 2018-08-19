@@ -21,6 +21,8 @@ import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -122,7 +124,10 @@ public class SearchByEpisodeActivity
     public void displayShowTitle(){
         //Fetches the show title from the Bundle
         Bundle bundle = getIntent().getExtras();
-        String showTitle = bundle.getString("showTitle");
+        String showTitle = "";
+        if(bundle != null){
+            showTitle = bundle.getString("showTitle");
+        }
 
         mTextShowTitle.setText(showTitle);
         setTitle(getString(R.string.title_activity_search_by_episode));
@@ -149,11 +154,16 @@ public class SearchByEpisodeActivity
 
             //Hides the user's keyboard
             InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            if(inputMethodManager != null){
+                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
 
             //Fetches the show title from the Bundle and assigns input values to the variables
             Bundle bundle = getIntent().getExtras();
-            String showNumber = bundle.getString("showNumber");
+            String showNumber = "";
+            if(bundle != null){
+                showNumber = bundle.getString("showNumber");
+            }
 
             //Gets the user's input
             int season = Integer.parseInt(mTextShowSeason.getText().toString());

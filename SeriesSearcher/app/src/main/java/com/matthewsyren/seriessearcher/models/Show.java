@@ -115,7 +115,7 @@ public class Show
                 for(DataSnapshot snapshot : lstSnapshots){
                     String showKey = snapshot.getKey();
                     for(int i = 0; i < lstShows.size(); i++){
-                        if(showKey.equals("" + lstShows.get(i).getShowId()) && (boolean) snapshot.getValue()){
+                        if(showKey != null && showKey.equals("" + lstShows.get(i).getShowId()) && (boolean) snapshot.getValue()){
                             lstShows.get(i).setShowAdded(true);
                             break;
                         }
