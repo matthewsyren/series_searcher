@@ -31,14 +31,35 @@ public class Show
     private String showNextEpisode;
     private String showRuntime;
     private Boolean showAdded;
+    private String showPremieredDate;
+    private String showLanguages;
+    private String showGenres;
+    private String showSummary;
+    private String showPreviousEpisode;
 
-    //Constructor
+    //Constructor (used for the ListViews)
     public Show(int showId, String showTitle, String showRating, String showStatus, String showImageUrl) {
         this.showId = showId;
         this.showTitle = showTitle;
         this.showRating = showRating;
         this.showStatus = showStatus;
         this.showImageUrl = showImageUrl;
+    }
+
+    //Constructor (used for more detailed information on the Show)
+    public Show(String showImageUrl, String showTitle, String showRating, String showStatus, String showNextEpisode, String showRuntime, Boolean showAdded, String showPremieredDate, String showLanguages, String showGenres, String showSummary, String showPreviousEpisode) {
+        this.showImageUrl = showImageUrl;
+        this.showTitle = showTitle;
+        this.showRating = showRating;
+        this.showStatus = showStatus;
+        this.showNextEpisode = showNextEpisode;
+        this.showRuntime = showRuntime;
+        this.showAdded = showAdded;
+        this.showPremieredDate = showPremieredDate;
+        this.showLanguages = showLanguages;
+        this.showGenres = showGenres;
+        this.showSummary = showSummary;
+        this.showPreviousEpisode = showPreviousEpisode;
     }
 
     //Accessor Methods
@@ -70,6 +91,26 @@ public class Show
         return showRuntime;
     }
 
+    public String getShowPremieredDate() {
+        return showPremieredDate;
+    }
+
+    public String getShowLanguages() {
+        return showLanguages;
+    }
+
+    public String getShowGenres() {
+        return showGenres;
+    }
+
+    public String getShowSummary() {
+        return showSummary;
+    }
+
+    public String getShowPreviousEpisode() {
+        return showPreviousEpisode;
+    }
+
     public Boolean isShowAdded() {
         return showAdded;
     }
@@ -85,6 +126,10 @@ public class Show
 
     public void setShowAdded(Boolean showAdded) {
         this.showAdded = showAdded;
+    }
+
+    public void setShowPreviousEpisode(String showPreviousEpisode) {
+        this.showPreviousEpisode = showPreviousEpisode;
     }
 
     //Method removes any HTML formatting from the summary field
@@ -162,6 +207,11 @@ public class Show
         dest.writeString(showNextEpisode);
         dest.writeString(showRuntime);
         dest.writeByte((byte) ((showAdded != null && showAdded) ? 1 : 0));
+        dest.writeString(showPremieredDate);
+        dest.writeString(showLanguages);
+        dest.writeString(showGenres);
+        dest.writeString(showSummary);
+        dest.writeString(showPreviousEpisode);
     }
 
     protected Show(Parcel in) {
@@ -173,6 +223,11 @@ public class Show
         showNextEpisode = in.readString();
         showRuntime = in.readString();
         showAdded = in.readByte() == 1;
+        showPremieredDate = in.readString();
+        showLanguages = in.readString();
+        showGenres = in.readString();
+        showSummary = in.readString();
+        showPreviousEpisode = in.readString();
     }
 
     public static final Creator<Show> CREATOR = new Creator<Show>() {
