@@ -2,7 +2,6 @@ package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -51,6 +50,12 @@ public class SpecificShowActivity
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.button_search_by_episode) FloatingActionButton mButtonSearchByEpisode;
 
+    //Variables
+    private static final String SHOW_BUNDLE_KEY = "show_bundle_key";
+    private static final String SHOW_ID_BUNDLE_KEY = "show_id_bundle_key";
+    private Show mShow;
+    private static String sShowId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme();
@@ -58,9 +63,16 @@ public class SpecificShowActivity
         setContentView(R.layout.activity_specific_show);
         ButterKnife.bind(this);
 
-        //Displays the back arrow icon and display't the show's information
+        //Displays the back arrow icon
         setUpBackArrowIcon();
-        displayShowInformation();
+
+        //Fetches the Show's information if it hasn't been fetched already, otherwise restores it
+        if(savedInstanceState != null){
+            restoreData(savedInstanceState);
+        }
+        else{
+            getShowInformation();
+        }
     }
 
     @Override
@@ -73,6 +85,19 @@ public class SpecificShowActivity
         }
         else{
             mProgressBar.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if(mShow != null){
+            outState.putParcelable(SHOW_BUNDLE_KEY, mShow);
+        }
+
+        if(sShowId != null){
+            outState.putString(SHOW_ID_BUNDLE_KEY, sShowId);
         }
     }
 
@@ -94,6 +119,19 @@ public class SpecificShowActivity
 
         //Hides the FloatingActionButton
         mButtonSearchByEpisode.setVisibility(View.GONE);
+    }
+
+    //Restores the Activity's data
+    private void restoreData(Bundle savedInstanceState){
+        if(savedInstanceState.containsKey(SHOW_BUNDLE_KEY)){
+            mShow = savedInstanceState.getParcelable(SHOW_BUNDLE_KEY);
+        }
+
+        if(savedInstanceState.containsKey(SHOW_ID_BUNDLE_KEY)){
+            sShowId = savedInstanceState.getString(SHOW_ID_BUNDLE_KEY);
+        }
+
+        displayShowInformation(mShow);
     }
 
     //Displays a back arrow icon and adds functionality to the icon
@@ -147,14 +185,14 @@ public class SpecificShowActivity
         }
     }
 
-    //Method displays the information on the Activity
-    public void displayShowInformation(){
+    //Method fetches the information for the Show
+    public void getShowInformation(){
         //Fetches the link for the show that the user clicked on from the Bundle
         Bundle bundle = getIntent().getExtras();
 
         if(bundle != null){
-            String showNumber = bundle.getString("showNumber");
-            String showLink = "http://api.tvmaze.com/shows/" + showNumber;
+            sShowId = bundle.getString("showNumber");
+            String showLink = "http://api.tvmaze.com/shows/" + sShowId;
 
             //Displays ProgressBar
             toggleProgressBar(View.VISIBLE);
@@ -181,14 +219,16 @@ public class SpecificShowActivity
 
                 //If the JSON has a 'premiered' key, then it is used for the show's main information, and if it has a 'season' key, it has information about either the show's next or previous episode
                 if(json.has("premiered")){
-                    displayShowInformation(json);
+                    parseJson(json);
                 }
                 else if(json.has("season")){
                     String season = json.getString("season");
                     String episode = json.getString("number");
 
                     if(mTextShowLatestEpisode.getText().toString().length() == 0) {
-                        mTextShowLatestEpisode.setText(getResources().getString(R.string.text_latest_episode,"Season " + season + ", Episode " + episode));
+                        String display = "Season " + season + ", Episode " + episode;
+                        mTextShowLatestEpisode.setText(getResources().getString(R.string.text_latest_episode,display));
+                        mShow.setShowPreviousEpisode(display);
                     }
                     else{
                         String airDate = json.getString("airdate");
@@ -199,11 +239,16 @@ public class SpecificShowActivity
                         else{
                             airDate = "(" + airDate + ")";
                         }
-                        mTextShowNextEpisode.setText(getResources().getString(R.string.text_next_episode,"Season " + season + ", Episode " + episode + " " + airDate));
+                        String display = "Season " + season + ", Episode " + episode + " " + airDate;
+                        mTextShowNextEpisode.setText(getResources().getString(R.string.text_next_episode,display));
+                        mShow.setShowNextEpisode(display);
 
                         //Hides ProgressBar
                         toggleProgressBar(View.INVISIBLE);
                     }
+
+                    //Displays the Show's information
+                    displayShowInformation(mShow);
                 }
             }
             else{
@@ -216,7 +261,7 @@ public class SpecificShowActivity
     }
 
     //Method fetches the main information for the show from the TVMaze API, and then calls another link for more specific information about the show
-    public void displayShowInformation(JSONObject json){
+    public void parseJson(JSONObject json){
         try{
             String name = json.getString("name");
             String premiered = json.getString("premiered");
@@ -263,52 +308,38 @@ public class SpecificShowActivity
                 summary = getString(R.string.n_a);
             }
 
-            //Displays the JSON data in the GUI components
-            Resources resources = this.getResources();
-
-            if(mToolbar != null){
-                mToolbar.setTitle(name);
-            }
-            else{
-                if(getSupportActionBar() != null){
-                    getSupportActionBar().setTitle(name);
-                }
-            }
-
-            mTextShowPremiered.setText(resources.getString(R.string.text_premiered, premiered));
-            mTextShowLanguage.setText(resources.getString(R.string.text_language, language));
-            mTextShowStatus.setText(resources.getString(R.string.text_status, status));
-            mTextShowRuntime.setText(resources.getString(R.string.text_runtime, runtime));
-            mTextShowRating.setText(resources.getString(R.string.text_rating, rating));
-
             //Displays the genres separated by a comma
+            String genres = "";
             if(arrGenres != null){
-                mTextShowGenres.setText(resources.getString(R.string.text_genres, arrGenres.get(0)));
+                mTextShowGenres.setText(getString(R.string.text_genres, arrGenres.get(0)));
+                genres += arrGenres.get(0).toString();
                 for(int i = 1; i < arrGenres.length(); i++){
-                    mTextShowGenres.setText(resources.getString(R.string.text_genres_sections, mTextShowGenres.getText(), arrGenres.get(i).toString()));
+                    mTextShowGenres.setText(getString(R.string.text_genres_sections, mTextShowGenres.getText(), arrGenres.get(i).toString()));
+                    genres = getString(R.string.text_genres_sections, genres, arrGenres.get(i).toString());
                 }
             }
             else{
                 mTextShowGenres.setText(getString(R.string.n_a));
+                genres = getString(R.string.n_a);
             }
-            summary = Show.formatSummary(summary);
-            mTextShowSummary.setText(resources.getString(R.string.text_summary, summary));
 
-            //Displays a default image if the show doesn't have a poster or the user has enabled data saving mode, otherwise displays a default image
-            if(UserAccountUtilities.getDataSavingPreference(this) || imageUrl == null){
-                //Displays a default image
-                mImageViewSpecificShow.setScaleType(ImageView.ScaleType.CENTER);
-                mImageViewSpecificShow.setImageResource(R.mipmap.ic_launcher);
-            }
-            else{
-                //Displays the show's poster
-                Picasso.with(this)
-                        .load(imageUrl)
-                        .error(R.color.colorGray)
-                        .placeholder(R.color.colorGray)
-                        .into(mImageViewSpecificShow);
-                mImageViewSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorImageBackground));
-            }
+            //Gets the summary
+            summary = Show.formatSummary(summary);
+            mTextShowSummary.setText(getString(R.string.text_summary, summary));
+
+            //Creates a Show object with the appropriate information
+            mShow = new Show(imageUrl,
+                    name,
+                    rating,
+                    status,
+                    null,
+                    runtime,
+                    null,
+                    premiered,
+                    language,
+                    genres,
+                    summary,
+                    null);
 
             //Fetches data about the show's previous and next episodes (which are accessed using different links)
             JSONObject links = json.getJSONObject("_links");
@@ -321,8 +352,10 @@ public class SpecificShowActivity
                 api.execute(previousEpisodeLink);
             }
             else{
-                mTextShowLatestEpisode.setText(resources.getString(R.string.text_latest_episode, "N/A"));
+                mTextShowLatestEpisode.setText(getString(R.string.text_latest_episode, getString(R.string.n_a)));
+                mShow.setShowPreviousEpisode(getString(R.string.n_a));
             }
+
             if(links.has("nextepisode")){
                 String nextEpisodeLink = links.getJSONObject("nextepisode").getString("href");
 
@@ -332,12 +365,69 @@ public class SpecificShowActivity
                 api.execute(nextEpisodeLink);
             }
             else{
-                mTextShowNextEpisode.setText(resources.getString(R.string.text_next_episode, "N/A"));
+                mTextShowNextEpisode.setText(getString(R.string.text_next_episode, getString(R.string.n_a)));
+                mShow.setShowNextEpisode(getString(R.string.n_a));
                 toggleProgressBar(View.INVISIBLE);
             }
+
+            displayShowInformation(mShow);
         }
         catch(JSONException jse){
             Toast.makeText(getApplicationContext(), jse.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Displays the Show's information
+    private void displayShowInformation(Show show){
+        if(show != null){
+            //Displays the information
+            mTextShowPremiered.setText(getString(R.string.text_premiered, show.getShowPremieredDate()));
+            mTextShowLanguage.setText(getString(R.string.text_language, show.getShowLanguages()));
+            mTextShowStatus.setText(getString(R.string.text_status, show.getShowStatus()));
+            mTextShowRuntime.setText(getString(R.string.text_runtime, show.getShowRuntime()));
+            mTextShowRating.setText(getString(R.string.text_rating, show.getShowRating()));
+            mTextShowGenres.setText(getString(R.string.text_genres, show.getShowGenres()));
+            mTextShowSummary.setText(getString(R.string.text_summary, show.getShowSummary()));
+
+            if(show.getShowPreviousEpisode() != null){
+                mTextShowLatestEpisode.setText(getString(R.string.text_latest_episode, show.getShowPreviousEpisode()));
+            }
+
+            if(show.getShowNextEpisode() != null){
+                mTextShowNextEpisode.setText(getString(R.string.text_next_episode, show.getShowNextEpisode()));
+            }
+
+            //Displays the image for the Show
+            displayImage(show.getShowImageUrl());
+
+            //Displays the title for the Activity
+            if(mToolbar != null){
+                mToolbar.setTitle(show.getShowTitle());
+            }
+            else{
+                if(getSupportActionBar() != null){
+                    getSupportActionBar().setTitle(show.getShowTitle());
+                }
+            }
+        }
+    }
+
+    //Displays the image for the Show
+    private void displayImage(String imageUrl){
+        //Displays a default image if the show doesn't have a poster or the user has enabled data saving mode, otherwise displays a default image
+        if(UserAccountUtilities.getDataSavingPreference(this) || imageUrl == null){
+            //Displays a default image
+            mImageViewSpecificShow.setScaleType(ImageView.ScaleType.CENTER);
+            mImageViewSpecificShow.setImageResource(R.mipmap.ic_launcher);
+        }
+        else{
+            //Displays the show's poster
+            Picasso.with(this)
+                    .load(imageUrl)
+                    .error(R.color.colorGray)
+                    .placeholder(R.color.colorGray)
+                    .into(mImageViewSpecificShow);
+            mImageViewSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorImageBackground));
         }
     }
 
