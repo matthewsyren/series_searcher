@@ -21,8 +21,6 @@ import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Objects;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
