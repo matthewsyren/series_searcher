@@ -24,7 +24,6 @@ public class FirebaseService
 
     //Variables
     private DatabaseReference mDatabaseReference;
-    private FirebaseDatabase mFirebaseDatabase;
     private ResultReceiver mResultReceiver;
 
     //Extras
@@ -56,7 +55,7 @@ public class FirebaseService
      * Gets the user's unique key from the Firebase Database, or generates one if the user doesn't have one
      */
     private void getUserKey(final String emailAddress){
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
 
         mDatabaseReference = mFirebaseDatabase.getReference()
                 .child("Users");

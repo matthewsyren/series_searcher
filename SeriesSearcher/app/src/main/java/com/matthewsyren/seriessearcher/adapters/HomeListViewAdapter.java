@@ -35,7 +35,6 @@ public class HomeListViewAdapter
     //Declarations
     private ArrayList<Show> shows;
     private Context context;
-    private ViewHolder viewHolder;
 
     //Constructor
     public HomeListViewAdapter(Context context, ArrayList<Show> shows) {
@@ -48,6 +47,8 @@ public class HomeListViewAdapter
     @Override
     @NonNull
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
+        ViewHolder viewHolder;
+
         if(convertView == null){
             //Inflates the home_list_row View for the ListView
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();

@@ -38,8 +38,6 @@ public class RandomShowsActivity
     //Declarations
     private ArrayList<Show> lstShows = new ArrayList<>();
     private SearchListViewAdapter adapter;
-    private int page;
-    private int startingShow;
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
 
     @Override
@@ -78,6 +76,7 @@ public class RandomShowsActivity
 
             //Fetches JSON from API (If a page on the API has already been determined, then it is fetched from the Bundle, otherwise the Math.random() method chooses a random page from the API to fetch)
             Bundle bundle = getIntent().getExtras();
+            int page;
             if(bundle != null && bundle.getInt("apiPage") != -1){
                 page = bundle.getInt("apiPage");
             }
@@ -151,6 +150,7 @@ public class RandomShowsActivity
 
                 //Fetches previous list of Shows from the Bundle if a starting show has already been determined, otherwise Math.random() is used to choose a random starting point to fetch data from the API. This allows the app to fetch different shows each time it runs
                 Bundle bundle = getIntent().getExtras();
+                int startingShow;
                 if(bundle != null && bundle.getInt("apiStartingShow") != -1){
                     startingShow = bundle.getInt("apiStartingShow");
                 }
