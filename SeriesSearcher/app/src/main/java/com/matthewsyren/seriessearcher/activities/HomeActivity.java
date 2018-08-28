@@ -32,6 +32,7 @@ import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
 import com.matthewsyren.seriessearcher.services.FirebaseService;
+import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
 import org.json.JSONArray;
@@ -52,6 +53,8 @@ public class HomeActivity
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.text_no_shows) TextView mTextNoShows;
     @BindView(R.id.button_add_shows) Button mButtonAddShows;
+    @BindView(R.id.button_refresh) Button mButtonRefresh;
+    @BindView(R.id.text_no_internet) TextView mTextNoInternet;
 
     //Declarations
     private ArrayList<Show> lstShows = new ArrayList<>();
@@ -242,8 +245,15 @@ public class HomeActivity
             //Displays the ListView and hides other unnecessary Views
             toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
 
-            //Gets the unique key used by Firebase to store information about the user signed in, and fetches data based on the keys fetched
-            getUserShowKeys(UserAccountUtilities.getUserKey(this));
+            if(NetworkUtilities.isOnline(this)){
+                //Gets the unique key used by Firebase to store information about the user signed in, and fetches data based on the keys fetched
+                getUserShowKeys(UserAccountUtilities.getUserKey(this));
+            }
+            else{
+                //Displays a refresh Button
+                mTextNoInternet.setVisibility(View.VISIBLE);
+                mButtonRefresh.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -286,6 +296,14 @@ public class HomeActivity
 
             }
         });
+    }
+
+    //Refreshes the Activity
+    public void refreshActivity(View view){
+        //Restarts the Activity
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
     }
 
     //Method fetches the shows the user has added to 'My Series' using the keys passed in with the ArrayList
