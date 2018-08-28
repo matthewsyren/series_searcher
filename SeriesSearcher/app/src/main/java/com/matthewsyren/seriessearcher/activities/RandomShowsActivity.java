@@ -7,9 +7,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
@@ -17,6 +19,7 @@ import com.matthewsyren.seriessearcher.adapters.SearchListViewAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
 import org.json.JSONArray;
@@ -34,6 +37,10 @@ public class RandomShowsActivity
     //View bindings
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.list_view_random_shows) ListView mListViewRandomShows;
+    @BindView(R.id.button_refresh)
+    Button mButtonRefresh;
+    @BindView(R.id.text_no_internet)
+    TextView mTextNoInternet;
 
     //Declarations
     private ArrayList<Show> lstShows = new ArrayList<>();
@@ -70,22 +77,29 @@ public class RandomShowsActivity
             }
         });
 
-        if(lstShows.size() == 0){
-            //Displays the ProgressBar
-            toggleProgressBar(View.VISIBLE);
+        if(NetworkUtilities.isOnline(this)){
+            if(lstShows.size() == 0){
+                //Displays the ProgressBar
+                toggleProgressBar(View.VISIBLE);
 
-            //Fetches JSON from API (If a page on the API has already been determined, then it is fetched from the Bundle, otherwise the Math.random() method chooses a random page from the API to fetch)
-            Bundle bundle = getIntent().getExtras();
-            int page;
-            if(bundle != null && bundle.getInt("apiPage") != -1){
-                page = bundle.getInt("apiPage");
+                //Fetches JSON from API (If a page on the API has already been determined, then it is fetched from the Bundle, otherwise the Math.random() method chooses a random page from the API to fetch)
+                Bundle bundle = getIntent().getExtras();
+                int page;
+                if(bundle != null && bundle.getInt("apiPage") != -1){
+                    page = bundle.getInt("apiPage");
+                }
+                else{
+                    page = (int) (Math.random() * 100);
+                }
+                APIConnection api = new APIConnection();
+                api.delegate = this;
+                api.execute("http://api.tvmaze.com/shows?page=" + page);
             }
-            else{
-                page = (int) (Math.random() * 100);
-            }
-            APIConnection api = new APIConnection();
-            api.delegate = this;
-            api.execute("http://api.tvmaze.com/shows?page=" + page);
+        }
+        else{
+            //Displays a refresh Button
+            mTextNoInternet.setVisibility(View.VISIBLE);
+            mButtonRefresh.setVisibility(View.VISIBLE);
         }
     }
 
@@ -133,6 +147,12 @@ public class RandomShowsActivity
             //Hides the ProgressBar
             toggleProgressBar(View.GONE);
         }
+    }
+
+    //Refreshes the Activity
+    public void refreshActivity(View view){
+        //Restarts the Activity
+        refreshActivity();
     }
 
     //Method toggles the visibility of the ProgressBar
