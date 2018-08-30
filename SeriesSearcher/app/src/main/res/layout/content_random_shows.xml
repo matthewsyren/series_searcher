@@ -29,10 +29,8 @@
         android:id="@+id/text_no_internet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:text="@string/error_no_internet_connection"
-        android:visibility="gone"
-        android:textAlignment="center"/>
+        style="@style/TextViewMessageStyle"/>
 
     <Button
         android:id="@+id/button_refresh"

@@ -33,4 +33,10 @@
         <item name="android:textColor">@color/colorBlack</item>
         <item name="android:background">@color/colorAccent</item>
     </style>
+
+    <style name="TextViewMessageStyle">
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:visibility">gone</item>
+    </style>
 </resources>
