@@ -37,10 +37,8 @@ public class RandomShowsActivity
     //View bindings
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.list_view_random_shows) ListView mListViewRandomShows;
-    @BindView(R.id.button_refresh)
-    Button mButtonRefresh;
-    @BindView(R.id.text_no_internet)
-    TextView mTextNoInternet;
+    @BindView(R.id.button_refresh) Button mButtonRefresh;
+    @BindView(R.id.text_no_internet) TextView mTextNoInternet;
 
     //Declarations
     private ArrayList<Show> lstShows = new ArrayList<>();
