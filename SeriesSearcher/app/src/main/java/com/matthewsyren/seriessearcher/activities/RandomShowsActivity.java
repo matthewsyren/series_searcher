@@ -154,7 +154,7 @@ public class RandomShowsActivity
     }
 
     //Method toggles the visibility of the ProgressBar
-    public void toggleProgressBar(int visibility){
+    private void toggleProgressBar(int visibility){
         mProgressBar.setVisibility(visibility);
     }
 
@@ -232,7 +232,7 @@ public class RandomShowsActivity
     }
 
     //Method refreshes the Activity in order to fetch 20 new randomised series
-    public void refreshActivity(){
+    private void refreshActivity(){
         finish();
         startActivity(new Intent(this, RandomShowsActivity.class));
     }

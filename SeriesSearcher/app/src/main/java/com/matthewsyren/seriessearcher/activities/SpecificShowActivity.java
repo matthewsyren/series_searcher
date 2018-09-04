@@ -186,7 +186,7 @@ public class SpecificShowActivity
     }
 
     //Method fetches the information for the Show
-    public void getShowInformation(){
+    private void getShowInformation(){
         //Fetches the link for the show that the user clicked on from the Bundle
         Bundle bundle = getIntent().getExtras();
 
@@ -205,7 +205,7 @@ public class SpecificShowActivity
     }
 
     //Method toggles the visibility of the ProgressBar
-    public void toggleProgressBar(int visibility){
+    private void toggleProgressBar(int visibility){
         mProgressBar.setVisibility(visibility);
     }
 
@@ -261,7 +261,7 @@ public class SpecificShowActivity
     }
 
     //Method fetches the main information for the show from the TVMaze API, and then calls another link for more specific information about the show
-    public void parseJson(JSONObject json){
+    private void parseJson(JSONObject json){
         try{
             String name = json.getString("name");
             String premiered = json.getString("premiered");

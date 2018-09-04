@@ -123,12 +123,12 @@ public class SearchActivity
     }
 
     //Method toggles the visibility of the ProgressBar
-    public void toggleProgressBar(int visibility){
+    private void toggleProgressBar(int visibility){
         mProgressBar.setVisibility(visibility);
     }
 
     //Method retrieves the text that the user searches for in text_search, and then searches for that text using the API
-    public void searchShows(){
+    private void searchShows(){
         //Fetches user's input
         String searchText = mTextSearchSeries.getText().toString();
 

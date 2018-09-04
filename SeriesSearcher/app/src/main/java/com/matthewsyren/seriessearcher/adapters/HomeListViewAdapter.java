@@ -129,7 +129,7 @@ public class HomeListViewAdapter
     }
 
     //Method updates the shows that the user has added to 'My Series' in the Firebase database
-    public void pushUserShowSelection(String userKey, String showID, String showTitle, boolean showAdded){
+    private void pushUserShowSelection(String userKey, String showID, String showTitle, boolean showAdded){
         //Establishes a connection to the Firebase database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference().child(userKey);

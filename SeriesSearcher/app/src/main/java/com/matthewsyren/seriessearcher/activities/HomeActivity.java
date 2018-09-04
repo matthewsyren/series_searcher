@@ -258,7 +258,7 @@ public class HomeActivity
     }
 
     //Method toggles the visibility of the ProgressBar
-    public void toggleProgressBar(int visibility){
+    private void toggleProgressBar(int visibility){
         mProgressBar.setVisibility(visibility);
     }
 
@@ -269,7 +269,7 @@ public class HomeActivity
     }
 
     //Method fetches all show keys (show ID's) associated with the user's key, and adds them to an ArrayList. The ArrayList is then passed to the getUserShowData method, which fetches the JSON data for each show from the TVMAze API
-    public void getUserShowKeys(String userKey){
+    private void getUserShowKeys(String userKey){
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
 
@@ -307,7 +307,7 @@ public class HomeActivity
     }
 
     //Method fetches the shows the user has added to 'My Series' using the keys passed in with the ArrayList
-    public void getUserShowData(ArrayList<String> lstShows){
+    private void getUserShowData(ArrayList<String> lstShows){
         if(lstShows.size() > 0){
             //Transfers the data from lstShows to an array containing the necessary links to the API (an array can be passed in to the APIConnection class to fetch data from the API)
             String[] arrShows = new String[lstShows.size()];
@@ -327,7 +327,7 @@ public class HomeActivity
     }
 
     //Method sets the visibility of the views based on the parameters passed in
-    public void toggleViewVisibility(int listViewVisibility, int otherViewVisibility){
+    private void toggleViewVisibility(int listViewVisibility, int otherViewVisibility){
         mTextNoShows.setVisibility(otherViewVisibility);
         mButtonAddShows.setVisibility(otherViewVisibility);
         mListViewMyShows.setVisibility(listViewVisibility);

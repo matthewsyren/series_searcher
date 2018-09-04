@@ -114,12 +114,12 @@ public class SearchByEpisodeActivity
     }
 
     //Method toggles the visibility of the ProgressBar
-    public void toggleProgressBar(int visibility){
+    private void toggleProgressBar(int visibility){
         mProgressBar.setVisibility(visibility);
     }
 
     //Method displays the title of the show
-    public void displayShowTitle(){
+    private void displayShowTitle(){
         //Fetches the show title from the Bundle
         Bundle bundle = getIntent().getExtras();
         String showTitle = "";
