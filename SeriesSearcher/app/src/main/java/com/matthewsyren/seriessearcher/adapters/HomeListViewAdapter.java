@@ -97,8 +97,12 @@ public class HomeListViewAdapter
         viewHolder.toggleShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Creates an AlertDialog to prompt the user to confirm their decision to remove the series from My Series
                 AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-                alertDialog.setTitle(context.getString(R.string.series_removal_confirmation, shows.get(position).getShowTitle()));
+                View view = View.inflate(context, R.layout.dialog_remove_series, null);
+                TextView textView = view.findViewById(R.id.tv_remove_series);
+                textView.setText(context.getString(R.string.series_removal_confirmation, shows.get(position).getShowTitle()));
+                alertDialog.setView(view);
 
                 //Creates OnClickListener for the Dialog message
                 DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
