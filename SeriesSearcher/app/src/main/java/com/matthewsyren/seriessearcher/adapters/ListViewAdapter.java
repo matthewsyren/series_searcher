@@ -30,7 +30,7 @@ import java.util.ArrayList;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class HomeListViewAdapter
+public class ListViewAdapter
         extends ArrayAdapter{
     //Declarations
     private ArrayList<Show> mShows;
@@ -39,7 +39,7 @@ public class HomeListViewAdapter
     private ViewHolder viewHolder;
 
     //Constructor
-    public HomeListViewAdapter(Context context, ArrayList<Show> shows, boolean isHomeListView) {
+    public ListViewAdapter(Context context, ArrayList<Show> shows, boolean isHomeListView) {
         super(context, R.layout.home_list_row,shows);
         mContext = context;
         mShows = shows;

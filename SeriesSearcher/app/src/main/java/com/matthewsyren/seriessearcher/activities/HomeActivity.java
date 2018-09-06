@@ -27,7 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.matthewsyren.seriessearcher.R;
-import com.matthewsyren.seriessearcher.adapters.HomeListViewAdapter;
+import com.matthewsyren.seriessearcher.adapters.ListViewAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
@@ -58,7 +58,7 @@ public class HomeActivity
 
     //Declarations
     private ArrayList<Show> lstShows = new ArrayList<>();
-    private HomeListViewAdapter adapter;
+    private ListViewAdapter adapter;
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -222,7 +222,7 @@ public class HomeActivity
     //Sets up the Activity once the user signs in
     private void setUpActivity(){
         //Sets a custom adapter for the list_view_search_results ListView to display the search results
-        adapter = new HomeListViewAdapter(this, lstShows, true);
+        adapter = new ListViewAdapter(this, lstShows, true);
         mListViewMyShows.setAdapter(adapter);
 
         //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
