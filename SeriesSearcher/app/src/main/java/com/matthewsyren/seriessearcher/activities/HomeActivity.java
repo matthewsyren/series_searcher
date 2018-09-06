@@ -222,7 +222,7 @@ public class HomeActivity
     //Sets up the Activity once the user signs in
     private void setUpActivity(){
         //Sets a custom adapter for the list_view_search_results ListView to display the search results
-        adapter = new HomeListViewAdapter(this, lstShows);
+        adapter = new HomeListViewAdapter(this, lstShows, true);
         mListViewMyShows.setAdapter(adapter);
 
         //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
@@ -383,6 +383,7 @@ public class HomeActivity
                             //Instantiates a Show object and adds it to the lstShows ArrayList
                             Show show = new Show(id, name, rating, status, imageUrl);
                             show.setShowNextEpisode(getString(R.string.n_a));
+                            show.setShowAdded(null);
                             lstShows.add(show);
                             adapter.notifyDataSetChanged();
                         }
@@ -412,6 +413,9 @@ public class HomeActivity
                         }
                     }
                 }
+
+                //Determines which Shows have been added to My Series by the user
+                Show.checkIfShowIsAdded(UserAccountUtilities.getUserKey(this), lstShows, null, null);
             }
             else{
                 Toast.makeText(getApplicationContext(), R.string.error_fetching_data_no_internet_connection, Toast.LENGTH_LONG).show();

@@ -33,35 +33,36 @@ import java.util.ArrayList;
 public class HomeListViewAdapter
         extends ArrayAdapter{
     //Declarations
-    private ArrayList<Show> shows;
-    private Context context;
+    private ArrayList<Show> mShows;
+    private Context mContext;
+    private boolean mIsHomeListView;
+    private ViewHolder viewHolder;
 
     //Constructor
-    public HomeListViewAdapter(Context context, ArrayList<Show> shows) {
+    public HomeListViewAdapter(Context context, ArrayList<Show> shows, boolean isHomeListView) {
         super(context, R.layout.home_list_row,shows);
-        this.context = context;
-        this.shows = shows;
+        mContext = context;
+        mShows = shows;
+        mIsHomeListView = isHomeListView;
     }
 
     //Method populates the appropriate Views with the appropriate data (stored in the shows ArrayList)
     @Override
     @NonNull
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
-        ViewHolder viewHolder;
-
         if(convertView == null){
             //Inflates the home_list_row View for the ListView
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            convertView = inflater.inflate(R.layout.home_list_row, parent, false);
+            LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
+            convertView = inflater.inflate(getLayoutToInflate(), parent, false);
             viewHolder = new ViewHolder();
+            initialiseSharedViews(viewHolder, convertView);
 
-            //Component assignments
-            viewHolder.poster = convertView.findViewById(R.id.image_show_poster);
-            viewHolder.title = convertView.findViewById(R.id.text_show_title);
-            viewHolder.rating = convertView.findViewById(R.id.text_show_rating);
-            viewHolder.status = convertView.findViewById((R.id.text_show_status));
-            viewHolder.nextEpisode = convertView.findViewById((R.id.text_show_next_episode_date));
-            viewHolder.toggleShow = convertView.findViewById(R.id.button_toggle_show);
+            if(mIsHomeListView){
+                initialiseHomeListRowViews(viewHolder, convertView);
+            }
+            else{
+                initialiseSearchListRowViews(viewHolder, convertView);
+            }
             convertView.setTag(viewHolder);
         }
         else{
@@ -69,67 +70,136 @@ public class HomeListViewAdapter
         }
 
         //Displays the app's launcher icon if the show has no poster or if data saving mode has been activated
-        if(UserAccountUtilities.getDataSavingPreference(context) || shows.get(position).getShowImageUrl() == null){
+        if(UserAccountUtilities.getDataSavingPreference(mContext) || mShows.get(position).getShowImageUrl() == null){
             viewHolder.poster.setImageResource(R.mipmap.ic_launcher);
         }
         else{
             //Displays the image for the show if the show has a poster and data saving mode hasn't been activated
-            Picasso.with(context)
-                    .load(shows.get(position)
+            Picasso.with(mContext)
+                    .load(mShows.get(position)
                             .getShowImageUrl())
                     .error(R.color.colorGray)
                     .placeholder(R.color.colorGray)
                     .into(viewHolder.poster);
         }
 
-        //Displays the data in the appropriate Views
-        Resources resources = context.getResources();
-        viewHolder.title.setText(shows.get(position).getShowTitle());
-        viewHolder.rating.setText(resources.getString(R.string.text_rating, shows.get(position).getShowRating()));
-        viewHolder.status.setText(resources.getString(R.string.text_status, shows.get(position).getShowStatus()));
-        viewHolder.nextEpisode.setText(resources.getString(R.string.text_next_episode, shows.get(position).getShowNextEpisode()));
+        //Displays shared text
+        displayTextInSharedTextViews(viewHolder, position);
 
-        //Displays the remove button
-        viewHolder.toggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
-        viewHolder.toggleShow.setTag("Remove");
+        Resources resources = mContext.getResources();
+
+        if(mIsHomeListView){
+            viewHolder.nextEpisode.setText(resources.getString(R.string.text_next_episode, mShows.get(position).getShowNextEpisode()));
+        }
+        else{
+            viewHolder.runtime.setText(resources.getString(R.string.text_runtime, mShows.get(position).getShowRuntime()));
+        }
+
+        //Displays appropriate image for the ImageButton
+        if(mIsHomeListView){
+            viewHolder.toggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
+        }
+        else if(mShows.get(position).isShowAdded() != null && mShows.get(position).isShowAdded()){
+            viewHolder.toggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
+        }
+        else if(mShows.get(position).isShowAdded() != null){
+            viewHolder.toggleShow.setImageResource(R.drawable.ic_add_black_24dp);
+        }
 
         //Sets onCLickListener for the buttons contained in each row of the ListView
         viewHolder.toggleShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Creates an AlertDialog to prompt the user to confirm their decision to remove the series from My Series
-                AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-                View view = View.inflate(context, R.layout.dialog_remove_series, null);
-                TextView textView = view.findViewById(R.id.tv_remove_series);
-                textView.setText(context.getString(R.string.series_removal_confirmation, shows.get(position).getShowTitle()));
-                alertDialog.setView(view);
+                //Adds the Show to My Series if the Show isn't already there, or prompts the user to confirm the removal of the Show from My Series if the Show is already there
+                if(!mShows.get(position).isShowAdded()){
+                    //Adds Show to My Series
+                    viewHolder.toggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
+                    mShows.get(position).setShowAdded(true);
+                    pushUserShowSelection(UserAccountUtilities.getUserKey(mContext), "" + mShows.get(position).getShowId(), mShows.get(position).getShowTitle(), true);
+                    notifyDataSetChanged();
+                }
+                else{
+                    //Creates an AlertDialog to prompt the user to confirm their decision to remove the series from My Series
+                    AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+                    View view = View.inflate(mContext, R.layout.dialog_remove_series, null);
+                    TextView textView = view.findViewById(R.id.tv_remove_series);
+                    textView.setText(mContext.getString(R.string.series_removal_confirmation, mShows.get(position).getShowTitle()));
+                    alertDialog.setView(view);
 
-                //Creates OnClickListener for the Dialog message
-                DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
-                    @Override
-                    public void onClick(DialogInterface dialog, int button) {
-                        switch(button){
-                            //Removes the selected show from the My Series list
-                            case AlertDialog.BUTTON_POSITIVE:
-                                //Updates FirebaseDatabase and UI
-                                pushUserShowSelection(UserAccountUtilities.getUserKey(context), "" + shows.get(position).getShowId(), shows.get(position).getShowTitle(), false);
-                                shows.remove(position);
-                                notifyDataSetChanged();
-                                break;
-                            case AlertDialog.BUTTON_NEGATIVE:
-                                break;
+                    //Creates OnClickListener for the Dialog message
+                    DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialog, int button) {
+                            switch(button){
+                                //Removes the selected show from the My Series list
+                                case AlertDialog.BUTTON_POSITIVE:
+                                    //Updates the FirebaseDatabase and the UI
+                                    pushUserShowSelection(UserAccountUtilities.getUserKey(mContext), "" + mShows.get(position).getShowId(), mShows.get(position).getShowTitle(), false);
+                                    mShows.get(position).setShowAdded(false);
+
+                                    //Removes the Show
+                                    if(mIsHomeListView){
+                                        mShows.remove(position);
+                                    }
+
+                                    viewHolder.toggleShow.setImageResource(R.drawable.ic_add_black_24dp);
+                                    notifyDataSetChanged();
+                                    break;
+                                case AlertDialog.BUTTON_NEGATIVE:
+                                    break;
+                            }
                         }
-                    }
-                };
+                    };
 
-                //Assigns button an OnClickListener for the AlertDialog and displays the AlertDialog
-                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.yes), dialogOnClickListener);
-                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, context.getString(R.string.no), dialogOnClickListener);
-                alertDialog.setCanceledOnTouchOutside(false);
-                alertDialog.show();
+                    //Assigns button an OnClickListener for the AlertDialog and displays the AlertDialog
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, mContext.getString(R.string.yes), dialogOnClickListener);
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, mContext.getString(R.string.no), dialogOnClickListener);
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.show();
+                }
             }
         });
         return convertView;
+    }
+
+    //Returns the appropriate XML layout to inflate
+    private int getLayoutToInflate(){
+        if(mIsHomeListView){
+            return R.layout.home_list_row;
+        }
+
+        return R.layout.search_list_row;
+    }
+
+    //Initialises the Views that are shared between home_list_row and search_list_row
+    private void initialiseSharedViews(ViewHolder viewHolder, View convertView){
+        //Component assignments
+        viewHolder.poster = convertView.findViewById(R.id.image_show_poster);
+        viewHolder.title = convertView.findViewById(R.id.text_show_title);
+        viewHolder.rating = convertView.findViewById(R.id.text_show_rating);
+        viewHolder.status = convertView.findViewById((R.id.text_show_status));
+        viewHolder.toggleShow = convertView.findViewById(R.id.button_toggle_show);
+    }
+
+    //Initialises the home_list_row extra Views
+    private void initialiseHomeListRowViews(ViewHolder viewHolder, View convertView){
+        //Component assignments
+        viewHolder.nextEpisode = convertView.findViewById((R.id.text_show_next_episode_date));
+    }
+
+    //Initialises the search_list_row extra Views
+    private void initialiseSearchListRowViews(ViewHolder viewHolder, View convertView){
+        //Component assignments
+        viewHolder.runtime = convertView.findViewById((R.id.text_show_runtime));
+    }
+
+    //Displays the text on shared TextViews
+    private void displayTextInSharedTextViews(ViewHolder viewHolder, int position){
+        //Displays the data in the appropriate Views
+        Resources resources = mContext.getResources();
+        viewHolder.title.setText(mShows.get(position).getShowTitle());
+        viewHolder.rating.setText(resources.getString(R.string.text_rating, mShows.get(position).getShowRating()));
+        viewHolder.status.setText(resources.getString(R.string.text_status, mShows.get(position).getShowStatus()));
     }
 
     //Method updates the shows that the user has added to 'My Series' in the Firebase database
@@ -137,11 +207,11 @@ public class HomeListViewAdapter
         //Establishes a connection to the Firebase database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference().child(userKey);
-        String message = showAdded ? context.getString(R.string.added_to_my_series, showTitle) : context.getString(R.string.removed_from_my_series, showTitle);
+        String message = showAdded ? mContext.getString(R.string.added_to_my_series, showTitle) : mContext.getString(R.string.removed_from_my_series, showTitle);
 
         //Generates the user's key and saves the value (the user's email address) to the Firebase database
         databaseReference.child(showID).setValue(showAdded);
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
     }
 
     //ViewHolder class used to decrease the findViewById calls
@@ -152,6 +222,7 @@ public class HomeListViewAdapter
         TextView rating;
         TextView status;
         TextView nextEpisode;
+        TextView runtime;
         ImageButton toggleShow;
     }
 }

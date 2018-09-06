@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
-import com.matthewsyren.seriessearcher.adapters.SearchListViewAdapter;
+import com.matthewsyren.seriessearcher.adapters.HomeListViewAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
@@ -40,7 +40,7 @@ public class SearchActivity
     //Declarations
     private APIConnection api = new APIConnection();
     private ArrayList<Show> lstShows =  new ArrayList<>();
-    private SearchListViewAdapter adapter;
+    private HomeListViewAdapter adapter;
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
 
     @Override
@@ -60,7 +60,7 @@ public class SearchActivity
         }
 
         //Sets a custom adapter for the list_view_search_results ListView to display the search results
-        adapter = new SearchListViewAdapter(this, lstShows);
+        adapter = new HomeListViewAdapter(this, lstShows, false);
         mListViewSearchResults.setAdapter(adapter);
 
         //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
