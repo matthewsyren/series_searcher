@@ -158,7 +158,7 @@ public class HomeActivity
             lstShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
 
             //Hides ProgressBar
-            toggleProgressBar(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
 
             //Displays the ListView and hides other unnecessary Views
             toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
@@ -240,7 +240,7 @@ public class HomeActivity
 
         if(lstShows.size() == 0){
             //Displays ProgressBar
-            toggleProgressBar(View.VISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
 
             //Displays the ListView and hides other unnecessary Views
             toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
@@ -255,11 +255,6 @@ public class HomeActivity
                 mButtonRefresh.setVisibility(View.VISIBLE);
             }
         }
-    }
-
-    //Method toggles the visibility of the ProgressBar
-    private void toggleProgressBar(int visibility){
-        mProgressBar.setVisibility(visibility);
     }
 
     //Method takes user to SearchActivity
@@ -322,7 +317,7 @@ public class HomeActivity
         }
         else{
             toggleViewVisibility(View.INVISIBLE,View.VISIBLE);
-            toggleProgressBar(View.INVISIBLE);
+            mProgressBar.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -422,7 +417,7 @@ public class HomeActivity
             }
 
             //Hides ProgressBar
-            toggleProgressBar(View.INVISIBLE);
+            mProgressBar.setVisibility(View.INVISIBLE);
         }
         catch(JSONException j){
             Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();

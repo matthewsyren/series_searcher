@@ -53,7 +53,7 @@ public class SearchActivity
         super.onCreateDrawer();
 
         //Hides ProgressBar
-        toggleProgressBar(View.INVISIBLE);
+        mProgressBar.setVisibility(View.INVISIBLE);
 
         if(savedInstanceState != null){
             restoreData(savedInstanceState);
@@ -118,13 +118,8 @@ public class SearchActivity
             lstShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
 
             //Hides ProgressBar
-            toggleProgressBar(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
         }
-    }
-
-    //Method toggles the visibility of the ProgressBar
-    private void toggleProgressBar(int visibility){
-        mProgressBar.setVisibility(visibility);
     }
 
     //Method retrieves the text that the user searches for in text_search, and then searches for that text using the API
@@ -133,7 +128,7 @@ public class SearchActivity
         String searchText = mTextSearchSeries.getText().toString();
 
         //Displays ProgressBar
-        toggleProgressBar(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
 
         //Connects to the TVMaze API using the specific URL for the selected show
         api.cancel(true);
@@ -211,6 +206,6 @@ public class SearchActivity
         adapter.notifyDataSetChanged();
 
         //Hides ProgressBar
-        toggleProgressBar(View.INVISIBLE);
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 }

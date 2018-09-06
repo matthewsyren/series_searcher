@@ -78,7 +78,7 @@ public class RandomShowsActivity
         if(NetworkUtilities.isOnline(this)){
             if(lstShows.size() == 0){
                 //Displays the ProgressBar
-                toggleProgressBar(View.VISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
 
                 //Fetches JSON from API (If a page on the API has already been determined, then it is fetched from the Bundle, otherwise the Math.random() method chooses a random page from the API to fetch)
                 Bundle bundle = getIntent().getExtras();
@@ -143,7 +143,7 @@ public class RandomShowsActivity
             lstShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
 
             //Hides the ProgressBar
-            toggleProgressBar(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -151,11 +151,6 @@ public class RandomShowsActivity
     public void refreshActivity(View view){
         //Restarts the Activity
         refreshActivity();
-    }
-
-    //Method toggles the visibility of the ProgressBar
-    private void toggleProgressBar(int visibility){
-        mProgressBar.setVisibility(visibility);
     }
 
     //Method fetches the JSON from the APIConnection class, and parses it
@@ -245,6 +240,6 @@ public class RandomShowsActivity
         adapter.notifyDataSetChanged();
 
         //Hides ProgressBar
-        toggleProgressBar(View.INVISIBLE);
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 }

@@ -195,18 +195,13 @@ public class SpecificShowActivity
             String showLink = "http://api.tvmaze.com/shows/" + sShowId;
 
             //Displays ProgressBar
-            toggleProgressBar(View.VISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
 
             //Fetches data from the TVMaze API using the link
             APIConnection api = new APIConnection();
             api.delegate = this;
             api.execute(showLink);
         }
-    }
-
-    //Method toggles the visibility of the ProgressBar
-    private void toggleProgressBar(int visibility){
-        mProgressBar.setVisibility(visibility);
     }
 
     //Method parses the JSON returned from the API and displays the data
@@ -244,7 +239,7 @@ public class SpecificShowActivity
                         mShow.setShowNextEpisode(display);
 
                         //Hides ProgressBar
-                        toggleProgressBar(View.INVISIBLE);
+                        mProgressBar.setVisibility(View.INVISIBLE);
                     }
 
                     //Displays the Show's information
@@ -367,7 +362,7 @@ public class SpecificShowActivity
             else{
                 mTextShowNextEpisode.setText(getString(R.string.text_next_episode, getString(R.string.n_a)));
                 mShow.setShowNextEpisode(getString(R.string.n_a));
-                toggleProgressBar(View.INVISIBLE);
+                mProgressBar.setVisibility(View.INVISIBLE);
             }
 
             displayShowInformation(mShow);

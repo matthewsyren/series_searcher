@@ -64,7 +64,7 @@ public class SearchByEpisodeActivity
         }
 
         //Hides ProgressBar
-        toggleProgressBar(View.INVISIBLE);
+        mProgressBar.setVisibility(View.INVISIBLE);
 
         displayShowTitle();
     }
@@ -113,11 +113,6 @@ public class SearchByEpisodeActivity
         }
     }
 
-    //Method toggles the visibility of the ProgressBar
-    private void toggleProgressBar(int visibility){
-        mProgressBar.setVisibility(visibility);
-    }
-
     //Method displays the title of the show
     private void displayShowTitle(){
         //Fetches the show title from the Bundle
@@ -148,7 +143,7 @@ public class SearchByEpisodeActivity
     public void searchByEpisodeOnClick(View view){
         try{
             //Displays ProgressBar
-            toggleProgressBar(View.VISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
 
             //Hides the user's keyboard
             InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -174,7 +169,7 @@ public class SearchByEpisodeActivity
         }
         catch(NumberFormatException nfe){
             Toast.makeText(getApplicationContext(), R.string.error_enter_whole_number, Toast.LENGTH_LONG).show();
-            toggleProgressBar(View.INVISIBLE);
+            mProgressBar.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -226,7 +221,7 @@ public class SearchByEpisodeActivity
             }
 
             //Hides ProgressBar
-            toggleProgressBar(View.INVISIBLE);
+            mProgressBar.setVisibility(View.INVISIBLE);
         }
         catch(JSONException j){
             Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
