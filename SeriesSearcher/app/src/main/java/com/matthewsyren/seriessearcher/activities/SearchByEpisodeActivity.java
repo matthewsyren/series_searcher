@@ -8,7 +8,9 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +38,8 @@ public class SearchByEpisodeActivity
     @BindView(R.id.text_show_season) EditText mTextShowSeason;
     @BindView(R.id.text_show_episode) EditText mTextShowEpisode;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.button_search) Button mButtonSearch;
+    @BindView(R.id.ll_search_by_episode_information) LinearLayout mLlSearchByEpisodeInformation;
 
     //Variables
     private static final String EPISODE_NAME_BUNDLE_KEY = "episode_information_bundle_key";
@@ -142,8 +146,10 @@ public class SearchByEpisodeActivity
     //Searches for the episode entered by the user
     public void searchByEpisodeOnClick(View view){
         try{
-            //Displays ProgressBar
+            //Displays ProgressBar and hides the search Button and episode information
+            mLlSearchByEpisodeInformation.setVisibility(View.INVISIBLE);
             mProgressBar.setVisibility(View.VISIBLE);
+            mButtonSearch.setVisibility(View.INVISIBLE);
 
             //Hides the user's keyboard
             InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -168,8 +174,13 @@ public class SearchByEpisodeActivity
             api.execute("http://api.tvmaze.com/shows/" + showNumber + "/episodebynumber?season=" + season + "&number="  + episode);
         }
         catch(NumberFormatException nfe){
+            //Displays error message to the user
             Toast.makeText(getApplicationContext(), R.string.error_enter_whole_number, Toast.LENGTH_LONG).show();
+
+            //Hides and displays the appropriate Views
             mProgressBar.setVisibility(View.INVISIBLE);
+            mButtonSearch.setVisibility(View.VISIBLE);
+            mLlSearchByEpisodeInformation.setVisibility(View.VISIBLE);
         }
     }
 
@@ -220,8 +231,10 @@ public class SearchByEpisodeActivity
                 mTextShowSummary.setText("");
             }
 
-            //Hides ProgressBar
+            //Hides ProgressBar and displays the search Button and episode information
             mProgressBar.setVisibility(View.INVISIBLE);
+            mButtonSearch.setVisibility(View.VISIBLE);
+            mLlSearchByEpisodeInformation.setVisibility(View.VISIBLE);
         }
         catch(JSONException j){
             Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();

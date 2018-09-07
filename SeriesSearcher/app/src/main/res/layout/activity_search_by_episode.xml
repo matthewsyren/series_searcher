@@ -14,7 +14,7 @@
         tools:context="com.matthewsyren.seriessearcher.activities.SearchByEpisodeActivity">
         <TextView
             android:id="@+id/text_show_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:textSize="@dimen/specific_show_activity_heading_text_size"
@@ -62,30 +62,32 @@
             android:layout_centerHorizontal="true"
             style="@style/ButtonStyle"/>
 
-        <TextView
-            android:id="@+id/text_show_episode_name"
-            android:layout_below="@+id/button_search"
-            style="@style/SpecificShowText"/>
+        <LinearLayout
+            android:id="@+id/ll_search_by_episode_information"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button_search"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/text_show_episode_name"
+                style="@style/SpecificShowText"/>
 
-        <TextView
-            android:id="@+id/text_show_air_date"
-            android:layout_below="@+id/text_show_episode_name"
-            style="@style/SpecificShowText"/>
+            <TextView
+                android:id="@+id/text_show_air_date"
+                style="@style/SpecificShowText"/>
 
-        <TextView
-            android:id="@+id/text_show_runtime"
-            android:layout_below="@+id/text_show_air_date"
-            style="@style/SpecificShowText"/>
+            <TextView
+                android:id="@+id/text_show_runtime"
+                style="@style/SpecificShowText"/>
 
-        <TextView
-            android:id="@+id/text_show_summary"
-            android:layout_below="@+id/text_show_runtime"
-            style="@style/SpecificShowText" />
+            <TextView
+                android:id="@+id/text_show_summary"
+                style="@style/SpecificShowText" />
 
-        <TextView
-            android:id="@+id/text_show_status"
-            android:layout_below="@+id/text_show_summary"
-            style="@style/SpecificShowText"/>
+            <TextView
+                android:id="@+id/text_show_status"
+                style="@style/SpecificShowText"/>
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/progress_bar"
@@ -95,4 +97,3 @@
             android:layout_centerVertical="true"/>
     </RelativeLayout>
 </ScrollView>
-
