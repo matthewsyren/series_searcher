@@ -168,10 +168,10 @@ public class ListViewAdapter
             return R.layout.home_list_row;
         }
 
-        return R.layout.search_list_row;
+        return R.layout.other_list_row;
     }
 
-    //Initialises the Views that are shared between home_list_row and search_list_row
+    //Initialises the Views that are shared between home_list_row and other_list_row
     private void initialiseSharedViews(ViewHolder viewHolder, View convertView){
         //Component assignments
         viewHolder.poster = convertView.findViewById(R.id.image_show_poster);
@@ -187,7 +187,7 @@ public class ListViewAdapter
         viewHolder.nextEpisode = convertView.findViewById((R.id.text_show_next_episode_date));
     }
 
-    //Initialises the search_list_row extra Views
+    //Initialises the other_list_row extra Views
     private void initialiseSearchListRowViews(ViewHolder viewHolder, View convertView){
         //Component assignments
         viewHolder.runtime = convertView.findViewById((R.id.text_show_runtime));
