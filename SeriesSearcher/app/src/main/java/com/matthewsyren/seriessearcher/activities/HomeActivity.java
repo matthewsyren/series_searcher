@@ -32,6 +32,7 @@ import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
 import com.matthewsyren.seriessearcher.services.FirebaseService;
+import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
@@ -307,7 +308,7 @@ public class HomeActivity
             //Transfers the data from lstShows to an array containing the necessary links to the API (an array can be passed in to the APIConnection class to fetch data from the API)
             String[] arrShows = new String[lstShows.size()];
             for(int i = 0; i < lstShows.size(); i++){
-                arrShows[i] = "http://api.tvmaze.com/shows/" + lstShows.get(i);
+                arrShows[i] = LinkUtilities.getShowInformationLink(lstShows.get(i));
             }
 
             //Fetches the data from the TVMaze API

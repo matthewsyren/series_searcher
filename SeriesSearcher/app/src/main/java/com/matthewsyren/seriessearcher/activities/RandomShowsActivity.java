@@ -19,6 +19,7 @@ import com.matthewsyren.seriessearcher.adapters.ListViewAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
@@ -91,7 +92,7 @@ public class RandomShowsActivity
                 }
                 APIConnection api = new APIConnection();
                 api.delegate = this;
-                api.execute("http://api.tvmaze.com/shows?page=" + page);
+                api.execute(LinkUtilities.getMultipleShowPageLink(page));
             }
         }
         else{

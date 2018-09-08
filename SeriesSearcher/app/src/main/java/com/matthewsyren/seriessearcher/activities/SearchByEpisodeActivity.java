@@ -19,6 +19,7 @@ import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -171,7 +172,7 @@ public class SearchByEpisodeActivity
             //Fetches information from the TVMaze API
             APIConnection api = new APIConnection();
             api.delegate = this;
-            api.execute("http://api.tvmaze.com/shows/" + showNumber + "/episodebynumber?season=" + season + "&number="  + episode);
+            api.execute(LinkUtilities.getShowEpisodeInformationLink(showNumber, season, episode));
         }
         catch(NumberFormatException nfe){
             //Displays error message to the user

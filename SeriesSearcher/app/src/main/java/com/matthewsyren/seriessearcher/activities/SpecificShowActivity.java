@@ -19,6 +19,7 @@ import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 import com.squareup.picasso.Picasso;
 
@@ -191,8 +192,9 @@ public class SpecificShowActivity
         Bundle bundle = getIntent().getExtras();
 
         if(bundle != null){
+            //Gets the link to the Show
             sShowId = bundle.getString("showNumber");
-            String showLink = "http://api.tvmaze.com/shows/" + sShowId;
+            String showLink = LinkUtilities.getShowInformationLink(sShowId);
 
             //Displays ProgressBar
             mProgressBar.setVisibility(View.VISIBLE);

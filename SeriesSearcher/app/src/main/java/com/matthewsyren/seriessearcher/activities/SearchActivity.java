@@ -18,6 +18,7 @@ import com.matthewsyren.seriessearcher.adapters.ListViewAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
 import org.json.JSONArray;
@@ -136,7 +137,7 @@ public class SearchActivity
         adapter.notifyDataSetChanged();
         api = new APIConnection();
         api.delegate = this;
-        api.execute("http://api.tvmaze.com/search/shows?q=" + searchText);
+        api.execute(LinkUtilities.getSearchLink(searchText));
     }
 
     //Method parses the JSON returned from the API, and populates the list_view_search_results ListView with the data
