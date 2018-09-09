@@ -37,7 +37,9 @@ public class Show
     private String showSummary;
     private String showPreviousEpisode;
 
-    //Constructor (used for the ListViews)
+    /**
+     * Constructor (used for the ListViews)
+     */
     public Show(int showId, String showTitle, String showRating, String showStatus, String showImageUrl) {
         this.showId = showId;
         this.showTitle = showTitle;
@@ -46,7 +48,9 @@ public class Show
         this.showImageUrl = showImageUrl;
     }
 
-    //Constructor (used for more detailed information on the Show)
+    /**
+     * Constructor (used for more detailed information on the Show)
+     */
     public Show(String showImageUrl, String showTitle, String showRating, String showStatus, String showNextEpisode, String showRuntime, Boolean showAdded, String showPremieredDate, String showLanguages, String showGenres, String showSummary, String showPreviousEpisode) {
         this.showImageUrl = showImageUrl;
         this.showTitle = showTitle;
@@ -62,77 +66,128 @@ public class Show
         this.showPreviousEpisode = showPreviousEpisode;
     }
 
-    //Accessor Methods
+    /**
+     * Getter method
+     */
     public int getShowId(){
         return showId;
     }
 
+    /**
+     * Getter method
+     */
     public String getShowTitle() {
         return showTitle;
     }
 
+    /**
+     * Getter method
+     */
     public String getShowRating() {
         return showRating;
     }
 
+    /**
+     * Getter method
+     */
     public String getShowStatus() {
         return showStatus;
     }
 
+    /**
+     * Getter method
+     */
     public String getShowNextEpisode() {
         return showNextEpisode;
     }
 
+    /**
+     * Getter method
+     */
     public String getShowImageUrl(){
         return showImageUrl;
     }
 
+    /**
+     * Getter method
+     */
     public String getShowRuntime() {
         return showRuntime;
     }
 
+    /**
+     * Getter method
+     */
     public String getShowPremieredDate() {
         return showPremieredDate;
     }
 
+    /**
+     * Getter method
+     */
     public String getShowLanguages() {
         return showLanguages;
     }
 
+    /**
+     * Getter method
+     */
     public String getShowGenres() {
         return showGenres;
     }
 
+    /**
+     * Getter method
+     */
     public String getShowSummary() {
         return showSummary;
     }
 
+    /**
+     * Getter method
+     */
     public String getShowPreviousEpisode() {
         return showPreviousEpisode;
     }
 
+    /**
+     * Getter method
+     */
     public Boolean isShowAdded() {
         return showAdded;
     }
 
-    //Mutator methods
+    /**
+     * Setter method
+     */
     public void setShowNextEpisode(String showNextEpisode) {
         this.showNextEpisode = showNextEpisode;
     }
 
+    /**
+     * Setter method
+     */
     public void setShowRuntime(String showRuntime) {
         this.showRuntime = showRuntime;
     }
 
+    /**
+     * Setter method
+     */
     public void setShowAdded(Boolean showAdded) {
         this.showAdded = showAdded;
     }
 
+    /**
+     * Setter method
+     */
     public void setShowPreviousEpisode(String showPreviousEpisode) {
         this.showPreviousEpisode = showPreviousEpisode;
     }
 
-    //Method removes any HTML formatting from the summary field
+    /**
+     * Removes any HTML formatting from the summary field
+     */
     public static String formatSummary(String summary){
         boolean htmlIncluded = summary.contains("<");
 
@@ -146,7 +201,9 @@ public class Show
         return summary;
     }
 
-    //Method loops through all Shows that the user has added to My Series, and sets showAdded to true if the Show that is passed into the method has been added to My Series
+    /**
+     * Loops through all Shows that the user has added to My Series, and sets showAdded to true if the Show that is passed into the method has been added to My Series
+     */
     public static void checkIfShowIsAdded(String userKey, final ArrayList<Show> lstShows, final SearchActivity searchActivity, final RandomShowsActivity randomShowsActivity){
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);

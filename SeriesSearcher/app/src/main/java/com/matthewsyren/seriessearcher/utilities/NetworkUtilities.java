@@ -9,7 +9,7 @@ import android.net.NetworkInfo;
  */
 
 public class NetworkUtilities {
-    /*
+    /**
      * Checks if the device is connected to the Internet
      * Adapted from https://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out
      */

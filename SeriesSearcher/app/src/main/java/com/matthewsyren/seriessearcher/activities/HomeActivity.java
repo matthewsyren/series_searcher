@@ -153,7 +153,9 @@ public class HomeActivity
         return super.onNavigationItemSelected(item);
     }
 
-    //Restores any saved data
+    /**
+     * Restores any saved data
+     */
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
             lstShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
@@ -166,7 +168,9 @@ public class HomeActivity
         }
     }
 
-    //Checks if the user is signed in, and signs them in if they aren't signed in already
+    /**
+     * Checks if the user is signed in, and signs them in if they aren't signed in already
+     */
     private void setUpAuthListener(){
         mFirebaseAuth = FirebaseAuth.getInstance();
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
@@ -205,7 +209,9 @@ public class HomeActivity
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
-    //Performs tasks when the user signs out
+    /**
+     * Performs tasks when the user signs out
+     */
     private void signOut(){
         //Clears the user's key from SharedPreferences
         UserAccountUtilities.setUserKey(this, null);
@@ -220,7 +226,9 @@ public class HomeActivity
         }
     }
 
-    //Sets up the Activity once the user signs in
+    /**
+     * Sets up the Activity once the user signs in
+     */
     private void setUpActivity(){
         //Sets a custom adapter for the list_view_search_results ListView to display the search results
         adapter = new ListViewAdapter(this, lstShows, true);
@@ -258,13 +266,17 @@ public class HomeActivity
         }
     }
 
-    //Method takes user to SearchActivity
+    /**
+     * Takes user to SearchActivity
+     */
     public void openSearchShows(View view) {
         Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
     }
 
-    //Method fetches all show keys (show ID's) associated with the user's key, and adds them to an ArrayList. The ArrayList is then passed to the getUserShowData method, which fetches the JSON data for each show from the TVMAze API
+    /**
+     * Fetches all show keys (show ID's) associated with the user's key, and adds them to an ArrayList. The ArrayList is then passed to the getUserShowData method, which fetches the JSON data for each show from the TVMAze API
+     */
     private void getUserShowKeys(String userKey){
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
@@ -294,7 +306,9 @@ public class HomeActivity
         });
     }
 
-    //Refreshes the Activity
+    /**
+     * Refreshes the Activity
+     */
     public void refreshActivity(View view){
         //Restarts the Activity
         Intent intent = getIntent();
@@ -302,7 +316,9 @@ public class HomeActivity
         startActivity(intent);
     }
 
-    //Method fetches the shows the user has added to 'My Series' using the keys passed in with the ArrayList
+    /**
+     * Fetches the shows the user has added to 'My Series' using the keys passed in with the ArrayList
+     */
     private void getUserShowData(ArrayList<String> lstShows){
         if(lstShows.size() > 0){
             //Transfers the data from lstShows to an array containing the necessary links to the API (an array can be passed in to the APIConnection class to fetch data from the API)
@@ -322,14 +338,18 @@ public class HomeActivity
         }
     }
 
-    //Method sets the visibility of the views based on the parameters passed in
+    /**
+     * Sets the visibility of the views based on the parameters passed in
+     */
     private void toggleViewVisibility(int listViewVisibility, int otherViewVisibility){
         mTextNoShows.setVisibility(otherViewVisibility);
         mButtonAddShows.setVisibility(otherViewVisibility);
         mListViewMyShows.setVisibility(listViewVisibility);
     }
 
-    //Method parses the JSON returned from the API and displays the information in the list_view_my_shows ListView
+    /**
+     * Parses the JSON returned from the API and displays the information in the list_view_my_shows ListView
+     */
     @Override
     public void parseJsonResponse(String response) {
         try{
@@ -429,12 +449,16 @@ public class HomeActivity
     private class DataReceiver
             extends ResultReceiver {
 
-        //Constructor
+        /**
+         * Constructor
+         */
         DataReceiver(Handler handler) {
             super(handler);
         }
 
-        //Performs the appropriate action based on the result
+        /**
+         * Performs the appropriate action based on the result
+         */
         @Override
         protected void onReceiveResult(int resultCode, Bundle resultData) {
             super.onReceiveResult(resultCode, resultData);

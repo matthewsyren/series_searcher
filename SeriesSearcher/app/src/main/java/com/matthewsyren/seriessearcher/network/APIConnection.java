@@ -19,7 +19,9 @@ public class APIConnection
     //Declares an object of the IAPIConnectionResponse interface, which will be used to send the JSON back to the  thread
     public IAPIConnectionResponse delegate = null;
 
-    //Method retrieves the JSON returned from the API
+    /**
+     * Retrieves the JSON returned from the API
+     */
     protected String doInBackground(String... urls) {
         HttpURLConnection urlConnection = null;
         try {
@@ -58,7 +60,9 @@ public class APIConnection
         }
     }
 
-    //Method passes the JSON back to the Main thread (to the point from which this class was instantiated)
+    /**
+     * Passes the JSON back to the Main thread (to the point from which this class was instantiated)
+     */
     protected void onPostExecute(String response) {
         if(delegate != null){
             delegate.parseJsonResponse(response);

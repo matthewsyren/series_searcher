@@ -138,7 +138,9 @@ public class RandomShowsActivity
         }
     }
 
-    //Restores any saved data
+    /**
+     * Restores any saved data
+     */
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
             lstShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
@@ -148,13 +150,17 @@ public class RandomShowsActivity
         }
     }
 
-    //Refreshes the Activity
+    /**
+     * Refreshes the Activity
+     */
     public void refreshActivity(View view){
         //Restarts the Activity
         refreshActivity();
     }
 
-    //Method fetches the JSON from the APIConnection class, and parses it
+    /**
+     * Fetches the JSON from the APIConnection class, and parses it
+     */
     @Override
     public void parseJsonResponse(String response) {
         try{
@@ -227,13 +233,17 @@ public class RandomShowsActivity
         }
     }
 
-    //Method refreshes the Activity in order to fetch 20 new randomised series
+    /**
+     * Refreshes the Activity in order to fetch 20 new randomised series
+     */
     private void refreshActivity(){
         finish();
         startActivity(new Intent(this, RandomShowsActivity.class));
     }
 
-    //Setter method
+    /**
+     * Setter method
+     */
     public void setLstShows(ArrayList<Show> lstShows){
         this.lstShows = lstShows;
 

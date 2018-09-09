@@ -58,7 +58,9 @@ public class UserAccountUtilities {
         return null;
     }
 
-    //Method returns the value which states whether the user has chosen Data Saving Mode
+    /**
+     * Returns the value which states whether the user has chosen Data Saving Mode
+     */
     public static boolean getDataSavingPreference(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences("", Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean("dataSavingMode", false);

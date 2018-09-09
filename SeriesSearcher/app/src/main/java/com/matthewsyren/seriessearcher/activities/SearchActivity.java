@@ -113,7 +113,9 @@ public class SearchActivity
         }
     }
 
-    //Restores any saved data
+    /**
+     * Restores any saved data
+     */
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
             lstShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
@@ -123,7 +125,9 @@ public class SearchActivity
         }
     }
 
-    //Method retrieves the text that the user searches for in text_search, and then searches for that text using the API
+    /**
+     * Retrieves the text that the user searches for in text_search, and then searches for that text using the API
+     */
     private void searchShows(){
         //Fetches user's input
         String searchText = mTextSearchSeries.getText().toString();
@@ -140,7 +144,9 @@ public class SearchActivity
         api.execute(LinkUtilities.getSearchLink(searchText));
     }
 
-    //Method parses the JSON returned from the API, and populates the list_view_search_results ListView with the data
+    /**
+     * Parses the JSON returned from the API, and populates the list_view_search_results ListView with the data
+     */
     @Override
     public void parseJsonResponse(String response) {
         try{
@@ -199,7 +205,9 @@ public class SearchActivity
         }
     }
 
-    //Setter method
+    /**
+     * Setter method
+     */
     public void setLstShows(ArrayList<Show> lstShows){
         this.lstShows = lstShows;
 

@@ -95,7 +95,9 @@ public class SearchByEpisodeActivity
         }
     }
 
-    //Restores any saved data
+    /**
+     * Restores any saved data
+     */
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(EPISODE_NAME_BUNDLE_KEY)){
             sEpisodeName = savedInstanceState.getString(EPISODE_NAME_BUNDLE_KEY);
@@ -118,7 +120,9 @@ public class SearchByEpisodeActivity
         }
     }
 
-    //Method displays the title of the show
+    /**
+     * Displays the title of the show
+     */
     private void displayShowTitle(){
         //Fetches the show title from the Bundle
         Bundle bundle = getIntent().getExtras();
@@ -131,7 +135,9 @@ public class SearchByEpisodeActivity
         setTitle(getString(R.string.title_activity_search_by_episode));
     }
 
-    //Takes the user back to the previous Activity when the back button is pressed
+    /**
+     * Takes the user back to the previous Activity when the back button is pressed
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -144,7 +150,9 @@ public class SearchByEpisodeActivity
         return super.onOptionsItemSelected(item);
     }
 
-    //Searches for the episode entered by the user
+    /**
+     * Searches for the episode entered by the user
+     */
     public void searchByEpisodeOnClick(View view){
         try{
             //Displays ProgressBar and hides the search Button and episode information
@@ -185,7 +193,9 @@ public class SearchByEpisodeActivity
         }
     }
 
-    //Method parses the JSON returned from the TVMaze API and displays it
+    /**
+     * Parses the JSON returned from the TVMaze API and displays it
+     */
     @Override
     public void parseJsonResponse(String response) {
         try{

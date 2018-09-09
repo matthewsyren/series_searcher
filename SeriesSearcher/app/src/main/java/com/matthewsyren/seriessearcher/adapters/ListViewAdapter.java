@@ -38,7 +38,9 @@ public class ListViewAdapter
     private boolean mIsHomeListView;
     private ViewHolder viewHolder;
 
-    //Constructor
+    /**
+     * Constructor
+     */
     public ListViewAdapter(Context context, ArrayList<Show> shows, boolean isHomeListView) {
         super(context, R.layout.home_list_row,shows);
         mContext = context;
@@ -46,7 +48,9 @@ public class ListViewAdapter
         mIsHomeListView = isHomeListView;
     }
 
-    //Method populates the appropriate Views with the appropriate data (stored in the shows ArrayList)
+    /**
+     * Populates the appropriate Views with the appropriate data (stored in the shows ArrayList)
+     */
     @Override
     @NonNull
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
@@ -162,7 +166,9 @@ public class ListViewAdapter
         return convertView;
     }
 
-    //Returns the appropriate XML layout to inflate
+    /**
+     * Returns the appropriate XML layout to inflate
+     */
     private int getLayoutToInflate(){
         if(mIsHomeListView){
             return R.layout.home_list_row;
@@ -171,7 +177,9 @@ public class ListViewAdapter
         return R.layout.other_list_row;
     }
 
-    //Initialises the Views that are shared between home_list_row and other_list_row
+    /**
+     * Initialises the Views that are shared between home_list_row and other_list_row
+     */
     private void initialiseSharedViews(ViewHolder viewHolder, View convertView){
         //Component assignments
         viewHolder.poster = convertView.findViewById(R.id.image_show_poster);
@@ -181,19 +189,25 @@ public class ListViewAdapter
         viewHolder.toggleShow = convertView.findViewById(R.id.button_toggle_show);
     }
 
-    //Initialises the home_list_row extra Views
+    /**
+     * Initialises the home_list_row extra Views
+     */
     private void initialiseHomeListRowViews(ViewHolder viewHolder, View convertView){
         //Component assignments
         viewHolder.nextEpisode = convertView.findViewById((R.id.text_show_next_episode_date));
     }
 
-    //Initialises the other_list_row extra Views
+    /**
+     * Initialises the other_list_row extra Views
+     */
     private void initialiseSearchListRowViews(ViewHolder viewHolder, View convertView){
         //Component assignments
         viewHolder.runtime = convertView.findViewById((R.id.text_show_runtime));
     }
 
-    //Displays the text on shared TextViews
+    /**
+     * Displays the text on shared TextViews
+     */
     private void displayTextInSharedTextViews(ViewHolder viewHolder, int position){
         //Displays the data in the appropriate Views
         Resources resources = mContext.getResources();
@@ -202,7 +216,9 @@ public class ListViewAdapter
         viewHolder.status.setText(resources.getString(R.string.text_status, mShows.get(position).getShowStatus()));
     }
 
-    //Method updates the shows that the user has added to 'My Series' in the Firebase database
+    /**
+     * Updates the shows that the user has added to 'My Series' in the Firebase database
+     */
     private void pushUserShowSelection(String userKey, String showID, String showTitle, boolean showAdded){
         //Establishes a connection to the Firebase database
         FirebaseDatabase database = FirebaseDatabase.getInstance();

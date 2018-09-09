@@ -39,6 +39,9 @@ public class BaseActivity
     @BindView(R.id.nav_view) NavigationView mNavigationView;
     @BindView(R.id.toolbar) Toolbar mToolbar;
 
+    /**
+     * Sets up the Activity
+     */
     protected void onCreateDrawer() {
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
@@ -48,7 +51,9 @@ public class BaseActivity
         registerListeners();
     }
 
-    //Method registers listeners for the appropriate Views
+    /**
+     * Registers listeners for the appropriate Views
+     */
     public void registerListeners(){
         //Sets up the OnItemSelectedListener
         mNavigationView.setNavigationItemSelectedListener(this);
@@ -88,7 +93,9 @@ public class BaseActivity
         });
     }
 
-    //Method changes the user's preferences for Data Saving Mode
+    /**
+     * Changes the user's preferences for Data Saving Mode
+     */
     public void toggleDataSavingPreference(){
         //Fetches the user's current preferences for Data Saving Mode
         boolean currentPreference = UserAccountUtilities.getDataSavingPreference(getApplicationContext());
@@ -108,7 +115,9 @@ public class BaseActivity
         }
     }
 
-    //Method displays the user's details in the NavigationDrawer
+    /**
+     * Displays the user's details in the NavigationDrawer
+     */
     public void displayUserDetails(){
         View view = mNavigationView.getHeaderView(0);
         TextView textView = view.findViewById(R.id.textView);
@@ -119,7 +128,9 @@ public class BaseActivity
         }
     }
 
-    //Method sets the selected item in the Navigation Drawer
+    /**
+     * Sets the selected item in the Navigation Drawer
+     */
     public void setSelectedNavItem(int id){
         mNavigationView.setCheckedItem(id);
     }
@@ -189,7 +200,9 @@ public class BaseActivity
         return true;
     }
 
-    //Closes the NavigationDrawer
+    /**
+     * Closes the NavigationDrawer
+     */
     protected void closeNavigationDrawer(){
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }

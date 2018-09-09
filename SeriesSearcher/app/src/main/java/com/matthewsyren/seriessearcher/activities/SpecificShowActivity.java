@@ -122,7 +122,9 @@ public class SpecificShowActivity
         mButtonSearchByEpisode.setVisibility(View.GONE);
     }
 
-    //Restores the Activity's data
+    /**
+     * Restores the Activity's data
+     */
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(SHOW_BUNDLE_KEY)){
             mShow = savedInstanceState.getParcelable(SHOW_BUNDLE_KEY);
@@ -135,7 +137,9 @@ public class SpecificShowActivity
         displayShowInformation(mShow);
     }
 
-    //Displays a back arrow icon and adds functionality to the icon
+    /**
+     * Displays a back arrow icon and adds functionality to the icon
+     */
     private void setUpBackArrowIcon(){
         if(mToolbar != null){
             //Displays a back arrow icon
@@ -169,7 +173,9 @@ public class SpecificShowActivity
         }
     }
 
-    //Sets the appropriate theme based on the device's orientation
+    /**
+     * Sets the appropriate theme based on the device's orientation
+     */
     private void setTheme(){
         int orientation = getResources().getConfiguration().orientation;
 
@@ -186,7 +192,9 @@ public class SpecificShowActivity
         }
     }
 
-    //Method fetches the information for the Show
+    /**
+     * Fetches the information for the Show
+     */
     private void getShowInformation(){
         //Fetches the link for the show that the user clicked on from the Bundle
         Bundle bundle = getIntent().getExtras();
@@ -206,7 +214,9 @@ public class SpecificShowActivity
         }
     }
 
-    //Method parses the JSON returned from the API and displays the data
+    /**
+     * Parses the JSON returned from the API and displays the data
+     */
     @Override
     public void parseJsonResponse(String response) {
         try{
@@ -257,7 +267,9 @@ public class SpecificShowActivity
         }
     }
 
-    //Method fetches the main information for the show from the TVMaze API, and then calls another link for more specific information about the show
+    /**
+     * Fetches the main information for the show from the TVMaze API, and then calls another link for more specific information about the show
+     */
     private void parseJson(JSONObject json){
         try{
             String name = json.getString("name");
@@ -374,7 +386,9 @@ public class SpecificShowActivity
         }
     }
 
-    //Displays the Show's information
+    /**
+     * Displays the Show's information
+     */
     private void displayShowInformation(Show show){
         if(show != null){
             //Displays the information
@@ -409,7 +423,9 @@ public class SpecificShowActivity
         }
     }
 
-    //Displays the image for the Show
+    /**
+     * Displays the image for the Show
+     */
     private void displayImage(String imageUrl){
         //Displays a default image if the show doesn't have a poster or the user has enabled data saving mode, otherwise displays a default image
         if(UserAccountUtilities.getDataSavingPreference(this) || imageUrl == null){
@@ -428,7 +444,9 @@ public class SpecificShowActivity
         }
     }
 
-    //Method takes the user to the SearchByEpisodeActivity
+    /**
+     * Takes the user to the SearchByEpisodeActivity
+     */
     public void searchByEpisodeOnClick(View view) {
         //Fetches the show name
         String showName = null;
