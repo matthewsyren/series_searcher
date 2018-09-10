@@ -18,6 +18,7 @@ import com.matthewsyren.seriessearcher.adapters.ListViewAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
@@ -163,34 +164,7 @@ public class SearchActivity
 
                     //Assigns values to the JSONObject if the JSON returned from the API is not null
                     if(json != null){
-                        int id = json.getInt("id");
-                        String name = json.getString("name");
-                        String status = json.getString("status");
-                        String runtime = json.getString("runtime");
-                        String rating = json.getJSONObject("rating").getString("average");
-                        String imageUrl;
-
-                        //Gets the image URL for the current show if there is a URL provided, otherwise sets the URL to null
-                        if(!json.getString("image").equals("null")){
-                            imageUrl = json.getJSONObject("image").getString("medium");
-                        }
-                        else{
-                            imageUrl = null;
-                        }
-
-                        //Ensures that the data returned in the JSON is valid
-                        if(rating.equalsIgnoreCase("null") || rating.length() == 0){
-                            rating = getString(R.string.n_a);
-                        }
-                        if(runtime.equalsIgnoreCase("null") || runtime.length() == 0){
-                            runtime = getString(R.string.n_a);
-                        }
-
-                        //Instantiates a Show object and adds it to the lstShows ArrayList
-                        Show show = new Show(id, name, rating, status, imageUrl);
-                        show.setShowRuntime(runtime);
-                        show.setShowAdded(null);
-                        lstShows.add(show);
+                        lstShows.add(JsonUtilities.parseShowJson(json, this, this, false));
                     }
                 }
                 //Determines which Shows have been added to My Series by the user

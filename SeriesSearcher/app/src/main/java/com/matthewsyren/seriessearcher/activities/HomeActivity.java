@@ -32,6 +32,7 @@ import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
 import com.matthewsyren.seriessearcher.services.FirebaseService;
+import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
@@ -368,39 +369,7 @@ public class HomeActivity
                     if(json != null){
                         String url = json.getString("url");
                         if(url.contains("shows")){
-                            int id = json.getInt("id");
-                            String name = json.getString("name");
-                            String status = json.getString("status");
-                            String rating = json.getJSONObject("rating").getString("average");
-                            String imageUrl;
-
-                            //Gets the image URL for the current show if there is a URL provided, otherwise sets the URL to null
-                            if(!json.getString("image").equals("null")){
-                                imageUrl = json.getJSONObject("image").getString("medium");
-                            }
-                            else{
-                                imageUrl = null;
-                            }
-
-                            //Ensures that the data returned in the JSON is valid
-                            if(rating.equalsIgnoreCase("null") || rating.length() == 0){
-                                rating = getString(R.string.n_a);
-                            }
-
-                            JSONObject links = json.getJSONObject("_links");
-                            if(links.has("nextepisode")){
-                                String nextEpisodeLink = links.getJSONObject("nextepisode").getString("href");
-                                //Fetches data from the TVMaze API using the link
-                                APIConnection api = new APIConnection();
-                                api.delegate = this;
-                                api.execute(nextEpisodeLink);
-                            }
-
-                            //Instantiates a Show object and adds it to the lstShows ArrayList
-                            Show show = new Show(id, name, rating, status, imageUrl);
-                            show.setShowNextEpisode(getString(R.string.n_a));
-                            show.setShowAdded(null);
-                            lstShows.add(show);
+                            lstShows.add(JsonUtilities.parseShowJson(json, this, this, true));
                             adapter.notifyDataSetChanged();
                         }
                         else if(url.contains("episodes")){
