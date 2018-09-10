@@ -136,10 +136,12 @@ public class SearchActivity
         //Displays ProgressBar
         mProgressBar.setVisibility(View.VISIBLE);
 
-        //Connects to the TVMaze API using the specific URL for the selected show
+        //Cancels any previous requests and clears the previous results
         api.cancel(true);
         lstShows.clear();
         adapter.notifyDataSetChanged();
+
+        //Connects to the TVMaze API using the specific URL for the selected show
         api = new APIConnection();
         api.delegate = this;
         api.execute(LinkUtilities.getSearchLink(searchText));
