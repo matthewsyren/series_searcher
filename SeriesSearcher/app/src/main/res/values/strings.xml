@@ -82,4 +82,6 @@
     <string name="season">Season</string>
     <string name="episode">Episode</string>
     <string name="season_episode">%s %s, %s %s %s</string>
+    <string name="s">S:</string>
+    <string name="e">E:</string>
 </resources>
