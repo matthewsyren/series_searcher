@@ -75,11 +75,15 @@ public class JsonUtilities {
      * @return A Show object with the parsed JSON as values
      */
     public static Show parseFullShowJson(JSONObject json, Context context, IAPIConnectionResponse delegate) throws JSONException{
-        String name = json.getString("name");
+        //Parses the small version of the Show
+        Show show = parseShowJson(json, context, delegate, false);
+
+        //Parses the rest of the Show
         String premiered = json.getString("premiered");
         String language = json.getString("language");
-        String status = json.getString("status");
-        String runtime = json.getString("runtime");
+        String summary = json.getString("summary");
+
+        //Gets all genres
         JSONArray arrGenres;
 
         if(!json.getString("genres").equals("[]")){
@@ -89,32 +93,12 @@ public class JsonUtilities {
             arrGenres = null;
         }
 
-        String rating = json.getJSONObject("rating").getString("average");
-        String summary = json.getString("summary");
-        String imageUrl;
-
-        if(!json.getString("image").equals("null")){
-            imageUrl = json.getJSONObject("image").getString("medium");
-        }
-        else{
-            imageUrl = null;
-        }
-
         //Replaces null values/empty Strings with "N/A"
         if(premiered.equalsIgnoreCase("null") || premiered.length() == 0){
             premiered = context.getString(R.string.n_a);
         }
         if(language.equalsIgnoreCase("null") || language.length() == 0){
             language = context.getString(R.string.n_a);
-        }
-        if(rating.equalsIgnoreCase("null") || rating.length() == 0){
-            rating = context.getString(R.string.n_a);
-        }
-        if(runtime.equalsIgnoreCase("null") || runtime.length() == 0){
-            runtime = context.getString(R.string.n_a);
-        }
-        if(status.equalsIgnoreCase("null") || status.length() == 0){
-            status = context.getString(R.string.n_a);
         }
         if(summary.equalsIgnoreCase("null") || summary.length() == 0){
             summary = context.getString(R.string.n_a);
@@ -166,12 +150,13 @@ public class JsonUtilities {
         }
 
         //Creates a Show object with the appropriate information
-        Show show = new Show(imageUrl,
-                name,
-                rating,
-                status,
+        show = new Show(
+                show.getShowImageUrl(),
+                show.getShowTitle(),
+                show.getShowRating(),
+                show.getShowStatus(),
                 nextEpisode,
-                runtime,
+                show.getShowRuntime(),
                 null,
                 premiered,
                 language,
