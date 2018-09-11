@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.Show;
+import com.matthewsyren.seriessearcher.models.ShowEpisode;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
 
@@ -184,7 +185,7 @@ public class JsonUtilities {
     /**
      * Parses information about an episode of the Show
      * @param json The JSON to be parsed
-     * @return The text to be displayed about the episode
+     * @return The episode date
      */
     public static String parseShowEpisodeDate(JSONObject json) throws JSONException{
         String season = json.getString("season");
@@ -199,5 +200,37 @@ public class JsonUtilities {
             airDate = "(" + airDate + ")";
         }
         return ("Season " + season + ", Episode " + episode + " " + airDate);
+    }
+
+    /**
+     * Parses information about an episode of the Show
+     * @param json The JSON to be parsed
+     * @param context The Context of the calling Activity
+     * @return The episode information in the form of a ShowEpisode object
+     */
+    public static ShowEpisode parseShowEpisode(JSONObject json, Context context) throws JSONException{
+        //Parses the JSON
+        String episodeName = json.getString("name");
+        String episodeAirDate = json.getString("airdate");
+        String episodeRuntime = json.getString("runtime");
+        String episodeSummary = json.getString("summary");
+        episodeSummary = Show.formatSummary(episodeSummary);
+
+        //Replaces any empty data with "N/A"
+        if(episodeName.equalsIgnoreCase("null") || episodeName.length() == 0) {
+            episodeName = context.getString(R.string.n_a);
+        }
+        if(episodeAirDate.equalsIgnoreCase("null") || episodeAirDate.length() == 0){
+            episodeAirDate = context.getString(R.string.n_a);
+        }
+        if(episodeRuntime.equalsIgnoreCase("null") || episodeRuntime.length() == 0){
+            episodeRuntime = context.getString(R.string.n_a);
+        }
+        if(episodeSummary.equalsIgnoreCase("null") || episodeSummary.length() == 0){
+            episodeSummary = context.getString(R.string.n_a);
+        }
+
+        //Creates a ShowEpisode object
+        return new ShowEpisode(episodeName, episodeAirDate, episodeRuntime, episodeSummary);
     }
 }

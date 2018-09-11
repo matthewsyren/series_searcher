@@ -15,10 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
-import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.models.ShowEpisode;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 
 import org.json.JSONException;
@@ -170,36 +170,19 @@ public class SearchByEpisodeActivity
     public void parseJsonResponse(String response) {
         try{
             if(response != null){
-                //Assigns JSON data to variables
+                //Creates a JSONObject
                 JSONObject jsonObject = new JSONObject(response);
-                String episodeName = jsonObject.getString("name");
-                String episodeAirDate = jsonObject.getString("airdate");
-                String episodeRuntime = jsonObject.getString("runtime");
-                String episodeSummary = jsonObject.getString("summary");
-                episodeSummary = Show.formatSummary(episodeSummary);
 
-                //Replaces any empty data with "N/A"
-                if(episodeName.equalsIgnoreCase("null") || episodeName.length() == 0) {
-                    episodeName = getString(R.string.n_a);
-                }
-                if(episodeAirDate.equalsIgnoreCase("null") || episodeAirDate.length() == 0){
-                    episodeAirDate = getString(R.string.n_a);
-                }
-                if(episodeRuntime.equalsIgnoreCase("null") || episodeRuntime.length() == 0){
-                    episodeRuntime = getString(R.string.n_a);
-                }
-                if(episodeSummary.equalsIgnoreCase("null") || episodeSummary.length() == 0){
-                    episodeSummary = getString(R.string.n_a);
-                }
-
-                //Creates a ShowEpisode object
-                mShowEpisode = new ShowEpisode(episodeName, episodeAirDate, episodeRuntime, episodeSummary);
+                //Parses the JSON
+                mShowEpisode = JsonUtilities.parseShowEpisode(jsonObject, this);
 
                 //Displays the episode's information
                 displayEpisodeInformation(mShowEpisode);
             }
             else{
                 Toast.makeText(getApplicationContext(), R.string.error_no_episode_information_found, Toast.LENGTH_LONG).show();
+
+                //Clears the TextViews
                 mTextShowAirDate.setText("");
                 mTextShowEpisodeName.setText("");
                 mTextShowRuntime.setText("");
