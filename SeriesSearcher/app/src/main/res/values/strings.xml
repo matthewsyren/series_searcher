@@ -79,4 +79,7 @@
     <string name="content_description_show_poster">The poster for the series</string>
     <string name="content_description_button_toggle_show">An icon that shows the user whether they have added a show to My Series or not</string>
     <string name="refresh">Refresh</string>
-    =</resources>
+    <string name="season">Season</string>
+    <string name="episode">Episode</string>
+    <string name="season_episode">%s %s, %s %s %s</string>
+</resources>
