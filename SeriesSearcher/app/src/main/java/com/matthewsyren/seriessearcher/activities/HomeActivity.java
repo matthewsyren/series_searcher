@@ -368,22 +368,12 @@ public class HomeActivity
                     //Assigns values to the JSONObject if the JSON returned from the API is not null
                     if(json != null){
                         String url = json.getString("url");
-                        if(url.contains("shows")){
+                        if(url.startsWith("http://www.tvmaze.com/shows")){
                             lstShows.add(JsonUtilities.parseShowJson(json, this, this, true));
                             adapter.notifyDataSetChanged();
                         }
-                        else if(url.contains("episodes")){
-                            String season = json.getString("season");
-                            String episode = json.getString("number");
-                            String airDate = json.getString("airdate");
-
-                            //Sets the next episode information
-                            if(airDate == null){
-                                airDate = getString(R.string.n_a);
-                            }
-                            else{
-                                airDate = airDate + " (S: " + season + " E: " + episode + ")";
-                            }
+                        else if(url.startsWith("http://www.tvmaze.com/episodes")){
+                            String displayText = JsonUtilities.parseShowEpisode(json);
 
                             //Sets the next episode date for the appropriate series
                             for(int s = 0; s < lstShows.size(); s++){
@@ -391,7 +381,7 @@ public class HomeActivity
                                 seriesName = seriesName.replaceAll("[^a-z A-Z]", "");
                                 seriesName = seriesName.replaceAll(" ", "-");
                                 if(url.toLowerCase().contains(seriesName)){
-                                    lstShows.get(s).setShowNextEpisode(airDate);
+                                    lstShows.get(s).setShowNextEpisode(displayText);
                                     adapter.notifyDataSetChanged();
                                 }
                             }

@@ -19,11 +19,11 @@ import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -223,35 +223,37 @@ public class SpecificShowActivity
             //Assigns JSON data to variables if there is a valid JSON response
             if(response != null){
                 JSONObject json = new JSONObject(response);
+                String url = json.getString("url");
 
-                //If the JSON has a 'premiered' key, then it is used for the show's main information, and if it has a 'season' key, it has information about either the show's next or previous episode
-                if(json.has("premiered")){
-                    parseJson(json);
+                //Parses the JSON based on the URL of the response
+                if(url.startsWith("http://www.tvmaze.com/shows")){
+                    //Parses the Show's main information and displays it
+                    mShow = JsonUtilities.parseFullShowJson(json, this, this);
+                    displayShowInformation(mShow);
                 }
-                else if(json.has("season")){
-                    String season = json.getString("season");
-                    String episode = json.getString("number");
+                else if(url.startsWith("http://www.tvmaze.com/episodes")){
+                    //Parses the episode information about the Show
+                    String displayText = JsonUtilities.parseShowEpisode(json);
 
+                    //Displays the text in the appropriate TextView
                     if(mTextShowLatestEpisode.getText().toString().length() == 0) {
-                        String display = "Season " + season + ", Episode " + episode;
-                        mTextShowLatestEpisode.setText(getResources().getString(R.string.text_latest_episode,display));
-                        mShow.setShowPreviousEpisode(display);
+                        mTextShowLatestEpisode.setText(getResources().getString(R.string.text_latest_episode, displayText));
+                        mShow.setShowPreviousEpisode(displayText);
+
+                        if(mShow.getShowNextEpisode() != null){
+                            //Hides ProgressBar
+                            mProgressBar.setVisibility(View.INVISIBLE);
+                        }
                     }
                     else{
-                        String airDate = json.getString("airdate");
 
-                        if(airDate == null){
-                            airDate = "";
-                        }
-                        else{
-                            airDate = "(" + airDate + ")";
-                        }
-                        String display = "Season " + season + ", Episode " + episode + " " + airDate;
-                        mTextShowNextEpisode.setText(getResources().getString(R.string.text_next_episode,display));
-                        mShow.setShowNextEpisode(display);
+                        mTextShowNextEpisode.setText(getResources().getString(R.string.text_next_episode, displayText));
+                        mShow.setShowNextEpisode(displayText);
 
-                        //Hides ProgressBar
-                        mProgressBar.setVisibility(View.INVISIBLE);
+                        if (mShow.getShowPreviousEpisode() != null) {
+                            //Hides ProgressBar
+                            mProgressBar.setVisibility(View.INVISIBLE);
+                        }
                     }
 
                     //Displays the Show's information
@@ -264,125 +266,6 @@ public class SpecificShowActivity
         }
         catch(JSONException j){
             Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    /**
-     * Fetches the main information for the show from the TVMaze API, and then calls another link for more specific information about the show
-     */
-    private void parseJson(JSONObject json){
-        try{
-            String name = json.getString("name");
-            String premiered = json.getString("premiered");
-            String language = json.getString("language");
-            String status = json.getString("status");
-            String runtime = json.getString("runtime");
-            JSONArray arrGenres;
-
-            if(!json.getString("genres").equals("[]")){
-                arrGenres = json.getJSONArray("genres");
-            }
-            else{
-                arrGenres = null;
-            }
-
-            String rating = json.getJSONObject("rating").getString("average");
-            String summary = json.getString("summary");
-            String imageUrl;
-
-            if(!json.getString("image").equals("null")){
-                imageUrl = json.getJSONObject("image").getString("medium");
-            }
-            else{
-                imageUrl = null;
-            }
-
-            //Replaces null values/empty Strings with "N/A"
-            if(premiered.equalsIgnoreCase("null") || premiered.length() == 0){
-                premiered = getString(R.string.n_a);
-            }
-            if(language.equalsIgnoreCase("null") || language.length() == 0){
-                language = getString(R.string.n_a);
-            }
-            if(rating.equalsIgnoreCase("null") || rating.length() == 0){
-                rating = getString(R.string.n_a);
-            }
-            if(runtime.equalsIgnoreCase("null") || runtime.length() == 0){
-                runtime = getString(R.string.n_a);
-            }
-            if(status.equalsIgnoreCase("null") || status.length() == 0){
-                status = getString(R.string.n_a);
-            }
-            if(summary.equalsIgnoreCase("null") || summary.length() == 0){
-                summary = getString(R.string.n_a);
-            }
-
-            //Displays the genres separated by a comma
-            String genres = "";
-            if(arrGenres != null){
-                mTextShowGenres.setText(getString(R.string.text_genres, arrGenres.get(0)));
-                genres += arrGenres.get(0).toString();
-                for(int i = 1; i < arrGenres.length(); i++){
-                    mTextShowGenres.setText(getString(R.string.text_genres_sections, mTextShowGenres.getText(), arrGenres.get(i).toString()));
-                    genres = getString(R.string.text_genres_sections, genres, arrGenres.get(i).toString());
-                }
-            }
-            else{
-                mTextShowGenres.setText(getString(R.string.n_a));
-                genres = getString(R.string.n_a);
-            }
-
-            //Gets the summary
-            summary = Show.formatSummary(summary);
-            mTextShowSummary.setText(getString(R.string.text_summary, summary));
-
-            //Creates a Show object with the appropriate information
-            mShow = new Show(imageUrl,
-                    name,
-                    rating,
-                    status,
-                    null,
-                    runtime,
-                    null,
-                    premiered,
-                    language,
-                    genres,
-                    summary,
-                    null);
-
-            //Fetches data about the show's previous and next episodes (which are accessed using different links)
-            JSONObject links = json.getJSONObject("_links");
-            if(links.has("previousepisode")){
-                String previousEpisodeLink = links.getJSONObject("previousepisode").getString("href");
-
-                //Fetches data from the TVMaze API using the link
-                APIConnection api = new APIConnection();
-                api.delegate = this;
-                api.execute(previousEpisodeLink);
-            }
-            else{
-                mTextShowLatestEpisode.setText(getString(R.string.text_latest_episode, getString(R.string.n_a)));
-                mShow.setShowPreviousEpisode(getString(R.string.n_a));
-            }
-
-            if(links.has("nextepisode")){
-                String nextEpisodeLink = links.getJSONObject("nextepisode").getString("href");
-
-                //Fetches data from the TVMaze API using the link
-                APIConnection api = new APIConnection();
-                api.delegate = this;
-                api.execute(nextEpisodeLink);
-            }
-            else{
-                mTextShowNextEpisode.setText(getString(R.string.text_next_episode, getString(R.string.n_a)));
-                mShow.setShowNextEpisode(getString(R.string.n_a));
-                mProgressBar.setVisibility(View.INVISIBLE);
-            }
-
-            displayShowInformation(mShow);
-        }
-        catch(JSONException jse){
-            Toast.makeText(getApplicationContext(), jse.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -406,6 +289,11 @@ public class SpecificShowActivity
 
             if(show.getShowNextEpisode() != null){
                 mTextShowNextEpisode.setText(getString(R.string.text_next_episode, show.getShowNextEpisode()));
+            }
+
+            if(show.getShowPreviousEpisode() == null && show.getShowNextEpisode() == null){
+                //Hides ProgressBar
+                mProgressBar.setVisibility(View.INVISIBLE);
             }
 
             //Displays the image for the Show
