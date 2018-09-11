@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.Show;
+import com.matthewsyren.seriessearcher.models.ShowEpisode;
 import com.matthewsyren.seriessearcher.network.APIConnection;
 import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
@@ -43,14 +43,8 @@ public class SearchByEpisodeActivity
     @BindView(R.id.ll_search_by_episode_information) LinearLayout mLlSearchByEpisodeInformation;
 
     //Variables
-    private static final String EPISODE_NAME_BUNDLE_KEY = "episode_information_bundle_key";
-    private static final String EPISODE_AIR_DATE_BUNDLE_KEY = "episode_air_date_bundle_key";
-    private static final String EPISODE_RUNTIME_BUNDLE_KEY = "episode_runtime_bundle_key";
-    private static final String EPISODE_SUMMARY_BUNDLE_KEY = "episode_summary_bundle_key";
-    private static String sEpisodeName;
-    private static String sEpisodeAirDate;
-    private static String sEpisodeRuntime;
-    private static String sEpisodeSummary;
+    private static final String SHOW_EPISODE_BUNDLE_KEY = "show_episode_bundle_key";
+    private ShowEpisode mShowEpisode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,20 +72,8 @@ public class SearchByEpisodeActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if(!TextUtils.isEmpty(sEpisodeName)){
-            outState.putString(EPISODE_NAME_BUNDLE_KEY, sEpisodeName);
-        }
-
-        if(!TextUtils.isEmpty(sEpisodeAirDate)){
-            outState.putString(EPISODE_AIR_DATE_BUNDLE_KEY, sEpisodeAirDate);
-        }
-
-        if(!TextUtils.isEmpty(sEpisodeRuntime)){
-            outState.putString(EPISODE_RUNTIME_BUNDLE_KEY, sEpisodeRuntime);
-        }
-
-        if(!TextUtils.isEmpty(sEpisodeSummary)){
-            outState.putString(EPISODE_SUMMARY_BUNDLE_KEY, sEpisodeSummary);
+        if(mShowEpisode != null){
+            outState.putParcelable(SHOW_EPISODE_BUNDLE_KEY, mShowEpisode);
         }
     }
 
@@ -99,24 +81,12 @@ public class SearchByEpisodeActivity
      * Restores any saved data
      */
     private void restoreData(Bundle savedInstanceState){
-        if(savedInstanceState.containsKey(EPISODE_NAME_BUNDLE_KEY)){
-            sEpisodeName = savedInstanceState.getString(EPISODE_NAME_BUNDLE_KEY);
-            mTextShowEpisodeName.setText(getString(R.string.text_episode_name, sEpisodeName));
-        }
+        if(savedInstanceState.containsKey(SHOW_EPISODE_BUNDLE_KEY)){
+            //Restores the ShowEpisode object
+            mShowEpisode = savedInstanceState.getParcelable(SHOW_EPISODE_BUNDLE_KEY);
 
-        if(savedInstanceState.containsKey(EPISODE_AIR_DATE_BUNDLE_KEY)){
-            sEpisodeAirDate = savedInstanceState.getString(EPISODE_AIR_DATE_BUNDLE_KEY);
-            mTextShowAirDate.setText(getString(R.string.text_episode_air_date, sEpisodeAirDate));
-        }
-
-        if(savedInstanceState.containsKey(EPISODE_RUNTIME_BUNDLE_KEY)){
-            sEpisodeRuntime = savedInstanceState.getString(EPISODE_RUNTIME_BUNDLE_KEY);
-            mTextShowRuntime.setText(getString(R.string.text_episode_runtime, sEpisodeRuntime));
-        }
-
-        if(savedInstanceState.containsKey(EPISODE_SUMMARY_BUNDLE_KEY)){
-            sEpisodeSummary = savedInstanceState.getString(EPISODE_SUMMARY_BUNDLE_KEY);
-            mTextShowSummary.setText(getString(R.string.text_episode_summary, sEpisodeSummary));
+            //Displays the episode's information
+            displayEpisodeInformation(mShowEpisode);
         }
     }
 
@@ -222,17 +192,11 @@ public class SearchByEpisodeActivity
                     episodeSummary = getString(R.string.n_a);
                 }
 
-                //Displays values in TextViews
-                mTextShowEpisodeName.setText(getString(R.string.text_episode_name, episodeName));
-                mTextShowAirDate.setText(getString(R.string.text_episode_air_date, episodeAirDate));
-                mTextShowRuntime.setText(getString(R.string.text_episode_runtime, episodeRuntime));
-                mTextShowSummary.setText(getString(R.string.text_episode_summary, episodeSummary));
+                //Creates a ShowEpisode object
+                mShowEpisode = new ShowEpisode(episodeName, episodeAirDate, episodeRuntime, episodeSummary);
 
-                //Assigns the variables to global variables for data restoration purposes
-                sEpisodeName = episodeName;
-                sEpisodeAirDate = episodeAirDate;
-                sEpisodeRuntime = episodeRuntime;
-                sEpisodeSummary = episodeSummary;
+                //Displays the episode's information
+                displayEpisodeInformation(mShowEpisode);
             }
             else{
                 Toast.makeText(getApplicationContext(), R.string.error_no_episode_information_found, Toast.LENGTH_LONG).show();
@@ -250,5 +214,16 @@ public class SearchByEpisodeActivity
         catch(JSONException j){
             Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
         }
+    }
+
+    /**
+     * Displays the data for the episode
+     */
+    private void displayEpisodeInformation(ShowEpisode showEpisode){
+        //Displays values in TextViews
+        mTextShowEpisodeName.setText(getString(R.string.text_episode_name, showEpisode.getEpisodeName()));
+        mTextShowAirDate.setText(getString(R.string.text_episode_air_date, showEpisode.getEpisodeAirDate()));
+        mTextShowRuntime.setText(getString(R.string.text_episode_runtime, showEpisode.getEpisodeRuntime()));
+        mTextShowSummary.setText(getString(R.string.text_episode_summary, showEpisode.getEpisodeSummary()));
     }
 }
