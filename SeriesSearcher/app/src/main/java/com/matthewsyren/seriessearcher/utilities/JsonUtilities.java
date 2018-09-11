@@ -186,7 +186,7 @@ public class JsonUtilities {
      * @param json The JSON to be parsed
      * @return The text to be displayed about the episode
      */
-    public static String parseShowEpisode(JSONObject json) throws JSONException{
+    public static String parseShowEpisodeDate(JSONObject json) throws JSONException{
         String season = json.getString("season");
         String episode = json.getString("number");
 

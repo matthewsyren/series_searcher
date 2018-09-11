@@ -233,7 +233,7 @@ public class SpecificShowActivity
                 }
                 else if(url.startsWith("http://www.tvmaze.com/episodes")){
                     //Parses the episode information about the Show
-                    String displayText = JsonUtilities.parseShowEpisode(json);
+                    String displayText = JsonUtilities.parseShowEpisodeDate(json);
 
                     //Displays the text in the appropriate TextView
                     if(mTextShowLatestEpisode.getText().toString().length() == 0) {
