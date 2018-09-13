@@ -18,8 +18,8 @@ import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.Show;
-import com.matthewsyren.seriessearcher.network.APIConnection;
-import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.network.ApiConnection;
+import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
 
 public class SpecificShowActivity
         extends AppCompatActivity
-        implements IAPIConnectionResponse{
+        implements IApiConnectionResponse {
     //View bindings
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.text_show_next_episode) TextView mTextShowNextEpisode;
@@ -210,7 +210,7 @@ public class SpecificShowActivity
             mProgressBar.setVisibility(View.VISIBLE);
 
             //Fetches data from the TVMaze API using the link
-            APIConnection api = new APIConnection();
+            ApiConnection api = new ApiConnection();
             api.delegate = this;
             api.execute(showLink);
         }

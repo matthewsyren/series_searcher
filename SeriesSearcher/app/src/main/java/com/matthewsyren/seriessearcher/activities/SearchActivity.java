@@ -17,8 +17,8 @@ import android.widget.Toast;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.adapters.ListViewAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
-import com.matthewsyren.seriessearcher.network.APIConnection;
-import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.network.ApiConnection;
+import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
@@ -34,7 +34,7 @@ import butterknife.ButterKnife;
 
 public class SearchActivity
         extends BaseActivity
-        implements IAPIConnectionResponse {
+        implements IApiConnectionResponse {
     //View bindings
     @BindView(R.id.list_view_search_results) ListView mListViewSearchResults;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
@@ -42,7 +42,7 @@ public class SearchActivity
     @BindView(R.id.tv_no_series_found) TextView mTvNoSeriesFound;
 
     //Declarations
-    private APIConnection api = new APIConnection();
+    private ApiConnection api = new ApiConnection();
     private ArrayList<Show> lstShows =  new ArrayList<>();
     private ListViewAdapter adapter;
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
@@ -145,7 +145,7 @@ public class SearchActivity
         adapter.notifyDataSetChanged();
 
         //Connects to the TVMaze API using the specific URL for the selected show
-        api = new APIConnection();
+        api = new ApiConnection();
         api.delegate = this;
         api.execute(LinkUtilities.getSearchLink(searchText));
     }

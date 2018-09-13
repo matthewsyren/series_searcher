@@ -29,8 +29,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.adapters.ListViewAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
-import com.matthewsyren.seriessearcher.network.APIConnection;
-import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.network.ApiConnection;
+import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
 import com.matthewsyren.seriessearcher.services.FirebaseService;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
@@ -49,7 +49,7 @@ import butterknife.ButterKnife;
 
 public class HomeActivity
         extends BaseActivity
-        implements IAPIConnectionResponse {
+        implements IApiConnectionResponse {
     //View bindings
     @BindView(R.id.list_view_my_shows) ListView mListViewMyShows;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
@@ -322,14 +322,14 @@ public class HomeActivity
      */
     private void getUserShowData(ArrayList<String> lstShows){
         if(lstShows.size() > 0){
-            //Transfers the data from lstShows to an array containing the necessary links to the API (an array can be passed in to the APIConnection class to fetch data from the API)
+            //Transfers the data from lstShows to an array containing the necessary links to the API (an array can be passed in to the ApiConnection class to fetch data from the API)
             String[] arrShows = new String[lstShows.size()];
             for(int i = 0; i < lstShows.size(); i++){
                 arrShows[i] = LinkUtilities.getShowInformationLink(lstShows.get(i));
             }
 
             //Fetches the data from the TVMaze API
-            APIConnection api = new APIConnection();
+            ApiConnection api = new ApiConnection();
             api.delegate = this;
             api.execute(arrShows);
         }

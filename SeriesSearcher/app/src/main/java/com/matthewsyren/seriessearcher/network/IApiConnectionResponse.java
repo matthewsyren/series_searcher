@@ -6,9 +6,9 @@ package com.matthewsyren.seriessearcher.network;
  */
 
 @SuppressWarnings("WeakerAccess")
-public interface IAPIConnectionResponse {
+public interface IApiConnectionResponse {
     /**
-     * Used to parse JSON data that was retrieved from an API. The class that needs the data will implement this interface, and the APIConnection class sends the data to the method once it has fetched the data
+     * Used to parse JSON data that was retrieved from an API. The class that needs the data will implement this interface, and the ApiConnection class sends the data to the method once it has fetched the data
      */
     void parseJsonResponse(String response);
 }

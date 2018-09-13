@@ -17,8 +17,8 @@ import android.widget.Toast;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.adapters.ListViewAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
-import com.matthewsyren.seriessearcher.network.APIConnection;
-import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.network.ApiConnection;
+import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
@@ -35,7 +35,7 @@ import butterknife.ButterKnife;
 
 public class RandomShowsActivity
         extends BaseActivity
-        implements IAPIConnectionResponse {
+        implements IApiConnectionResponse {
     //View bindings
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.list_view_random_shows) ListView mListViewRandomShows;
@@ -91,7 +91,7 @@ public class RandomShowsActivity
                 else{
                     page = (int) (Math.random() * 100);
                 }
-                APIConnection api = new APIConnection();
+                ApiConnection api = new ApiConnection();
                 api.delegate = this;
                 api.execute(LinkUtilities.getMultipleShowPageLink(page));
             }
@@ -160,7 +160,7 @@ public class RandomShowsActivity
     }
 
     /**
-     * Fetches the JSON from the APIConnection class, and parses it
+     * Fetches the JSON from the ApiConnection class, and parses it
      */
     @Override
     public void parseJsonResponse(String response) {

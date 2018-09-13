@@ -5,8 +5,8 @@ import android.content.Context;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.models.ShowEpisode;
-import com.matthewsyren.seriessearcher.network.APIConnection;
-import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.network.ApiConnection;
+import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,11 +17,11 @@ public class JsonUtilities {
      * Returns a Show object parsed from the JSONObject passed in
      * @param json The JSON to be parsed
      * @param context The Context of the calling Activity
-     * @param delegate The class that implements IAPIConnectionResponse
+     * @param delegate The class that implements IApiConnectionResponse
      * @param fetchNextEpisode Set as true to fetch information about the Show's next episode
      * @return A Show object with the parsed JSON as values
      */
-    public static Show parseShowJson(JSONObject json, Context context, IAPIConnectionResponse delegate, boolean fetchNextEpisode) throws JSONException{
+    public static Show parseShowJson(JSONObject json, Context context, IApiConnectionResponse delegate, boolean fetchNextEpisode) throws JSONException{
         //Fetches values
         int id = json.getInt("id");
         String name = json.getString("name");
@@ -54,7 +54,7 @@ public class JsonUtilities {
             String nextEpisodeLink = links.getJSONObject("nextepisode").getString("href");
 
             //Fetches data from the TVMaze API using the link
-            APIConnection api = new APIConnection();
+            ApiConnection api = new ApiConnection();
             api.delegate = delegate;
             api.execute(nextEpisodeLink);
         }
@@ -71,10 +71,10 @@ public class JsonUtilities {
      * Returns a Show object parsed from the JSONObject passed in
      * @param json The JSON to be parsed
      * @param context The Context of the calling Activity
-     * @param delegate The class that implements IAPIConnectionResponse
+     * @param delegate The class that implements IApiConnectionResponse
      * @return A Show object with the parsed JSON as values
      */
-    public static Show parseFullShowJson(JSONObject json, Context context, IAPIConnectionResponse delegate) throws JSONException{
+    public static Show parseFullShowJson(JSONObject json, Context context, IApiConnectionResponse delegate) throws JSONException{
         //Parses the small version of the Show
         Show show = parseShowJson(json, context, delegate, false);
 
@@ -129,7 +129,7 @@ public class JsonUtilities {
             String previousEpisodeLink = links.getJSONObject("previousepisode").getString("href");
 
             //Fetches data from the TVMaze API using the link
-            APIConnection api = new APIConnection();
+            ApiConnection api = new ApiConnection();
             api.delegate = delegate;
             api.execute(previousEpisodeLink);
         }
@@ -141,7 +141,7 @@ public class JsonUtilities {
             String nextEpisodeLink = links.getJSONObject("nextepisode").getString("href");
 
             //Fetches data from the TVMaze API using the link
-            APIConnection api = new APIConnection();
+            ApiConnection api = new ApiConnection();
             api.delegate = delegate;
             api.execute(nextEpisodeLink);
         }

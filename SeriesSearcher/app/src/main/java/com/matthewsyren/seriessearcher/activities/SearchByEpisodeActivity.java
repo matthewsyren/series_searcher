@@ -16,8 +16,8 @@ import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.ShowEpisode;
-import com.matthewsyren.seriessearcher.network.APIConnection;
-import com.matthewsyren.seriessearcher.network.IAPIConnectionResponse;
+import com.matthewsyren.seriessearcher.network.ApiConnection;
+import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 
@@ -29,7 +29,7 @@ import butterknife.ButterKnife;
 
 public class SearchByEpisodeActivity
         extends AppCompatActivity
-        implements IAPIConnectionResponse {
+        implements IApiConnectionResponse {
     //View bindings
     @BindView(R.id.text_show_title) TextView mTextShowTitle;
     @BindView(R.id.text_show_episode_name) TextView mTextShowEpisodeName;
@@ -148,7 +148,7 @@ public class SearchByEpisodeActivity
             int episode = Integer.parseInt(mTextShowEpisode.getText().toString());
 
             //Fetches information from the TVMaze API
-            APIConnection api = new APIConnection();
+            ApiConnection api = new ApiConnection();
             api.delegate = this;
             api.execute(LinkUtilities.getShowEpisodeInformationLink(showNumber, season, episode));
         }
