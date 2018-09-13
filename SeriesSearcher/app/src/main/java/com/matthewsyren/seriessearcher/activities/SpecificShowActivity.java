@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +46,7 @@ public class SpecificShowActivity
     @BindView(R.id.text_show_runtime) TextView mTextShowRuntime;
     @BindView(R.id.text_show_rating) TextView mTextShowRating;
     @BindView(R.id.text_show_summary) TextView mTextShowSummary;
+    @BindView(R.id.ll_specific_show) LinearLayout mLlSpecificShow;
     @Nullable
     @BindView(R.id.app_bar) AppBarLayout mAppBar;
     @Nullable
@@ -81,7 +83,7 @@ public class SpecificShowActivity
         super.onResume();
 
         //Displays the ProgressBar if the show's information hasn't been fetched yet
-        if(mToolbar != null && mToolbar.getTitle() == null){
+        if(mShow == null){
             mProgressBar.setVisibility(View.VISIBLE);
         }
         else{
@@ -239,20 +241,10 @@ public class SpecificShowActivity
                     if(mTextShowLatestEpisode.getText().toString().length() == 0) {
                         mTextShowLatestEpisode.setText(getResources().getString(R.string.text_latest_episode, displayText));
                         mShow.setShowPreviousEpisode(displayText);
-
-                        if(mShow.getShowNextEpisode() != null){
-                            //Hides ProgressBar
-                            mProgressBar.setVisibility(View.INVISIBLE);
-                        }
                     }
                     else{
                         mTextShowNextEpisode.setText(getResources().getString(R.string.text_next_episode, displayText));
                         mShow.setShowNextEpisode(displayText);
-
-                        if (mShow.getShowPreviousEpisode() != null) {
-                            //Hides ProgressBar
-                            mProgressBar.setVisibility(View.INVISIBLE);
-                        }
                     }
 
                     //Displays the Show's information
@@ -290,8 +282,9 @@ public class SpecificShowActivity
                 mTextShowNextEpisode.setText(getString(R.string.text_next_episode, show.getShowNextEpisode()));
             }
 
-            if(show.getShowPreviousEpisode() == null && show.getShowNextEpisode() == null){
-                //Hides ProgressBar
+            if(show.getShowPreviousEpisode() != null && show.getShowNextEpisode() != null && show.getShowTitle() != null){
+                //Hides ProgressBar and displays data
+                mLlSpecificShow.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.INVISIBLE);
             }
 
