@@ -36,6 +36,7 @@
 
     <!-- SearchActivity -->
     <string name="label_search">Type to search&#8230;</string>
+    <string name="no_series_found">No series were found&#8230;</string>
 
     <!-- Activity Titles -->
     <string name="title_activity_random_shows">Random Series</string>

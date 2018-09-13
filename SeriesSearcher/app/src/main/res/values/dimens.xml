@@ -15,6 +15,9 @@
     <dimen name="text_specific_show_activity_margin_bottom">@dimen/activity_vertical_margin</dimen>
     <dimen name="progress_bar_margin_top">32dp</dimen>
 
+    <!-- SearchActivity -->
+    <dimen name="tv_no_series_found_margin_top">32dp</dimen>
+
     <!-- ListView row -->
     <dimen name="thumbnail_padding">2dp</dimen>
     <dimen name="list_row_show_poster_size">75dp</dimen>

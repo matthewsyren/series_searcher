@@ -24,4 +24,13 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"/>
+
+    <TextView
+        android:id="@+id/tv_no_series_found"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/no_series_found"
+        style="@style/TextViewMessageStyle"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/tv_no_series_found_margin_top"/>
 </RelativeLayout>

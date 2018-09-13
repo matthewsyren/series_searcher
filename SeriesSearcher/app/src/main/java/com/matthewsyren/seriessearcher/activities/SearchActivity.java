@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
@@ -38,6 +39,7 @@ public class SearchActivity
     @BindView(R.id.list_view_search_results) ListView mListViewSearchResults;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.text_search_series) EditText mTextSearchSeries;
+    @BindView(R.id.tv_no_series_found) TextView mTvNoSeriesFound;
 
     //Declarations
     private APIConnection api = new APIConnection();
@@ -133,7 +135,8 @@ public class SearchActivity
         //Fetches user's input
         String searchText = mTextSearchSeries.getText().toString();
 
-        //Displays ProgressBar
+        //Displays ProgressBar and hides the TextView
+        mTvNoSeriesFound.setVisibility(View.INVISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
 
         //Cancels any previous requests and clears the previous results
@@ -189,6 +192,14 @@ public class SearchActivity
 
         //Updates the Adapter
         adapter.notifyDataSetChanged();
+
+        //Displays a message if no series are found
+        if(lstShows.size() == 0){
+            mTvNoSeriesFound.setVisibility(View.VISIBLE);
+        }
+        else{
+            mTvNoSeriesFound.setVisibility(View.INVISIBLE);
+        }
 
         //Hides ProgressBar
         mProgressBar.setVisibility(View.INVISIBLE);
