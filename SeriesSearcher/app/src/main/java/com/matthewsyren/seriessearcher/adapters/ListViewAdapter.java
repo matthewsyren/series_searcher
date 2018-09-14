@@ -96,7 +96,19 @@ public class ListViewAdapter
             viewHolder.nextEpisode.setText(resources.getString(R.string.text_next_episode, mShows.get(position).getShowNextEpisode()));
         }
         else{
-            viewHolder.runtime.setText(resources.getString(R.string.text_runtime, mShows.get(position).getShowRuntime()));
+            //Displays the appropriate unit for the runtime
+            if(!mShows.get(position).getShowRuntime().equals(mContext.getString(R.string.n_a))){
+                viewHolder.runtime.setText(
+                        resources.getString(
+                                R.string.text_runtime_minutes,
+                                mShows.get(position).getShowRuntime()));
+            }
+            else{
+                viewHolder.runtime.setText(
+                        resources.getString(
+                                R.string.text_runtime,
+                                mShows.get(position).getShowRuntime()));
+            }
         }
 
         //Displays appropriate image for the ImageButton

@@ -206,7 +206,20 @@ public class SearchByEpisodeActivity
         //Displays values in TextViews
         mTextShowEpisodeName.setText(getString(R.string.text_episode_name, showEpisode.getEpisodeName()));
         mTextShowAirDate.setText(getString(R.string.text_episode_air_date, showEpisode.getEpisodeAirDate()));
-        mTextShowRuntime.setText(getString(R.string.text_episode_runtime, showEpisode.getEpisodeRuntime()));
         mTextShowSummary.setText(getString(R.string.text_episode_summary, showEpisode.getEpisodeSummary()));
+
+        //Displays the appropriate unit for the runtime
+        if(!showEpisode.getEpisodeRuntime().equals(getString(R.string.n_a))){
+            mTextShowRuntime.setText(
+                    getString(
+                            R.string.text_runtime_minutes,
+                            showEpisode.getEpisodeRuntime()));
+        }
+        else{
+            mTextShowRuntime.setText(
+                    getString(
+                            R.string.text_runtime,
+                            showEpisode.getEpisodeRuntime()));
+        }
     }
 }

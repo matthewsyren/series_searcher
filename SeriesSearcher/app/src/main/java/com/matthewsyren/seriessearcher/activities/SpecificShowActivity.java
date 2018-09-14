@@ -269,10 +269,23 @@ public class SpecificShowActivity
             mTextShowPremiered.setText(getString(R.string.text_premiered, show.getShowPremieredDate()));
             mTextShowLanguage.setText(getString(R.string.text_language, show.getShowLanguages()));
             mTextShowStatus.setText(getString(R.string.text_status, show.getShowStatus()));
-            mTextShowRuntime.setText(getString(R.string.text_runtime, show.getShowRuntime()));
             mTextShowRating.setText(getString(R.string.text_rating, show.getShowRating()));
             mTextShowGenres.setText(getString(R.string.text_genres, show.getShowGenres()));
             mTextShowSummary.setText(getString(R.string.text_summary, show.getShowSummary()));
+
+            //Displays the appropriate unit for the runtime
+            if(!show.getShowRuntime().equals(getString(R.string.n_a))){
+                mTextShowRuntime.setText(
+                        getString(
+                                R.string.text_runtime_minutes,
+                                show.getShowRuntime()));
+            }
+            else{
+                mTextShowRuntime.setText(
+                        getString(
+                                R.string.text_runtime,
+                                show.getShowRuntime()));
+            }
 
             if(show.getShowPreviousEpisode() != null){
                 mTextShowLatestEpisode.setText(getString(R.string.text_latest_episode, show.getShowPreviousEpisode()));
