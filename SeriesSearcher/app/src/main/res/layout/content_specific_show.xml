@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/cl_specific_show"
+    <LinearLayout
+        android:id="@+id/ll_specific_show"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"
@@ -14,176 +14,193 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/text_specific_show_activity_margin_top">
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="@dimen/guideline_size"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5"/>
+        android:layout_marginTop="@dimen/text_specific_show_activity_margin_top"
+        android:orientation="vertical">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/row_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <include
+                android:id="@+id/guideline_1"
+                layout="@layout/centre_guideline"/>
+
+            <TextView
+                android:id="@+id/text_show_premiered_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                style="@style/SpecificShowActivityCaption"
+                android:text="@string/text_premiered_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guideline_1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/text_show_premiered"
+                style="@style/SpecificShowText"
+                app:layout_constraintTop_toBottomOf="@id/text_show_premiered_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guideline_1" />
+
+            <TextView
+                android:id="@+id/text_show_genres_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                style="@style/SpecificShowActivityCaption"
+                android:text="@string/text_genres_title"
+                app:layout_constraintStart_toEndOf="@id/guideline_1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/text_show_genres"
+                style="@style/SpecificShowText"
+                app:layout_constraintStart_toEndOf="@id/guideline_1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_show_genres_title" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/row_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <include
+                android:id="@+id/guideline_2"
+                layout="@layout/centre_guideline"/>
+
+            <TextView
+                android:id="@+id/text_show_language_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                style="@style/SpecificShowActivityCaption"
+                android:text="@string/text_language_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guideline_2"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/text_show_language"
+                style="@style/SpecificShowText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guideline_2"
+                app:layout_constraintTop_toBottomOf="@+id/text_show_language_title" />
+
+            <TextView
+                android:id="@+id/text_show_status_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                style="@style/SpecificShowActivityCaption"
+                android:text="@string/text_status_title"
+                app:layout_constraintStart_toEndOf="@id/guideline_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/text_show_status"
+                style="@style/SpecificShowText"
+                app:layout_constraintStart_toEndOf="@id/guideline_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_show_status_title" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/row_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <include
+                android:id="@+id/guideline_3"
+                layout="@layout/centre_guideline"/>
+
+            <TextView
+                android:id="@+id/text_show_runtime_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                style="@style/SpecificShowActivityCaption"
+                android:text="@string/text_runtime_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guideline_3"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/text_show_runtime"
+                style="@style/SpecificShowText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guideline_3"
+                app:layout_constraintTop_toBottomOf="@+id/text_show_runtime_title"/>
+
+            <TextView
+                android:id="@+id/text_show_rating_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                style="@style/SpecificShowActivityCaption"
+                android:text="@string/text_rating_title"
+                app:layout_constraintStart_toEndOf="@id/guideline_3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/text_show_rating"
+                style="@style/SpecificShowText"
+                app:layout_constraintStart_toEndOf="@id/guideline_3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_show_rating_title" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/row_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <include
+                android:id="@+id/guideline_4"
+                layout="@layout/centre_guideline"/>
+
+            <TextView
+                android:id="@+id/text_show_latest_episode_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                style="@style/SpecificShowActivityCaption"
+                android:text="@string/text_latest_episode_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guideline_4"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/text_show_latest_episode"
+                style="@style/SpecificShowText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guideline_4"
+                app:layout_constraintTop_toBottomOf="@id/text_show_latest_episode_title" />
+
+            <TextView
+                android:id="@+id/text_show_next_episode_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                style="@style/SpecificShowActivityCaption"
+                android:text="@string/text_next_episode_title"
+                app:layout_constraintStart_toEndOf="@id/guideline_4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/text_show_next_episode"
+                style="@style/SpecificShowText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/guideline_4"
+                app:layout_constraintTop_toBottomOf="@id/text_show_next_episode_title" />
+        </android.support.constraint.ConstraintLayout>
 
         <TextView
-            android:id="@+id/text_show_premiered_title"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/SpecificShowActivityCaption"
-            android:text="@string/text_premiered_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/guideline"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/text_show_genres_title"/>
-
-        <TextView
-            android:id="@+id/text_show_premiered"
-            style="@style/SpecificShowText"
-            app:layout_constraintTop_toBottomOf="@id/text_show_premiered_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/guideline"
-            app:layout_constraintBottom_toBottomOf="@+id/text_show_genres"/>
-
-        <TextView
-            android:id="@+id/text_show_genres_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            style="@style/SpecificShowActivityCaption"
-            android:text="@string/text_genres_title"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/text_show_premiered_title"/>
-
-        <TextView
-            android:id="@+id/text_show_genres"
-            style="@style/SpecificShowText"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_show_genres_title"
-            app:layout_constraintBottom_toBottomOf="@+id/text_show_premiered"/>
-
-        <TextView
-            android:id="@+id/text_show_language_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            style="@style/SpecificShowActivityCaption"
-            android:text="@string/text_language_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/text_show_premiered"
-            app:layout_constraintBottom_toBottomOf="@id/text_show_status_title" />
-
-        <TextView
-            android:id="@+id/text_show_language"
-            style="@style/SpecificShowText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/text_show_language_title"
-            app:layout_constraintBottom_toBottomOf="@id/text_show_status"/>
-
-        <TextView
-            android:id="@+id/text_show_status_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            style="@style/SpecificShowActivityCaption"
-            android:text="@string/text_status_title"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_show_genres"
-            app:layout_constraintBottom_toBottomOf="@id/text_show_language_title" />
-
-        <TextView
-            android:id="@+id/text_show_status"
-            style="@style/SpecificShowText"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_show_status_title"
-            app:layout_constraintBottom_toBottomOf="@id/text_show_language"/>
-
-        <TextView
-            android:id="@+id/text_show_runtime_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            style="@style/SpecificShowActivityCaption"
-            android:text="@string/text_runtime_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/text_show_language"
-            app:layout_constraintBottom_toBottomOf="@id/text_show_rating_title" />
-
-        <TextView
-            android:id="@+id/text_show_runtime"
-            style="@style/SpecificShowText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/text_show_runtime_title"/>
-
-        <TextView
-            android:id="@+id/text_show_rating_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            style="@style/SpecificShowActivityCaption"
-            android:text="@string/text_rating_title"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_show_status"
-            app:layout_constraintBottom_toBottomOf="@id/text_show_runtime_title" />
-
-        <TextView
-            android:id="@+id/text_show_rating"
-            style="@style/SpecificShowText"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_show_rating_title"
-            app:layout_constraintBottom_toBottomOf="@id/text_show_runtime"/>
-
-        <TextView
-            android:id="@+id/text_show_latest_episode_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            style="@style/SpecificShowActivityCaption"
-            android:text="@string/text_latest_episode_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/text_show_runtime"
-            app:layout_constraintBottom_toBottomOf="@id/text_show_next_episode_title" />
-
-        <TextView
-            android:id="@+id/text_show_latest_episode"
-            style="@style/SpecificShowText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/text_show_latest_episode_title"
-            app:layout_constraintBottom_toBottomOf="@id/text_show_next_episode"/>
-
-        <TextView
-            android:id="@+id/text_show_next_episode_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            style="@style/SpecificShowActivityCaption"
-            android:text="@string/text_next_episode_title"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_show_rating"
-            app:layout_constraintBottom_toBottomOf="@id/text_show_latest_episode_title" />
-
-        <TextView
-            android:id="@+id/text_show_next_episode"
-            style="@style/SpecificShowText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/text_show_next_episode_title"
-            app:layout_constraintBottom_toBottomOf="@id/text_show_latest_episode"/>
-
-        <TextView
             android:id="@+id/text_show_summary"
-            style="@style/SpecificShowText"
-            app:layout_constraintTop_toBottomOf="@+id/text_show_latest_episode"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="@dimen/show_information_margin_top"
             android:layout_marginBottom="@dimen/text_specific_show_activity_margin_bottom"
-            android:textAlignment="inherit"/>
-    </android.support.constraint.ConstraintLayout>
+            android:layout_marginStart="@dimen/specific_show_summary_margin_side"
+            android:layout_marginEnd="@dimen/specific_show_summary_margin_side"
+            android:textAlignment="inherit"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/specific_show_activity_summary_text_size"/>
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"

@@ -22,9 +22,9 @@
     <style name="SpecificShowText">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/specific_show_text_margin</item>
-        <item name="android:layout_marginRight">@dimen/specific_show_text_margin</item>
-        <item name="android:textSize">@dimen/specific_show_activity_heading_text_size</item>
+        <item name="android:layout_marginLeft">@dimen/specific_show_text_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/specific_show_text_margin_right</item>
+        <item name="android:textSize">@dimen/specific_show_activity_text_size</item>
         <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textAlignment">center</item>
     </style>

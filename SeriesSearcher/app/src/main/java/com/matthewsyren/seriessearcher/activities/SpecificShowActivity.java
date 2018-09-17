@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +46,7 @@ public class SpecificShowActivity
     @BindView(R.id.text_show_runtime) TextView mTextShowRuntime;
     @BindView(R.id.text_show_rating) TextView mTextShowRating;
     @BindView(R.id.text_show_summary) TextView mTextShowSummary;
-    @BindView(R.id.cl_specific_show) ConstraintLayout mClSpecificShow;
+    @BindView(R.id.ll_specific_show) LinearLayout mLlSpecificShow;
     @Nullable
     @BindView(R.id.app_bar) AppBarLayout mAppBar;
     @Nullable
@@ -289,7 +289,7 @@ public class SpecificShowActivity
 
             if(show.getShowPreviousEpisode() != null && show.getShowNextEpisode() != null && show.getShowTitle() != null){
                 //Hides ProgressBar and displays data
-                mClSpecificShow.setVisibility(View.VISIBLE);
+                mLlSpecificShow.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.INVISIBLE);
             }
 
