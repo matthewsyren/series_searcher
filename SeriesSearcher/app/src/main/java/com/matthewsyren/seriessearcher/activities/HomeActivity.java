@@ -374,7 +374,7 @@ public class HomeActivity
                         }
                         else if(url.startsWith("http://www.tvmaze.com/episodes")){
                             //Gets the next episode information
-                            String displayText = JsonUtilities.parseShowEpisodeDate(json, this);
+                            String displayText = JsonUtilities.parseShowEpisodeDate(json, this, false);
 
                             //Sets the next episode date for the appropriate series
                             for(int s = 0; s < lstShows.size(); s++){

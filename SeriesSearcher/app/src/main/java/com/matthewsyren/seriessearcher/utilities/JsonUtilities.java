@@ -172,17 +172,18 @@ public class JsonUtilities {
      * @param json The JSON to be parsed
      * @return The episode date
      */
-    public static String parseShowEpisodeDate(JSONObject json, Context context) throws JSONException{
+    public static String parseShowEpisodeDate(JSONObject json, Context context, boolean addDateOnNextLine) throws JSONException{
         String season = json.getString("season");
         String episode = json.getString("number");
         String airDate = json.getString("airdate");
+        String nextLine = addDateOnNextLine ? "\n" : "";
 
         //Sets the appropriate airDate
         if(airDate == null){
             airDate = "";
         }
         else{
-            airDate = "(" + airDate + ")";
+            airDate = nextLine + "(" + airDate + ")";
         }
 
         return (context.getString(R.string.season_episode,
