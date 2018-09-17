@@ -71,23 +71,23 @@
             android:orientation="vertical">
             <TextView
                 android:id="@+id/text_show_episode_name"
-                style="@style/SpecificShowText"/>
+                style="@style/SearchByEpisodeText"/>
 
             <TextView
                 android:id="@+id/text_show_air_date"
-                style="@style/SpecificShowText"/>
+                style="@style/SearchByEpisodeText"/>
 
             <TextView
                 android:id="@+id/text_show_runtime"
-                style="@style/SpecificShowText"/>
+                style="@style/SearchByEpisodeText"/>
 
             <TextView
                 android:id="@+id/text_show_summary"
-                style="@style/SpecificShowText" />
+                style="@style/SearchByEpisodeText" />
 
             <TextView
                 android:id="@+id/text_show_status"
-                style="@style/SpecificShowText"/>
+                style="@style/SearchByEpisodeText"/>
         </LinearLayout>
 
         <ProgressBar
