@@ -376,10 +376,6 @@ public class HomeActivity
                             //Gets the next episode information
                             String displayText = JsonUtilities.parseShowEpisodeDate(json, this);
 
-                            //Replaces Season with S: and Episode with E:
-                            displayText = displayText.replace(getString(R.string.season), getString(R.string.s));
-                            displayText = displayText.replace(getString(R.string.episode), getString(R.string.e));
-
                             //Sets the next episode date for the appropriate series
                             for(int s = 0; s < lstShows.size(); s++){
                                 String seriesName = lstShows.get(s).getShowTitle().toLowerCase();
