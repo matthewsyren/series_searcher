@@ -23,6 +23,14 @@
     <string name="sign_in_cancelled">Sign in cancelled</string>
 
     <!-- SpecificShowActivity -->
+    <string name="text_premiered_title">Premiered:</string>
+    <string name="text_genres_title">Genres:</string>
+    <string name="text_language_title">Language:</string>
+    <string name="text_status_title">Status:</string>
+    <string name="text_runtime_title">Runtime:</string>
+    <string name="text_rating_title">Rating:</string>
+    <string name="text_latest_episode_title">Latest Episode:</string>
+    <string name="text_next_episode_title">Next Episode:</string>
     <string name="text_premiered">Premiered: %s</string>
     <string name="text_genres">Genres: %s</string>
     <string name="text_language">Language: %s</string>
@@ -30,7 +38,6 @@
     <string name="text_runtime">Runtime: %s</string>
     <string name="text_runtime_minutes">Runtime: %s minutes</string>
     <string name="text_rating">Rating: %s</string>
-    <string name="text_summary">Summary: %s</string>
     <string name="text_genres_sections">%s, %s</string>
     <string name="text_latest_episode">Latest Episode: %s</string>
     <string name="text_next_episode">Next Episode: %s</string>

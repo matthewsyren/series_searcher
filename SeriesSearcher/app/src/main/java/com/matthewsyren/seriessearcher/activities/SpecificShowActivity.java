@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +46,7 @@ public class SpecificShowActivity
     @BindView(R.id.text_show_runtime) TextView mTextShowRuntime;
     @BindView(R.id.text_show_rating) TextView mTextShowRating;
     @BindView(R.id.text_show_summary) TextView mTextShowSummary;
-    @BindView(R.id.ll_specific_show) LinearLayout mLlSpecificShow;
+    @BindView(R.id.cl_specific_show) ConstraintLayout mClSpecificShow;
     @Nullable
     @BindView(R.id.app_bar) AppBarLayout mAppBar;
     @Nullable
@@ -239,11 +239,9 @@ public class SpecificShowActivity
 
                     //Displays the text in the appropriate TextView
                     if(mTextShowLatestEpisode.getText().toString().length() == 0) {
-                        mTextShowLatestEpisode.setText(getResources().getString(R.string.text_latest_episode, displayText));
                         mShow.setShowPreviousEpisode(displayText);
                     }
                     else{
-                        mTextShowNextEpisode.setText(getResources().getString(R.string.text_next_episode, displayText));
                         mShow.setShowNextEpisode(displayText);
                     }
 
@@ -266,38 +264,32 @@ public class SpecificShowActivity
     private void displayShowInformation(Show show){
         if(show != null){
             //Displays the information
-            mTextShowPremiered.setText(getString(R.string.text_premiered, show.getShowPremieredDate()));
-            mTextShowLanguage.setText(getString(R.string.text_language, show.getShowLanguages()));
-            mTextShowStatus.setText(getString(R.string.text_status, show.getShowStatus()));
-            mTextShowRating.setText(getString(R.string.text_rating, show.getShowRating()));
-            mTextShowGenres.setText(getString(R.string.text_genres, show.getShowGenres()));
-            mTextShowSummary.setText(getString(R.string.text_summary, show.getShowSummary()));
+            mTextShowPremiered.setText(show.getShowPremieredDate());
+            mTextShowLanguage.setText(show.getShowLanguages());
+            mTextShowStatus.setText(show.getShowStatus());
+            mTextShowRating.setText(show.getShowRating());
+            mTextShowGenres.setText(show.getShowGenres());
+            mTextShowSummary.setText(show.getShowSummary());
 
             //Displays the appropriate unit for the runtime
             if(!show.getShowRuntime().equals(getString(R.string.n_a))){
-                mTextShowRuntime.setText(
-                        getString(
-                                R.string.text_runtime_minutes,
-                                show.getShowRuntime()));
+                mTextShowRuntime.setText(show.getShowRuntime());
             }
             else{
-                mTextShowRuntime.setText(
-                        getString(
-                                R.string.text_runtime,
-                                show.getShowRuntime()));
+                mTextShowRuntime.setText(show.getShowRuntime());
             }
 
             if(show.getShowPreviousEpisode() != null){
-                mTextShowLatestEpisode.setText(getString(R.string.text_latest_episode, show.getShowPreviousEpisode()));
+                mTextShowLatestEpisode.setText(show.getShowPreviousEpisode());
             }
 
             if(show.getShowNextEpisode() != null){
-                mTextShowNextEpisode.setText(getString(R.string.text_next_episode, show.getShowNextEpisode()));
+                mTextShowNextEpisode.setText(show.getShowNextEpisode());
             }
 
             if(show.getShowPreviousEpisode() != null && show.getShowNextEpisode() != null && show.getShowTitle() != null){
                 //Hides ProgressBar and displays data
-                mLlSpecificShow.setVisibility(View.VISIBLE);
+                mClSpecificShow.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.INVISIBLE);
             }
 

@@ -8,12 +8,16 @@
     <dimen name="other_text_size">16sp</dimen>
     <dimen name="app_bar_margin">25dp</dimen>
     <dimen name="app_bar_text_size">24sp</dimen>
+    <dimen name="guideline_size">1dp</dimen>
 
     <!-- SpecificShowActivity -->
     <dimen name="specific_show_activity_heading_text_size">20sp</dimen>
     <dimen name="show_poster_height">300dp</dimen>
+    <dimen name="text_specific_show_activity_margin_top">36dp</dimen>
     <dimen name="text_specific_show_activity_margin_bottom">@dimen/activity_vertical_margin</dimen>
     <dimen name="progress_bar_margin_top">32dp</dimen>
+    <dimen name="show_information_margin_top">16dp</dimen>
+    <dimen name="specific_show_text_margin">10dp</dimen>
 
     <!-- SearchActivity -->
     <dimen name="tv_no_series_found_margin_top">32dp</dimen>
