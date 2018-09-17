@@ -273,7 +273,10 @@ public class SpecificShowActivity
 
             //Displays the appropriate unit for the runtime
             if(!show.getShowRuntime().equals(getString(R.string.n_a))){
-                mTextShowRuntime.setText(show.getShowRuntime());
+                mTextShowRuntime.setText(
+                        getString(
+                                R.string.text_minutes,
+                                show.getShowRuntime()));
             }
             else{
                 mTextShowRuntime.setText(show.getShowRuntime());
