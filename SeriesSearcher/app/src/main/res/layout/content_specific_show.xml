@@ -33,7 +33,8 @@
                 android:text="@string/text_premiered_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/guideline_1"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="0dp"/>
 
             <TextView
                 android:id="@+id/text_show_premiered"
@@ -50,7 +51,8 @@
                 android:text="@string/text_genres_title"
                 app:layout_constraintStart_toEndOf="@id/guideline_1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="0dp"/>
 
             <TextView
                 android:id="@+id/text_show_genres"
