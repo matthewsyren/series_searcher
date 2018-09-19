@@ -44,22 +44,22 @@
                 app:layout_constraintEnd_toStartOf="@id/guideline_1" />
 
             <TextView
-                android:id="@+id/text_show_genres_title"
+                android:id="@+id/text_show_status_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 style="@style/SpecificShowActivityCaption"
-                android:text="@string/text_genres_title"
+                android:text="@string/text_status_title"
                 app:layout_constraintStart_toEndOf="@id/guideline_1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="0dp"/>
 
             <TextView
-                android:id="@+id/text_show_genres"
+                android:id="@+id/text_show_status"
                 style="@style/SpecificShowText"
                 app:layout_constraintStart_toEndOf="@id/guideline_1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_show_genres_title" />
+                app:layout_constraintTop_toBottomOf="@id/text_show_status_title" />
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
@@ -88,21 +88,21 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_show_language_title" />
 
             <TextView
-                android:id="@+id/text_show_status_title"
+                android:id="@+id/text_show_genres_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 style="@style/SpecificShowActivityCaption"
-                android:text="@string/text_status_title"
+                android:text="@string/text_genres_title"
                 app:layout_constraintStart_toEndOf="@id/guideline_2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/text_show_status"
+                android:id="@+id/text_show_genres"
                 style="@style/SpecificShowText"
                 app:layout_constraintStart_toEndOf="@id/guideline_2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_show_status_title" />
+                app:layout_constraintTop_toBottomOf="@id/text_show_genres_title" />
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
