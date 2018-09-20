@@ -170,17 +170,6 @@ public class BaseActivity
             case R.id.nav_data_saving_mode:
                 return false;
             case R.id.nav_sign_out:
-                //Signs the user out of Firebase
-                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                firebaseAuth.signOut();
-
-                //Removes the user's email and key from SharedPreferences
-                SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("userEmail", null);
-                editor.putString("userKey", null);
-                editor.apply();
-
                 //Signs the user out
                 AuthUI.getInstance()
                         .signOut(this);
