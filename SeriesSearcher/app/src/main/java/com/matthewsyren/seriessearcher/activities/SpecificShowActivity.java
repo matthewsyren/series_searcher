@@ -54,10 +54,13 @@ public class SpecificShowActivity
     @BindView(R.id.button_search_by_episode) FloatingActionButton mButtonSearchByEpisode;
 
     //Variables
-    private static final String SHOW_BUNDLE_KEY = "show_bundle_key";
-    private static final String SHOW_ID_BUNDLE_KEY = "show_id_bundle_key";
     private Show mShow;
     private static String sShowId;
+
+    //Constants
+    public static final String SHOW_ID_KEY = "show_id_key";
+    private static final String SHOW_BUNDLE_KEY = "show_bundle_key";
+    private static final String SHOW_ID_BUNDLE_KEY = "show_id_bundle_key";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,7 +206,7 @@ public class SpecificShowActivity
 
         if(bundle != null){
             //Gets the link to the Show
-            sShowId = bundle.getString("showNumber");
+            sShowId = bundle.getString(SHOW_ID_KEY);
             String showLink = LinkUtilities.getShowInformationLink(sShowId);
 
             //Displays ProgressBar
@@ -228,12 +231,12 @@ public class SpecificShowActivity
                 String url = json.getString("url");
 
                 //Parses the JSON based on the URL of the response
-                if(url.startsWith("http://www.tvmaze.com/shows")){
+                if(url.startsWith(LinkUtilities.SHOW_LINK)){
                     //Parses the Show's main information and displays it
                     mShow = JsonUtilities.parseFullShowJson(json, this, this);
                     displayShowInformation(mShow);
                 }
-                else if(url.startsWith("http://www.tvmaze.com/episodes")){
+                else if(url.startsWith(LinkUtilities.EPISODE_LINK)){
                     //Parses the episode information about the Show
                     String displayText = JsonUtilities.parseShowEpisodeDate(json, this, true);
 
@@ -352,13 +355,11 @@ public class SpecificShowActivity
         Bundle bundle = getIntent().getExtras();
 
         if(bundle != null){
-            String showNumber = bundle.getString("showNumber");
-            String previousActivity = bundle.getString("previousActivity");
-
+            //Opens the SpecificShowActivity
+            String showNumber = bundle.getString(SHOW_ID_KEY);
             Intent intent = new Intent(SpecificShowActivity.this, SearchByEpisodeActivity.class);
-            intent.putExtra("showTitle", showName);
-            intent.putExtra("showNumber", showNumber);
-            intent.putExtra("previousActivity", previousActivity);
+            intent.putExtra(SearchByEpisodeActivity.SHOW_TITLE_BUNDLE_KEY, showName);
+            intent.putExtra(SearchByEpisodeActivity.SHOW_NUMBER_BUNDLE_KEY, showNumber);
             startActivity(intent);
         }
     }

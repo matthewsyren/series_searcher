@@ -43,8 +43,12 @@ public class SearchByEpisodeActivity
     @BindView(R.id.ll_search_by_episode_information) LinearLayout mLlSearchByEpisodeInformation;
 
     //Variables
-    private static final String SHOW_EPISODE_BUNDLE_KEY = "show_episode_bundle_key";
     private ShowEpisode mShowEpisode;
+
+    //Constants
+    private static final String SHOW_EPISODE_BUNDLE_KEY = "show_episode_bundle_key";
+    public static final String SHOW_TITLE_BUNDLE_KEY = "showTitle";
+    public static final String SHOW_NUMBER_BUNDLE_KEY = "showNumber";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +102,7 @@ public class SearchByEpisodeActivity
         Bundle bundle = getIntent().getExtras();
         String showTitle = "";
         if(bundle != null){
-            showTitle = bundle.getString("showTitle");
+            showTitle = bundle.getString(SHOW_TITLE_BUNDLE_KEY);
         }
 
         mTextShowTitle.setText(showTitle);
@@ -140,7 +144,7 @@ public class SearchByEpisodeActivity
             Bundle bundle = getIntent().getExtras();
             String showNumber = "";
             if(bundle != null){
-                showNumber = bundle.getString("showNumber");
+                showNumber = bundle.getString(SHOW_NUMBER_BUNDLE_KEY);
             }
 
             //Gets the user's input

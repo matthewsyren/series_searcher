@@ -103,7 +103,7 @@ public class BaseActivity
         //Saves the user's new preference for Data Saving Mode
         SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("dataSavingMode", !currentPreference);
+        editor.putBoolean(UserAccountUtilities.DATA_SAVING_MODE_KEY, !currentPreference);
         editor.apply();
 
         //Displays a message confirming the user's action

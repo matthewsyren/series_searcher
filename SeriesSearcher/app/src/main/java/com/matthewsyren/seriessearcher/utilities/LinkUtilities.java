@@ -1,12 +1,19 @@
 package com.matthewsyren.seriessearcher.utilities;
 
 public class LinkUtilities {
+    //Constants
+    public static String SHOW_LINK = "http://www.tvmaze.com/shows";
+    public static String SHOW_INFORMATION_LINK = "http://api.tvmaze.com/shows/";
+    public static String RANDOM_SHOWS_LINK = "http://api.tvmaze.com/shows?page=";
+    public static String SEARCH_LINK = "http://api.tvmaze.com/search/shows?q=";
+    public static String EPISODE_LINK = "http://www.tvmaze.com/episodes";
+
     /**
      * Returns the link to the page with information about the specified Show
      * @param showID The ID of the Show whose information is being requested
      */
     public static String getShowInformationLink(String showID){
-        return "http://api.tvmaze.com/shows/" + showID;
+        return SHOW_INFORMATION_LINK + showID;
     }
 
     /**
@@ -14,7 +21,7 @@ public class LinkUtilities {
      * @param pageNumber The desired page number (could be randomised to fetch a List of random Shows)
      */
     public static String getMultipleShowPageLink(int pageNumber){
-        return "http://api.tvmaze.com/shows?page=" + pageNumber;
+        return RANDOM_SHOWS_LINK + pageNumber;
     }
 
     /**
@@ -22,7 +29,7 @@ public class LinkUtilities {
      * @param searchText The text used to search
      */
     public static String getSearchLink(String searchText){
-        return "http://api.tvmaze.com/search/shows?q=" + searchText;
+        return SEARCH_LINK + searchText;
     }
 
     /**
@@ -32,6 +39,6 @@ public class LinkUtilities {
      * @param episode The episode number of the desired episode
      */
     public static String getShowEpisodeInformationLink(String showID, int season, int episode){
-        return "http://api.tvmaze.com/shows/" + showID + "/episodebynumber?season=" + season + "&number="  + episode;
+        return SHOW_INFORMATION_LINK + showID + "/episodebynumber?season=" + season + "&number="  + episode;
     }
 }

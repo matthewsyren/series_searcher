@@ -42,10 +42,14 @@ public class RandomShowsActivity
     @BindView(R.id.button_refresh) Button mButtonRefresh;
     @BindView(R.id.text_no_internet) TextView mTextNoInternet;
 
-    //Declarations
+    //Variables
     private ArrayList<Show> lstShows = new ArrayList<>();
     private ListViewAdapter adapter;
+
+    //Constants
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
+    private static final String API_PAGE_BUNDLE_KEY = "apiPage";
+    private static final String API_STARTING_SHOW_BUNDLE_KEY = "apiStartingShow";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +72,7 @@ public class RandomShowsActivity
         mListViewRandomShows.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                 Intent intent = new Intent(RandomShowsActivity.this, SpecificShowActivity.class);
-                intent.putExtra("showNumber", "" + lstShows.get(pos).getShowId());
+                intent.putExtra(SpecificShowActivity.SHOW_ID_KEY, "" + lstShows.get(pos).getShowId());
                 ImageView imageView = v.findViewById(R.id.image_show_poster);
                 Bundle bundle = ActivityOptions
                         .makeSceneTransitionAnimation(RandomShowsActivity.this, imageView, imageView.getTransitionName())
@@ -85,8 +89,8 @@ public class RandomShowsActivity
                 //Fetches JSON from API (If a page on the API has already been determined, then it is fetched from the Bundle, otherwise the Math.random() method chooses a random page from the API to fetch)
                 Bundle bundle = getIntent().getExtras();
                 int page;
-                if(bundle != null && bundle.getInt("apiPage") != -1){
-                    page = bundle.getInt("apiPage");
+                if(bundle != null && bundle.getInt(API_PAGE_BUNDLE_KEY) != -1){
+                    page = bundle.getInt(API_PAGE_BUNDLE_KEY);
                 }
                 else{
                     page = (int) (Math.random() * 100);
@@ -172,8 +176,8 @@ public class RandomShowsActivity
                 //Fetches previous list of Shows from the Bundle if a starting show has already been determined, otherwise Math.random() is used to choose a random starting point to fetch data from the API. This allows the app to fetch different shows each time it runs
                 Bundle bundle = getIntent().getExtras();
                 int startingShow;
-                if(bundle != null && bundle.getInt("apiStartingShow") != -1){
-                    startingShow = bundle.getInt("apiStartingShow");
+                if(bundle != null && bundle.getInt(API_STARTING_SHOW_BUNDLE_KEY) != -1){
+                    startingShow = bundle.getInt(API_STARTING_SHOW_BUNDLE_KEY);
                 }
                 else{
                     startingShow = (int) (Math.random() * 230 + 1);

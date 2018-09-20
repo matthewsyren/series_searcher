@@ -71,7 +71,7 @@ public class SearchActivity
         mListViewSearchResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                 Intent intent = new Intent(SearchActivity.this, SpecificShowActivity.class);
-                intent.putExtra("showNumber", "" + lstShows.get(pos).getShowId());
+                intent.putExtra(SpecificShowActivity.SHOW_ID_KEY, "" + lstShows.get(pos).getShowId());
                 ImageView imageView = v.findViewById(R.id.image_show_poster);
                 Bundle bundle = ActivityOptions
                         .makeSceneTransitionAnimation(SearchActivity.this, imageView, imageView.getTransitionName())

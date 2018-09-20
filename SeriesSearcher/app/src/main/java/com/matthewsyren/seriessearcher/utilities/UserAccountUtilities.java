@@ -11,7 +11,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.matthewsyren.seriessearcher.services.FirebaseService;
 
 public class UserAccountUtilities {
+    //Constants
     private static final String USER_KEY = "user_key";
+    public static String DATA_SAVING_MODE_KEY = "dataSavingMode";
 
     /**
      * Returns the user's unique key (which is stored in SharedPreferences)
@@ -63,6 +65,6 @@ public class UserAccountUtilities {
      */
     public static boolean getDataSavingPreference(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences("", Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean("dataSavingMode", false);
+        return sharedPreferences.getBoolean(DATA_SAVING_MODE_KEY, false);
     }
 }

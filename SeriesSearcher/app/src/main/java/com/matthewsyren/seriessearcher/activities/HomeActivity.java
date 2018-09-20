@@ -239,7 +239,7 @@ public class HomeActivity
         mListViewMyShows.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                 Intent intent = new Intent(HomeActivity.this, SpecificShowActivity.class);
-                intent.putExtra("showNumber", "" + lstShows.get(pos).getShowId());
+                intent.putExtra(SpecificShowActivity.SHOW_ID_KEY, "" + lstShows.get(pos).getShowId());
                 ImageView imageView = v.findViewById(R.id.image_show_poster);
                 Bundle bundle = ActivityOptions
                         .makeSceneTransitionAnimation(HomeActivity.this, imageView, imageView.getTransitionName())
@@ -368,11 +368,11 @@ public class HomeActivity
                     //Assigns values to the JSONObject if the JSON returned from the API is not null
                     if(json != null){
                         String url = json.getString("url");
-                        if(url.startsWith("http://www.tvmaze.com/shows")){
+                        if(url.startsWith(LinkUtilities.SHOW_LINK)){
                             lstShows.add(JsonUtilities.parseShowJson(json, this, this, true));
                             adapter.notifyDataSetChanged();
                         }
-                        else if(url.startsWith("http://www.tvmaze.com/episodes")){
+                        else if(url.startsWith(LinkUtilities.EPISODE_LINK)){
                             //Gets the next episode information
                             String displayText = JsonUtilities.parseShowEpisodeDate(json, this, false);
 
