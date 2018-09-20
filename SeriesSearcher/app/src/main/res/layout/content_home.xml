@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:text="@string/label_home_message"
         style="@style/TextViewMessageStyle"
-        android:visibility="visible"/>
+        android:visibility="invisible"/>
 
     <Button
         android:id="@+id/button_add_shows"
@@ -28,7 +28,8 @@
         android:layout_centerInParent="true"
         android:text="@string/button_add_shows"
         android:onClick="openSearchShows"
-        style="@style/ButtonStyle"/>
+        style="@style/ButtonStyle"
+        android:visibility="invisible"/>
 
     <ListView
         android:id="@+id/list_view_my_shows"
@@ -41,7 +42,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:visibility="visible"/>
 
     <TextView
         android:id="@+id/text_no_internet"
