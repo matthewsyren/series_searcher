@@ -64,6 +64,7 @@ public class HomeActivity
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private boolean mIsSignInRequestSent = false;
 
     //Request codes
     private static final int SIGN_IN_REQUEST_CODE = 1;
@@ -118,6 +119,9 @@ public class HomeActivity
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == SIGN_IN_REQUEST_CODE){
+            //Resets flag variable
+            mIsSignInRequestSent = false;
+
             //Adapted from https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md?Response%20codes#response-codes
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
@@ -185,15 +189,20 @@ public class HomeActivity
                     signOut();
 
                     //Takes the user to the sign in screen
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(false)
-                                    .setAvailableProviders(Arrays.asList(
-                                            new AuthUI.IdpConfig.EmailBuilder().build(),
-                                            new AuthUI.IdpConfig.GoogleBuilder().build()))
-                                    .build(),
-                            SIGN_IN_REQUEST_CODE);
+                    if(!mIsSignInRequestSent){
+                        startActivityForResult(
+                                AuthUI.getInstance()
+                                        .createSignInIntentBuilder()
+                                        .setIsSmartLockEnabled(false)
+                                        .setAvailableProviders(Arrays.asList(
+                                                new AuthUI.IdpConfig.EmailBuilder().build(),
+                                                new AuthUI.IdpConfig.GoogleBuilder().build()))
+                                        .build(),
+                                SIGN_IN_REQUEST_CODE);
+
+                        //Updates flag variable
+                        mIsSignInRequestSent = true;
+                    }
                 }
                 else{
                     //Requests the user's key if it hasn't been set, otherwise requests their series
