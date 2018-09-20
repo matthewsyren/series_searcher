@@ -235,6 +235,9 @@ public class HomeActivity
         adapter = new ListViewAdapter(this, lstShows, true);
         mListViewMyShows.setAdapter(adapter);
 
+        //Displays the user's email address in the NavigationDrawer
+        super.displayUserDetails();
+
         //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
         mListViewMyShows.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
