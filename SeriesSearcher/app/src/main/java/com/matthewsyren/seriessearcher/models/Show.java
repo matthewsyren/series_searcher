@@ -206,48 +206,50 @@ public class Show
      * Loops through all Shows that the user has added to My Series, and sets showAdded to true if the Show that is passed into the method has been added to My Series
      */
     public static void checkIfShowIsAdded(String userKey, final ArrayList<Show> lstShows, final SearchActivity searchActivity, final RandomShowsActivity randomShowsActivity){
-        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
+        if(userKey != null){
+            final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            final DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
 
-        //Adds Listeners for when the data is changed
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //Loops through all shows and sets the text of the Button to - if the user has added the show to 'My Series' already
-                Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
-                for(DataSnapshot snapshot : lstSnapshots){
-                    String showKey = snapshot.getKey();
-                    for(int i = 0; i < lstShows.size(); i++){
-                        if(showKey != null && showKey.equals("" + lstShows.get(i).getShowId()) && (boolean) snapshot.getValue()){
-                            lstShows.get(i).setShowAdded(true);
-                            break;
+            //Adds Listeners for when the data is changed
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    //Loops through all shows and sets the text of the Button to - if the user has added the show to 'My Series' already
+                    Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
+                    for(DataSnapshot snapshot : lstSnapshots){
+                        String showKey = snapshot.getKey();
+                        for(int i = 0; i < lstShows.size(); i++){
+                            if(showKey != null && showKey.equals("" + lstShows.get(i).getShowId()) && (boolean) snapshot.getValue()){
+                                lstShows.get(i).setShowAdded(true);
+                                break;
+                            }
                         }
                     }
-                }
 
-                //Sets the Shows that haven't been found to false
-                for(int i = 0; i < lstShows.size(); i++){
-                    if(lstShows.get(i).isShowAdded() == null){
-                        lstShows.get(i).setShowAdded(false);
+                    //Sets the Shows that haven't been found to false
+                    for(int i = 0; i < lstShows.size(); i++){
+                        if(lstShows.get(i).isShowAdded() == null){
+                            lstShows.get(i).setShowAdded(false);
+                        }
+                    }
+                    //Removes DatabaseListener
+                    databaseReference.removeEventListener(this);
+
+                    //Updates the appropriate Activity's data
+                    if(searchActivity != null){
+                        searchActivity.setLstShows(lstShows);
+                    }
+                    else if(randomShowsActivity != null){
+                        randomShowsActivity.setLstShows(lstShows);
                     }
                 }
-                //Removes DatabaseListener
-                databaseReference.removeEventListener(this);
 
-                //Updates the appropriate Activity's data
-                if(searchActivity != null){
-                    searchActivity.setLstShows(lstShows);
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
                 }
-                else if(randomShowsActivity != null){
-                    randomShowsActivity.setLstShows(lstShows);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+            });
+        }
     }
 
     @Override
