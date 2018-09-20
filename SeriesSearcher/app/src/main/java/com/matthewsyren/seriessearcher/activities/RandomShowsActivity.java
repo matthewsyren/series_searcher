@@ -60,6 +60,9 @@ public class RandomShowsActivity
         //Sets the NavigationDrawer for the Activity
         super.onCreateDrawer();
 
+        //Ensures that the user's key has been fetched
+        UserAccountUtilities.checkUserKey(this);
+
         if(savedInstanceState != null){
             restoreData(savedInstanceState);
         }

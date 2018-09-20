@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
+import android.support.constraint.ConstraintLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.matthewsyren.seriessearcher.activities.HomeActivity;
 import com.matthewsyren.seriessearcher.services.FirebaseService;
 
 public class UserAccountUtilities {
@@ -45,6 +47,16 @@ public class UserAccountUtilities {
         intent.putExtra(Intent.EXTRA_EMAIL, emailAddress);
         intent.putExtra(FirebaseService.RESULT_RECEIVER, resultReceiver);
         context.startService(intent);
+    }
+
+    /**
+     * Redirects the user to HomeActivity if their key is null
+     */
+    public static void checkUserKey(Context context){
+        if(getUserKey(context) == null){
+            Intent intent = new Intent(context, HomeActivity.class);
+            context.startActivity(intent);
+        }
     }
 
     /**

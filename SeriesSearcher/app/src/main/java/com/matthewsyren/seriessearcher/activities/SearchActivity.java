@@ -56,6 +56,9 @@ public class SearchActivity
         //Sets the NavigationDrawer for the Activity
         super.onCreateDrawer();
 
+        //Ensures that the user's key has been fetched
+        UserAccountUtilities.checkUserKey(this);
+
         //Hides ProgressBar
         mProgressBar.setVisibility(View.INVISIBLE);
 

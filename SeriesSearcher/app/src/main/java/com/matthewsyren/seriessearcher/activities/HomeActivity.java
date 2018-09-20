@@ -174,10 +174,12 @@ public class HomeActivity
      */
     private void setUpAuthListener(){
         mFirebaseAuth = FirebaseAuth.getInstance();
+
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
                 if(firebaseUser == null){
                     //Performs sign out tasks
                     signOut();
@@ -191,13 +193,18 @@ public class HomeActivity
                                             new AuthUI.IdpConfig.EmailBuilder().build(),
                                             new AuthUI.IdpConfig.GoogleBuilder().build()))
                                     .build(),
-                            SIGN_IN_REQUEST_CODE
-                    );
+                            SIGN_IN_REQUEST_CODE);
                 }
                 else{
                     //Requests the user's key if it hasn't been set, otherwise requests their series
                     if(UserAccountUtilities.getUserKey(getApplicationContext()) == null){
-                        UserAccountUtilities.requestUserKey(getApplicationContext(), new DataReceiver(new Handler()));
+                        if(NetworkUtilities.isOnline(getApplicationContext())){
+                            UserAccountUtilities.requestUserKey(getApplicationContext(), new DataReceiver(new Handler()));
+                        }
+                        else{
+                            //Displays a message and Button to refresh the Activity
+                            displayNoInternetMessage();
+                        }
                     }
                     else{
                         setUpActivity();
@@ -256,18 +263,25 @@ public class HomeActivity
             mProgressBar.setVisibility(View.VISIBLE);
 
             //Displays the ListView and hides other unnecessary Views
-            toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
+            toggleViewVisibility(View.VISIBLE, View.INVISIBLE);
 
             if(NetworkUtilities.isOnline(this)){
                 //Gets the unique key used by Firebase to store information about the user signed in, and fetches data based on the keys fetched
-                getUserShowKeys(UserAccountUtilities.getUserKey(this));
+                getShowIds(UserAccountUtilities.getUserKey(this));
             }
             else{
-                //Displays a refresh Button
-                mTextNoInternet.setVisibility(View.VISIBLE);
-                mButtonRefresh.setVisibility(View.VISIBLE);
+                //Displays a message and Button to refresh the Activity
+                displayNoInternetMessage();
             }
         }
+    }
+
+    /**
+     * Displays the refresh Button and a no Internet connection message
+     */
+    private void displayNoInternetMessage(){
+        mTextNoInternet.setVisibility(View.VISIBLE);
+        mButtonRefresh.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -279,9 +293,9 @@ public class HomeActivity
     }
 
     /**
-     * Fetches all show keys (show ID's) associated with the user's key, and adds them to an ArrayList. The ArrayList is then passed to the getUserShowData method, which fetches the JSON data for each show from the TVMAze API
+     * Fetches all Show IDs associated with the user's key, and adds them to an ArrayList. The ArrayList is then passed to the getUserShowData method, which fetches the JSON data for each show from the TVMAze API
      */
-    private void getUserShowKeys(String userKey){
+    private void getShowIds(String userKey){
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
 
