@@ -60,7 +60,7 @@
     <string name="text_season">Season</string>
     <string name="text_episode">Episode Number</string>
     <string name="text_episode_name">Episode Name: %s</string>
-    <string name="text_episode_air_date">Air Date: %s</string>
+    <string name="text_episode_air_date">Air Date:</string>
     <string name="text_episode_summary">Summary: %s</string>
     <string name="error_no_episode_information_found">No information about that episode was found&#8230;</string>
 

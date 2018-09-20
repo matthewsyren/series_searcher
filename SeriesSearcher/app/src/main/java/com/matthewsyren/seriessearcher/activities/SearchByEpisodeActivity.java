@@ -89,8 +89,10 @@ public class SearchByEpisodeActivity
             //Restores the ShowEpisode object
             mShowEpisode = savedInstanceState.getParcelable(SHOW_EPISODE_BUNDLE_KEY);
 
-            //Displays the episode's information
-            displayEpisodeInformation(mShowEpisode);
+            if(mShowEpisode != null){
+                //Displays the episode's information
+                displayEpisodeInformation(mShowEpisode);
+            }
         }
     }
 
@@ -186,17 +188,20 @@ public class SearchByEpisodeActivity
             else{
                 Toast.makeText(getApplicationContext(), R.string.error_no_episode_information_found, Toast.LENGTH_LONG).show();
 
-                //Clears the TextViews
+                //Clears the TextViews and hides them
                 mTextShowAirDate.setText("");
                 mTextShowEpisodeName.setText("");
                 mTextShowRuntime.setText("");
                 mTextShowSummary.setText("");
+                mLlSearchByEpisodeInformation.setVisibility(View.INVISIBLE);
+
+                //Clears the mShowEpisode object
+                mShowEpisode = null;
             }
 
             //Hides ProgressBar and displays the search Button and episode information
             mProgressBar.setVisibility(View.INVISIBLE);
             mButtonSearch.setVisibility(View.VISIBLE);
-            mLlSearchByEpisodeInformation.setVisibility(View.VISIBLE);
         }
         catch(JSONException j){
             Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
@@ -208,22 +213,22 @@ public class SearchByEpisodeActivity
      */
     private void displayEpisodeInformation(ShowEpisode showEpisode){
         //Displays values in TextViews
-        mTextShowEpisodeName.setText(getString(R.string.text_episode_name, showEpisode.getEpisodeName()));
-        mTextShowAirDate.setText(getString(R.string.text_episode_air_date, showEpisode.getEpisodeAirDate()));
-        mTextShowSummary.setText(getString(R.string.text_episode_summary, showEpisode.getEpisodeSummary()));
+        mTextShowEpisodeName.setText(showEpisode.getEpisodeName());
+        mTextShowAirDate.setText(showEpisode.getEpisodeAirDate());
+        mTextShowSummary.setText(showEpisode.getEpisodeSummary());
 
         //Displays the appropriate unit for the runtime
         if(!showEpisode.getEpisodeRuntime().equals(getString(R.string.n_a))){
             mTextShowRuntime.setText(
                     getString(
-                            R.string.text_runtime_minutes,
+                            R.string.text_minutes,
                             showEpisode.getEpisodeRuntime()));
         }
         else{
-            mTextShowRuntime.setText(
-                    getString(
-                            R.string.text_runtime,
-                            showEpisode.getEpisodeRuntime()));
+            mTextShowRuntime.setText(showEpisode.getEpisodeRuntime());
         }
+
+        //Makes the Views visible
+        mLlSearchByEpisodeInformation.setVisibility(View.VISIBLE);
     }
 }
