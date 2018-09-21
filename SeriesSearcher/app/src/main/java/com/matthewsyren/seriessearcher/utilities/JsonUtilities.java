@@ -101,7 +101,7 @@ public class JsonUtilities {
             language = context.getString(R.string.n_a);
         }
         if(summary.equalsIgnoreCase("null") || summary.length() == 0){
-            summary = context.getString(R.string.n_a);
+            summary = context.getString(R.string.no_summary_is_available);
         }
 
         //Displays the genres separated by a comma
@@ -116,7 +116,7 @@ public class JsonUtilities {
             genres = context.getString(R.string.n_a);
         }
 
-        //Gets the summary
+        //Formats the summary
         summary = Show.formatSummary(summary);
 
         //Initialises variables
@@ -219,7 +219,7 @@ public class JsonUtilities {
             episodeRuntime = context.getString(R.string.n_a);
         }
         if(episodeSummary.equalsIgnoreCase("null") || episodeSummary.length() == 0){
-            episodeSummary = context.getString(R.string.n_a);
+            episodeSummary = context.getString(R.string.no_summary_is_available);
         }
 
         //Creates a ShowEpisode object

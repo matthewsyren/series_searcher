@@ -91,4 +91,5 @@
     <string name="season">S:</string>
     <string name="episode">E:</string>
     <string name="season_episode">%s %s, %s %s %s</string>
+    <string name="no_summary_is_available">No summary is available</string>
 </resources>
