@@ -13,8 +13,8 @@
     tools:context="com.matthewsyren.seriessearcher.activities.SearchActivity"
     tools:showIn="@layout/app_bar_search">
 
-    <ListView
-        android:id="@+id/list_view_search_results"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_search_results"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

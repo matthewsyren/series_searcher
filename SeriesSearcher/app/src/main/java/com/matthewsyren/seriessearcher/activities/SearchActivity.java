@@ -1,21 +1,18 @@
 package com.matthewsyren.seriessearcher.activities;
 
-import android.app.ActivityOptions;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
-import com.matthewsyren.seriessearcher.adapters.ListViewAdapter;
+import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
@@ -36,7 +33,7 @@ public class SearchActivity
         extends BaseActivity
         implements IApiConnectionResponse {
     //View bindings
-    @BindView(R.id.list_view_search_results) ListView mListViewSearchResults;
+    @BindView(R.id.recycler_view_search_results) RecyclerView mRecyclerViewSearchResults;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.text_search_series) EditText mTextSearchSeries;
     @BindView(R.id.tv_no_series_found) TextView mTvNoSeriesFound;
@@ -44,7 +41,7 @@ public class SearchActivity
     //Declarations
     private ApiConnection api = new ApiConnection();
     private ArrayList<Show> lstShows =  new ArrayList<>();
-    private ListViewAdapter adapter;
+    private ShowAdapter adapter;
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
 
     @Override
@@ -66,22 +63,11 @@ public class SearchActivity
             restoreData(savedInstanceState);
         }
 
-        //Sets a custom adapter for the list_view_search_results ListView to display the search results
-        adapter = new ListViewAdapter(this, lstShows, false);
-        mListViewSearchResults.setAdapter(adapter);
-
-        //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
-        mListViewSearchResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
-                Intent intent = new Intent(SearchActivity.this, SpecificShowActivity.class);
-                intent.putExtra(SpecificShowActivity.SHOW_ID_KEY, "" + lstShows.get(pos).getShowId());
-                ImageView imageView = v.findViewById(R.id.image_show_poster);
-                Bundle bundle = ActivityOptions
-                        .makeSceneTransitionAnimation(SearchActivity.this, imageView, imageView.getTransitionName())
-                        .toBundle();
-                startActivity(intent, bundle);
-            }
-        });
+        //Sets a custom adapter for the recycler_view_search_results RecyclerView to display the search results
+        adapter = new ShowAdapter(this, lstShows, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRecyclerViewSearchResults.setLayoutManager(linearLayoutManager);
+        mRecyclerViewSearchResults.setAdapter(adapter);
 
         mTextSearchSeries.addTextChangedListener(new TextWatcher() {
             @Override
@@ -154,7 +140,7 @@ public class SearchActivity
     }
 
     /**
-     * Parses the JSON returned from the API, and populates the list_view_search_results ListView with the data
+     * Parses the JSON returned from the API, and populates the recycler_view_search_results RecyclerView with the data
      */
     @Override
     public void parseJsonResponse(String response) {

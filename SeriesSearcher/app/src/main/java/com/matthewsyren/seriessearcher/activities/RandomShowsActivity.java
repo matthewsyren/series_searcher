@@ -1,21 +1,19 @@
 package com.matthewsyren.seriessearcher.activities;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
-import com.matthewsyren.seriessearcher.adapters.ListViewAdapter;
+import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
@@ -38,13 +36,13 @@ public class RandomShowsActivity
         implements IApiConnectionResponse {
     //View bindings
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
-    @BindView(R.id.list_view_random_shows) ListView mListViewRandomShows;
+    @BindView(R.id.recycler_view_random_shows) RecyclerView mRecyclerViewRandomShows;
     @BindView(R.id.button_refresh) Button mButtonRefresh;
     @BindView(R.id.text_no_internet) TextView mTextNoInternet;
 
     //Variables
     private ArrayList<Show> lstShows = new ArrayList<>();
-    private ListViewAdapter adapter;
+    private ShowAdapter adapter;
 
     //Constants
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
@@ -67,22 +65,11 @@ public class RandomShowsActivity
             restoreData(savedInstanceState);
         }
 
-        //Sets up Adapter to ListView
-        adapter = new ListViewAdapter(this, lstShows, false);
-        mListViewRandomShows.setAdapter(adapter);
-
-        //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
-        mListViewRandomShows.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
-                Intent intent = new Intent(RandomShowsActivity.this, SpecificShowActivity.class);
-                intent.putExtra(SpecificShowActivity.SHOW_ID_KEY, "" + lstShows.get(pos).getShowId());
-                ImageView imageView = v.findViewById(R.id.image_show_poster);
-                Bundle bundle = ActivityOptions
-                        .makeSceneTransitionAnimation(RandomShowsActivity.this, imageView, imageView.getTransitionName())
-                        .toBundle();
-                startActivity(intent, bundle);
-            }
-        });
+        //Sets up Adapter to RecyclerView
+        adapter = new ShowAdapter(this, lstShows, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRecyclerViewRandomShows.setLayoutManager(linearLayoutManager);
+        mRecyclerViewRandomShows.setAdapter(adapter);
 
         if(NetworkUtilities.isOnline(this)){
             if(lstShows.size() == 0){
@@ -185,7 +172,6 @@ public class RandomShowsActivity
                 else{
                     startingShow = (int) (Math.random() * 230 + 1);
                 }
-                int showCount = 0;
 
                 //Loops through the 20 randomly chosen shows returned from the TVMaze API
                 for(int i = 0; i < 20 && (startingShow + i) < jsonArray.length() - 1; i++){
@@ -195,7 +181,6 @@ public class RandomShowsActivity
                     //Assigns values to the JSONObject if the JSON returned from the API is not null
                     if(json != null){
                         lstShows.add(JsonUtilities.parseShowJson(json, this, this, false));
-                        showCount++;
                     }
                     else{
                         //Exits the loop if the JSON returned is null

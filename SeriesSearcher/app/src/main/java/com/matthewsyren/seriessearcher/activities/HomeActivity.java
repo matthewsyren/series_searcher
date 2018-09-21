@@ -1,17 +1,15 @@
 package com.matthewsyren.seriessearcher.activities;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.matthewsyren.seriessearcher.R;
-import com.matthewsyren.seriessearcher.adapters.ListViewAdapter;
+import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
@@ -51,7 +49,7 @@ public class HomeActivity
         extends BaseActivity
         implements IApiConnectionResponse {
     //View bindings
-    @BindView(R.id.list_view_my_shows) ListView mListViewMyShows;
+    @BindView(R.id.recycler_view_my_shows) RecyclerView mRecyclerViewMyShows;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.text_no_shows) TextView mTextNoShows;
     @BindView(R.id.button_add_shows) Button mButtonAddShows;
@@ -60,7 +58,7 @@ public class HomeActivity
 
     //Declarations
     private ArrayList<Show> lstShows = new ArrayList<>();
-    private ListViewAdapter adapter;
+    private ShowAdapter adapter;
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -168,7 +166,7 @@ public class HomeActivity
             //Hides ProgressBar
             mProgressBar.setVisibility(View.GONE);
 
-            //Displays the ListView and hides other unnecessary Views
+            //Displays the RecyclerView and hides other unnecessary Views
             toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
         }
     }
@@ -247,31 +245,20 @@ public class HomeActivity
      * Sets up the Activity once the user signs in
      */
     private void setUpActivity(){
-        //Sets a custom adapter for the list_view_search_results ListView to display the search results
-        adapter = new ListViewAdapter(this, lstShows, true);
-        mListViewMyShows.setAdapter(adapter);
+        //Sets a custom adapter for the RecyclerView to display the user's Shows
+        adapter = new ShowAdapter(this, lstShows, true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRecyclerViewMyShows.setLayoutManager(linearLayoutManager);
+        mRecyclerViewMyShows.setAdapter(adapter);
 
         //Displays the user's email address in the NavigationDrawer
         super.displayUserDetails();
-
-        //Sets an OnItemClickListener on the ListView, which will take the user to the SpecificShowActivity, where the user will be shown more information on the show that they clicked on
-        mListViewMyShows.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
-                Intent intent = new Intent(HomeActivity.this, SpecificShowActivity.class);
-                intent.putExtra(SpecificShowActivity.SHOW_ID_KEY, "" + lstShows.get(pos).getShowId());
-                ImageView imageView = v.findViewById(R.id.image_show_poster);
-                Bundle bundle = ActivityOptions
-                        .makeSceneTransitionAnimation(HomeActivity.this, imageView, imageView.getTransitionName())
-                        .toBundle();
-                startActivity(intent, bundle);
-            }
-        });
 
         if(lstShows.size() == 0){
             //Displays ProgressBar
             mProgressBar.setVisibility(View.VISIBLE);
 
-            //Displays the ListView and hides other unnecessary Views
+            //Displays the RecyclerView and hides other unnecessary Views
             toggleViewVisibility(View.VISIBLE, View.INVISIBLE);
 
             if(NetworkUtilities.isOnline(this)){
@@ -368,14 +355,14 @@ public class HomeActivity
     /**
      * Sets the visibility of the views based on the parameters passed in
      */
-    private void toggleViewVisibility(int listViewVisibility, int otherViewVisibility){
+    private void toggleViewVisibility(int RecyclerViewVisibility, int otherViewVisibility){
         mTextNoShows.setVisibility(otherViewVisibility);
         mButtonAddShows.setVisibility(otherViewVisibility);
-        mListViewMyShows.setVisibility(listViewVisibility);
+        mRecyclerViewMyShows.setVisibility(RecyclerViewVisibility);
     }
 
     /**
-     * Parses the JSON returned from the API and displays the information in the list_view_my_shows ListView
+     * Parses the JSON returned from the API and displays the information in the recycler_view_my_shows RecyclerView
      */
     @Override
     public void parseJsonResponse(String response) {

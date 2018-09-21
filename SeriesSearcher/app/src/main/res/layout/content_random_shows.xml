@@ -13,8 +13,8 @@
     tools:context="com.matthewsyren.seriessearcher.activities.RandomShowsActivity"
     tools:showIn="@layout/app_bar_random_shows">
 
-    <ListView
-        android:id="@+id/list_view_random_shows"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_random_shows"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
