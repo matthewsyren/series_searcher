@@ -64,57 +64,26 @@ public class ShowAdapter
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
-        //Displays the app's launcher icon if the show has no poster or if data saving mode has been activated
-        if(UserAccountUtilities.getDataSavingPreference(mContext) || sShows.get(position).getShowImageUrl() == null){
-            viewHolder.ivShowPoster.setImageResource(R.mipmap.ic_launcher);
-        }
-        else{
-            //Displays the image for the show if the show has a poster and data saving mode hasn't been activated
-            Picasso.with(mContext)
-                    .load(sShows.get(position)
-                            .getShowImageUrl())
-                    .error(R.color.colorGray)
-                    .placeholder(R.color.colorGray)
-                    .into(viewHolder.ivShowPoster);
-        }
+        //Displays images for the row
+        displayImagesForRow(viewHolder, position);
 
-        //Displays shared text
+        //Displays the text
         displayTextInSharedTextViews(viewHolder, position);
+        displayTextInNonSharedTextViews(viewHolder, position);
 
-        Resources resources = mContext.getResources();
+        //Adds an OnClickListener for the toggle show ImageButton
+        addListenerForToggleShowButton(viewHolder, position);
+    }
 
-        if(mIsHomeRecyclerView && viewHolder.tvShowNextEpisode != null){
-            viewHolder.tvShowNextEpisode.setText(resources.getString(R.string.text_next_episode, sShows.get(position).getShowNextEpisode()));
-        }
-        else{
-            //Displays the appropriate unit for the runtime
-            if(viewHolder.tvShowRuntime != null){
-                if(!sShows.get(position).getShowRuntime().equals(mContext.getString(R.string.n_a))){
-                    viewHolder.tvShowRuntime.setText(
-                            resources.getString(
-                                    R.string.text_runtime_minutes,
-                                    sShows.get(position).getShowRuntime()));
-                }
-                else{
-                    viewHolder.tvShowRuntime.setText(
-                            resources.getString(
-                                    R.string.text_runtime,
-                                    sShows.get(position).getShowRuntime()));
-                }
-            }
-        }
+    @Override
+    public int getItemCount() {
+        return sShows.size();
+    }
 
-        //Displays appropriate image for the ImageButton
-        if(mIsHomeRecyclerView){
-            viewHolder.ibToggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
-        }
-        else if(sShows.get(position).isShowAdded() != null && sShows.get(position).isShowAdded()){
-            viewHolder.ibToggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
-        }
-        else if(sShows.get(position).isShowAdded() != null){
-            viewHolder.ibToggleShow.setImageResource(R.drawable.ic_add_black_24dp);
-        }
-
+    /**
+     * Adds an OnClickListener for the toggle show ImageButton
+     */
+    private void addListenerForToggleShowButton(final ViewHolder viewHolder, final int position){
         //Sets onCLickListener for the buttons contained in each row of the RecyclerView
         viewHolder.ibToggleShow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,9 +139,34 @@ public class ShowAdapter
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return sShows.size();
+    /**
+     * Displays the images for each row
+     */
+    private void displayImagesForRow(ViewHolder viewHolder, int position){
+        //Displays the app's launcher icon if the show has no poster or if data saving mode has been activated
+        if(UserAccountUtilities.getDataSavingPreference(mContext) || sShows.get(position).getShowImageUrl() == null){
+            viewHolder.ivShowPoster.setImageResource(R.mipmap.ic_launcher);
+        }
+        else{
+            //Displays the image for the show if the show has a poster and data saving mode hasn't been activated
+            Picasso.with(mContext)
+                    .load(sShows.get(position)
+                            .getShowImageUrl())
+                    .error(R.color.colorGray)
+                    .placeholder(R.color.colorGray)
+                    .into(viewHolder.ivShowPoster);
+        }
+
+        //Displays appropriate image for the ImageButton
+        if(mIsHomeRecyclerView){
+            viewHolder.ibToggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
+        }
+        else if(sShows.get(position).isShowAdded() != null && sShows.get(position).isShowAdded()){
+            viewHolder.ibToggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
+        }
+        else if(sShows.get(position).isShowAdded() != null){
+            viewHolder.ibToggleShow.setImageResource(R.drawable.ic_add_black_24dp);
+        }
     }
 
     /**
@@ -187,7 +181,7 @@ public class ShowAdapter
     }
 
     /**
-     * Displays the text on shared TextViews
+     * Displays the text for TextViews that are shared between the layout files
      */
     private void displayTextInSharedTextViews(ViewHolder viewHolder, int position){
         //Displays the data in the appropriate Views
@@ -195,6 +189,36 @@ public class ShowAdapter
         viewHolder.tvShowTitle.setText(sShows.get(position).getShowTitle());
         viewHolder.tvShowRating.setText(resources.getString(R.string.text_rating, sShows.get(position).getShowRating()));
         viewHolder.tvShowStatus.setText(resources.getString(R.string.text_status, sShows.get(position).getShowStatus()));
+    }
+
+    /**
+     * Displays text for the TextViews that aren't shared between the layout files
+     */
+    private void displayTextInNonSharedTextViews(ViewHolder viewHolder, int position){
+        //Initialises a Resources object
+        Resources resources = mContext.getResources();
+
+        //Displays the text for Views that aren't shared between the two layout files
+        if(mIsHomeRecyclerView && viewHolder.tvShowNextEpisode != null){
+            viewHolder.tvShowNextEpisode.setText(resources.getString(R.string.text_next_episode, sShows.get(position).getShowNextEpisode()));
+        }
+        else{
+            //Displays the appropriate unit for the runtime
+            if(viewHolder.tvShowRuntime != null){
+                if(!sShows.get(position).getShowRuntime().equals(mContext.getString(R.string.n_a))){
+                    viewHolder.tvShowRuntime.setText(
+                            resources.getString(
+                                    R.string.text_runtime_minutes,
+                                    sShows.get(position).getShowRuntime()));
+                }
+                else{
+                    viewHolder.tvShowRuntime.setText(
+                            resources.getString(
+                                    R.string.text_runtime,
+                                    sShows.get(position).getShowRuntime()));
+                }
+            }
+        }
     }
 
     /**
