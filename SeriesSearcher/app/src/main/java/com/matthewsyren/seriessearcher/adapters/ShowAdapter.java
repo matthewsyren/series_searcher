@@ -238,13 +238,13 @@ public class ShowAdapter
 
         @Override
         public void onClick(View v) {
-            //Takes the user to the SpecificShowActivity (with an image animation)
+            //Takes the user to the SpecificShowActivity
             Intent intent = new Intent(mContext, SpecificShowActivity.class);
             intent.putExtra(SpecificShowActivity.SHOW_ID_KEY, "" + sShows.get(getAdapterPosition()).getShowId());
-            ImageView imageView = v.findViewById(R.id.image_show_poster);
-            
+
+            //Animates image
             Bundle bundle = ActivityOptions
-                    .makeSceneTransitionAnimation((Activity) mContext, imageView, imageView.getTransitionName())
+                    .makeSceneTransitionAnimation((Activity) mContext, ivShowPoster, ivShowPoster.getTransitionName())
                     .toBundle();
             
             mContext.startActivity(intent, bundle);
