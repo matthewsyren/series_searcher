@@ -31,16 +31,12 @@
     <string name="text_rating_title">Rating:</string>
     <string name="text_latest_episode_title">Latest Episode:</string>
     <string name="text_next_episode_title">Next Episode:</string>
-    <string name="text_premiered">Premiered: %s</string>
-    <string name="text_genres">Genres: %s</string>
-    <string name="text_language">Language: %s</string>
     <string name="text_status">Status: %s</string>
     <string name="text_runtime">Runtime: %s</string>
     <string name="text_runtime_minutes">Runtime: %s minutes</string>
     <string name="text_minutes">%s minutes</string>
     <string name="text_rating">Rating: %s</string>
     <string name="text_genres_sections">%s, %s</string>
-    <string name="text_latest_episode">Latest Episode: %s</string>
     <string name="text_next_episode">Next Episode: %s</string>
 
     <!-- SearchActivity -->
@@ -59,9 +55,7 @@
     <string name="button_search">Search</string>
     <string name="text_season">Season</string>
     <string name="text_episode">Episode Number</string>
-    <string name="text_episode_name">Episode Name: %s</string>
     <string name="text_episode_air_date">Air Date:</string>
-    <string name="text_episode_summary">Summary: %s</string>
     <string name="error_no_episode_information_found">No information about that episode was found&#8230;</string>
 
     <!-- HelpActivity -->
