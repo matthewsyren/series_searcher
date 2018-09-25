@@ -30,6 +30,7 @@ import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
 import com.matthewsyren.seriessearcher.services.FirebaseService;
+import com.matthewsyren.seriessearcher.utilities.IOnDataSavingPreferenceChangedListener;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
@@ -47,7 +48,8 @@ import butterknife.ButterKnife;
 
 public class HomeActivity
         extends BaseActivity
-        implements IApiConnectionResponse {
+        implements IApiConnectionResponse,
+        IOnDataSavingPreferenceChangedListener {
     //View bindings
     @BindView(R.id.recycler_view_my_shows) RecyclerView mRecyclerViewMyShows;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
@@ -74,7 +76,7 @@ public class HomeActivity
         ButterKnife.bind(this);
 
         //Sets the NavigationDrawer for the Activity
-        super.onCreateDrawer();
+        super.onCreateDrawer(this);
 
         //Restores data if possible
         if(savedInstanceState != null && FirebaseAuth.getInstance().getCurrentUser() != null){
@@ -416,6 +418,12 @@ public class HomeActivity
         catch(JSONException j){
             Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onDataSavingPreferenceChanged() {
+        //Updates the images in the RecyclerView
+        adapter.notifyDataSetChanged();
     }
 
     //Used to retrieve results from the FirebaseService

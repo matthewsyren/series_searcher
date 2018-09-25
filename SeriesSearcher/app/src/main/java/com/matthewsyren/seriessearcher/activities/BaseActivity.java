@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.matthewsyren.seriessearcher.R;
+import com.matthewsyren.seriessearcher.utilities.IOnDataSavingPreferenceChangedListener;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
 import butterknife.BindView;
@@ -35,13 +36,19 @@ public class BaseActivity
     @BindView(R.id.nav_view) NavigationView mNavigationView;
     @BindView(R.id.toolbar) Toolbar mToolbar;
 
+    //Variables
+    private IOnDataSavingPreferenceChangedListener mIOnDataSavingPreferenceChangedListener;
+
     /**
      * Sets up the Activity
      */
-    protected void onCreateDrawer() {
+    protected void onCreateDrawer(IOnDataSavingPreferenceChangedListener iOnDataSavingPreferenceChangedListener) {
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
         displayUserDetails();
+
+        //Assigns a Listener for when the user's data saving preference changes
+        mIOnDataSavingPreferenceChangedListener = iOnDataSavingPreferenceChangedListener;
 
         //Registers the appropriate listeners
         registerListeners();
@@ -76,7 +83,13 @@ public class BaseActivity
         navSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //Toggles the user's data saving preference
                 UserAccountUtilities.toggleDataSavingPreference(buttonView.getContext());
+
+                //Updates the images that are currently being displayed
+                if(mIOnDataSavingPreferenceChangedListener != null){
+                    mIOnDataSavingPreferenceChangedListener.onDataSavingPreferenceChanged();
+                }
             }
         });
 

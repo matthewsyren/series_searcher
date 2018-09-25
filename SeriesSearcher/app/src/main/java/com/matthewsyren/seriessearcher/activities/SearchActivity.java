@@ -16,6 +16,7 @@ import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
+import com.matthewsyren.seriessearcher.utilities.IOnDataSavingPreferenceChangedListener;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
@@ -31,7 +32,8 @@ import butterknife.ButterKnife;
 
 public class SearchActivity
         extends BaseActivity
-        implements IApiConnectionResponse {
+        implements IApiConnectionResponse,
+        IOnDataSavingPreferenceChangedListener {
     //View bindings
     @BindView(R.id.recycler_view_search_results) RecyclerView mRecyclerViewSearchResults;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
@@ -51,7 +53,7 @@ public class SearchActivity
         ButterKnife.bind(this);
 
         //Sets the NavigationDrawer for the Activity
-        super.onCreateDrawer();
+        super.onCreateDrawer(this);
 
         //Ensures that the user's key has been fetched
         UserAccountUtilities.checkUserKey(this);
@@ -171,6 +173,12 @@ public class SearchActivity
         catch(JSONException j){
             Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onDataSavingPreferenceChanged() {
+        //Updates the images in the RecyclerView
+        adapter.notifyDataSetChanged();
     }
 
     /**

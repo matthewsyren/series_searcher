@@ -12,7 +12,7 @@ public class DisclaimerActivity
         setContentView(R.layout.activity_disclaimer);
 
         //Sets the NavigationDrawer for the Activity
-        super.onCreateDrawer();
+        super.onCreateDrawer(null);
     }
 
     @Override

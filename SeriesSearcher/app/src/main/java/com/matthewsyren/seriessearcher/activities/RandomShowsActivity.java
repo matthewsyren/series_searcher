@@ -17,6 +17,7 @@ import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
+import com.matthewsyren.seriessearcher.utilities.IOnDataSavingPreferenceChangedListener;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
@@ -33,7 +34,8 @@ import butterknife.ButterKnife;
 
 public class RandomShowsActivity
         extends BaseActivity
-        implements IApiConnectionResponse {
+        implements IApiConnectionResponse,
+        IOnDataSavingPreferenceChangedListener {
     //View bindings
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.recycler_view_random_shows) RecyclerView mRecyclerViewRandomShows;
@@ -56,7 +58,7 @@ public class RandomShowsActivity
         ButterKnife.bind(this);
 
         //Sets the NavigationDrawer for the Activity
-        super.onCreateDrawer();
+        super.onCreateDrawer(this);
 
         //Ensures that the user's key has been fetched
         UserAccountUtilities.checkUserKey(this);
@@ -219,5 +221,11 @@ public class RandomShowsActivity
 
         //Hides ProgressBar
         mProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onDataSavingPreferenceChanged() {
+        //Updates the images in the RecyclerView
+        adapter.notifyDataSetChanged();
     }
 }

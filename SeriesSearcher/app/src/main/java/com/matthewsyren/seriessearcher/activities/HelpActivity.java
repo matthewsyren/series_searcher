@@ -12,7 +12,7 @@ public class HelpActivity
         setContentView(R.layout.activity_help);
 
         //Sets the NavigationDrawer for the Activity
-        super.onCreateDrawer();
+        super.onCreateDrawer(null);
     }
 
     @Override
