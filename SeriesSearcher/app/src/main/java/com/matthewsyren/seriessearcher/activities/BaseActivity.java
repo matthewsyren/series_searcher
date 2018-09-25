@@ -183,6 +183,6 @@ public class BaseActivity
      * Closes the NavigationDrawer
      */
     protected void closeNavigationDrawer(){
-        mDrawerLayout.closeDrawer(GravityCompat.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START, true);
     }
 }
