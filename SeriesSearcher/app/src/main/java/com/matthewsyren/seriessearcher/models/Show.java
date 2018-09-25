@@ -187,22 +187,6 @@ public class Show
     }
 
     /**
-     * Removes any HTML formatting from the summary field
-     */
-    public static String formatSummary(String summary){
-        boolean htmlIncluded = summary.contains("<");
-
-        while(htmlIncluded){
-            String beforeHTML = summary.substring(0, summary.indexOf("<"));
-            String afterHTML = summary.substring(summary.indexOf(">") + 1);
-            summary = beforeHTML + afterHTML;
-            htmlIncluded = summary.contains("<");
-        }
-
-        return summary;
-    }
-
-    /**
      * Loops through all Shows that the user has added to My Series, and sets showAdded to true if the Show that is passed into the method has been added to My Series
      */
     public static void checkIfShowIsAdded(String userKey, final ArrayList<Show> lstShows, final SearchActivity searchActivity, final RandomShowsActivity randomShowsActivity){

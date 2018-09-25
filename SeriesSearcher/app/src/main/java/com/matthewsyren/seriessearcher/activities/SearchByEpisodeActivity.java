@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -215,7 +216,7 @@ public class SearchByEpisodeActivity
         //Displays values in TextViews
         mTextShowEpisodeName.setText(showEpisode.getEpisodeName());
         mTextShowAirDate.setText(showEpisode.getEpisodeAirDate());
-        mTextShowSummary.setText(showEpisode.getEpisodeSummary());
+        mTextShowSummary.setText(Html.fromHtml(showEpisode.getEpisodeSummary()));
 
         //Displays the appropriate unit for the runtime
         if(!showEpisode.getEpisodeRuntime().equals(getString(R.string.n_a))){

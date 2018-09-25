@@ -8,6 +8,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -272,7 +273,7 @@ public class SpecificShowActivity
             mTextShowStatus.setText(show.getShowStatus());
             mTextShowRating.setText(show.getShowRating());
             mTextShowGenres.setText(show.getShowGenres());
-            mTextShowSummary.setText(show.getShowSummary());
+            mTextShowSummary.setText(Html.fromHtml(show.getShowSummary()));
 
             //Displays the appropriate unit for the runtime
             if(!show.getShowRuntime().equals(getString(R.string.n_a))){

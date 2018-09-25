@@ -116,9 +116,6 @@ public class JsonUtilities {
             genres = context.getString(R.string.n_a);
         }
 
-        //Formats the summary
-        summary = Show.formatSummary(summary);
-
         //Initialises variables
         String nextEpisode = null;
         String previousEpisode = null;
@@ -206,7 +203,6 @@ public class JsonUtilities {
         String episodeAirDate = json.getString("airdate");
         String episodeRuntime = json.getString("runtime");
         String episodeSummary = json.getString("summary");
-        episodeSummary = Show.formatSummary(episodeSummary);
 
         //Replaces any empty data with "N/A"
         if(episodeName.equalsIgnoreCase("null") || episodeName.length() == 0) {
