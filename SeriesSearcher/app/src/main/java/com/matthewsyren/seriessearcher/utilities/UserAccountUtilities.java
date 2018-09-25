@@ -5,10 +5,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
-import android.support.constraint.ConstraintLayout;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.activities.HomeActivity;
 import com.matthewsyren.seriessearcher.services.FirebaseService;
 
@@ -78,5 +79,27 @@ public class UserAccountUtilities {
     public static boolean getDataSavingPreference(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences("", Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean(DATA_SAVING_MODE_KEY, false);
+    }
+
+    /**
+     * Changes the user's preferences for Data Saving Mode
+     */
+    public static void toggleDataSavingPreference(Context context){
+        //Fetches the user's current preferences for Data Saving Mode
+        boolean currentPreference = UserAccountUtilities.getDataSavingPreference(context);
+
+        //Saves the user's new preference for Data Saving Mode
+        SharedPreferences preferences = context.getSharedPreferences("", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(UserAccountUtilities.DATA_SAVING_MODE_KEY, !currentPreference);
+        editor.apply();
+
+        //Displays a message confirming the user's action
+        if(!currentPreference){
+            Toast.makeText(context, R.string.data_saving_mode_activated, Toast.LENGTH_LONG).show();
+        }
+        else{
+            Toast.makeText(context, R.string.data_saving_mode_deactivated, Toast.LENGTH_LONG).show();
+        }
     }
 }

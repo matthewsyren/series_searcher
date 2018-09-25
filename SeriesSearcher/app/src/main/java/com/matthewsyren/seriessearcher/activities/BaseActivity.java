@@ -1,8 +1,6 @@
 package com.matthewsyren.seriessearcher.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,10 +14,8 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.firebase.auth.FirebaseAuth;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
@@ -80,7 +76,7 @@ public class BaseActivity
         navSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                toggleDataSavingPreference();
+                UserAccountUtilities.toggleDataSavingPreference(buttonView.getContext());
             }
         });
 
@@ -91,28 +87,6 @@ public class BaseActivity
                 return false;
             }
         });
-    }
-
-    /**
-     * Changes the user's preferences for Data Saving Mode
-     */
-    public void toggleDataSavingPreference(){
-        //Fetches the user's current preferences for Data Saving Mode
-        boolean currentPreference = UserAccountUtilities.getDataSavingPreference(getApplicationContext());
-
-        //Saves the user's new preference for Data Saving Mode
-        SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(UserAccountUtilities.DATA_SAVING_MODE_KEY, !currentPreference);
-        editor.apply();
-
-        //Displays a message confirming the user's action
-        if(!currentPreference){
-            Toast.makeText(getApplicationContext(), R.string.data_saving_mode_activated, Toast.LENGTH_LONG).show();
-        }
-        else{
-            Toast.makeText(getApplicationContext(), R.string.data_saving_mode_deactivated, Toast.LENGTH_LONG).show();
-        }
     }
 
     /**
