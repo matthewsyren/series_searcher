@@ -132,7 +132,6 @@ public class ShowAdapter
                     //Assigns button an OnClickListener for the AlertDialog and displays the AlertDialog
                     alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, mContext.getString(R.string.yes), dialogOnClickListener);
                     alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, mContext.getString(R.string.no), dialogOnClickListener);
-                    alertDialog.setCanceledOnTouchOutside(false);
                     alertDialog.show();
                 }
             }
