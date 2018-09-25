@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<ripple
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/colorGray">
     <item
         android:drawable="@color/colorGray"
         android:state_activated="true"/>
@@ -11,4 +13,4 @@
         android:state_selected="true"/>
     <item
         android:drawable="@android:color/background_light"/>
-</selector>
+</ripple>
