@@ -166,7 +166,9 @@ public class SearchByEpisodeActivity
             //Hides and displays the appropriate Views
             mProgressBar.setVisibility(View.INVISIBLE);
             mButtonSearch.setVisibility(View.VISIBLE);
-            mLlSearchByEpisodeInformation.setVisibility(View.VISIBLE);
+
+            //Resets the search results
+            resetSearchResults();
         }
     }
 
@@ -189,15 +191,8 @@ public class SearchByEpisodeActivity
             else{
                 Toast.makeText(getApplicationContext(), R.string.error_no_episode_information_found, Toast.LENGTH_LONG).show();
 
-                //Clears the TextViews and hides them
-                mTextShowAirDate.setText("");
-                mTextShowEpisodeName.setText("");
-                mTextShowRuntime.setText("");
-                mTextShowSummary.setText("");
-                mLlSearchByEpisodeInformation.setVisibility(View.INVISIBLE);
-
-                //Clears the mShowEpisode object
-                mShowEpisode = null;
+                //Resets the search results
+                resetSearchResults();
             }
 
             //Hides ProgressBar and displays the search Button and episode information
@@ -207,6 +202,21 @@ public class SearchByEpisodeActivity
         catch(JSONException j){
             Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
         }
+    }
+
+    /**
+     * Resets the search results
+     */
+    private void resetSearchResults(){
+        //Clears the TextViews and hides them
+        mTextShowAirDate.setText("");
+        mTextShowEpisodeName.setText("");
+        mTextShowRuntime.setText("");
+        mTextShowSummary.setText("");
+        mLlSearchByEpisodeInformation.setVisibility(View.INVISIBLE);
+
+        //Clears the mShowEpisode object
+        mShowEpisode = null;
     }
 
     /**
