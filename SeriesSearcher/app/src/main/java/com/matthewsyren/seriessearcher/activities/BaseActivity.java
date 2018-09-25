@@ -90,6 +90,9 @@ public class BaseActivity
                 if(mIOnDataSavingPreferenceChangedListener != null){
                     mIOnDataSavingPreferenceChangedListener.onDataSavingPreferenceChanged();
                 }
+
+                //Closes the NavigationDrawer
+                closeNavigationDrawer();
             }
         });
 
