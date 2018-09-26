@@ -309,7 +309,7 @@ public class HomeActivity
         final DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
 
         //Adds Listeners for when the data is changed
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //Loops through all shows and adds each show key to the lstShows ArrayList
@@ -321,8 +321,8 @@ public class HomeActivity
                         lstShows.add(showKey);
                     }
                 }
-                //Removes EventListener from the Firebase Database and fetches the data for the Shows
-                databaseReference.removeEventListener(this);
+
+                //Fetches the data for the Shows
                 getUserShowData(lstShows);
             }
 
