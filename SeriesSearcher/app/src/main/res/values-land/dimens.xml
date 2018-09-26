@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- SpecificShowActivity -->
-    <dimen name="text_specific_show_activity_margin_top">@dimen/activity_vertical_margin</dimen>
+    <dimen name="text_specific_show_activity_margin_top">8dp</dimen>
     <dimen name="text_specific_show_activity_margin_bottom">80dp</dimen>
 </resources>
