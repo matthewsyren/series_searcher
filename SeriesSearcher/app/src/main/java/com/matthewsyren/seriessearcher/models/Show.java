@@ -194,8 +194,8 @@ public class Show
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
 
-            //Adds Listeners for when the data is changed
-            databaseReference.addValueEventListener(new ValueEventListener() {
+            //Fetches the user's Shows
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     //Loops through all shows and sets the text of the Button to - if the user has added the show to 'My Series' already
@@ -216,8 +216,6 @@ public class Show
                             lstShows.get(i).setShowAdded(false);
                         }
                     }
-                    //Removes DatabaseListener
-                    databaseReference.removeEventListener(this);
 
                     //Updates the appropriate Activity's data
                     if(searchActivity != null){
