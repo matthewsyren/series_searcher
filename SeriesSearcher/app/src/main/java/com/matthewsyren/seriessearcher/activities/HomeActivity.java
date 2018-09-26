@@ -2,8 +2,6 @@ package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,7 +27,6 @@ import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
-import com.matthewsyren.seriessearcher.services.FirebaseService;
 import com.matthewsyren.seriessearcher.utilities.IOnDataSavingPreferenceChangedListener;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
@@ -218,19 +215,11 @@ public class HomeActivity
                     }
                 }
                 else{
-                    //Requests the user's key if it hasn't been set, otherwise requests their series
-                    if(UserAccountUtilities.getUserKey(getApplicationContext()) == null){
-                        if(NetworkUtilities.isOnline(getApplicationContext())){
-                            UserAccountUtilities.requestUserKey(getApplicationContext(), new DataReceiver(new Handler()));
-                        }
-                        else{
-                            //Displays a message and Button to refresh the Activity
-                            displayNoInternetMessage();
-                        }
-                    }
-                    else{
-                        setUpActivity();
-                    }
+                    //Saves the user's unique key
+                    UserAccountUtilities.setUserKey(getApplicationContext(), firebaseUser.getUid());
+
+                    //Sets up the Activity
+                    setUpActivity();
                 }
             }
         };
@@ -438,36 +427,5 @@ public class HomeActivity
     public void onDataSavingPreferenceChanged() {
         //Updates the images in the RecyclerView
         adapter.notifyDataSetChanged();
-    }
-
-    //Used to retrieve results from the FirebaseService
-    private class DataReceiver
-            extends ResultReceiver {
-
-        /**
-         * Constructor
-         */
-        DataReceiver(Handler handler) {
-            super(handler);
-        }
-
-        /**
-         * Performs the appropriate action based on the result
-         */
-        @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-            super.onReceiveResult(resultCode, resultData);
-
-            if(resultCode == FirebaseService.ACTION_GET_USER_KEY_RESULT_CODE){
-                //Gets the user's key
-                String key = resultData.getString(FirebaseService.USER_KEY_EXTRA);
-
-                if(key != null){
-                    //Saves the key to SharedPreferences and initialises the map
-                    UserAccountUtilities.setUserKey(getApplicationContext(), key);
-                    setUpActivity();
-                }
-            }
-        }
     }
 }

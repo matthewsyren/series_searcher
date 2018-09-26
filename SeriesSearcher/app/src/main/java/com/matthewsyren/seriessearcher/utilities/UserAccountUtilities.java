@@ -3,7 +3,6 @@ package com.matthewsyren.seriessearcher.utilities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
@@ -11,7 +10,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.activities.HomeActivity;
-import com.matthewsyren.seriessearcher.services.FirebaseService;
 
 public class UserAccountUtilities {
     //Constants
@@ -35,19 +33,6 @@ public class UserAccountUtilities {
         SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
         sharedPreferencesEditor.putString(USER_KEY, key);
         sharedPreferencesEditor.apply();
-    }
-
-    /**
-     * Requests the user's unique key from the Firebase Database
-     * @param resultReceiver The ResultReceiver that will process the result returned from the Service
-     */
-    public static void requestUserKey(Context context, ResultReceiver resultReceiver){
-        String emailAddress = getUserEmailAddress();
-        Intent intent = new Intent(context, FirebaseService.class);
-        intent.setAction(FirebaseService.ACTION_GET_USER_KEY);
-        intent.putExtra(Intent.EXTRA_EMAIL, emailAddress);
-        intent.putExtra(FirebaseService.RESULT_RECEIVER, resultReceiver);
-        context.startService(intent);
     }
 
     /**
