@@ -73,8 +73,8 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:padding="@dimen/list_row_button_padding"
-        android:layout_marginEnd="@dimen/specific_show_summary_margin_side"
-        android:layout_marginStart="@dimen/specific_show_summary_margin_side">
+        android:layout_marginEnd="@dimen/list_row_button_margin_side"
+        android:layout_marginStart="@dimen/list_row_button_margin_side">
 
         <ImageButton
             android:id="@+id/button_toggle_show"
