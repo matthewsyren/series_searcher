@@ -65,6 +65,8 @@ public class HomeActivity
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private boolean mIsSignInRequestSent = false;
+    private int mScrollPosition;
+    private static final String SCROLL_POSITION_BUNDLE_KEY = "scroll_position_bundle_key";
 
     //Request codes
     private static final int SIGN_IN_REQUEST_CODE = 1;
@@ -111,6 +113,13 @@ public class HomeActivity
 
         if(lstShows.size() > 0){
             outState.putParcelableArrayList(SHOWS_BUNDLE_KEY, lstShows);
+        }
+
+        if(mRecyclerViewMyShows.getLayoutManager() != null){
+            mScrollPosition = ((LinearLayoutManager)mRecyclerViewMyShows.getLayoutManager())
+                    .findFirstCompletelyVisibleItemPosition();
+
+            outState.putInt(SCROLL_POSITION_BUNDLE_KEY, mScrollPosition);
         }
     }
 
@@ -170,6 +179,10 @@ public class HomeActivity
 
             //Displays the RecyclerView and hides other unnecessary Views
             toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
+        }
+
+        if(savedInstanceState.containsKey(SCROLL_POSITION_BUNDLE_KEY)){
+            mScrollPosition = savedInstanceState.getInt(SCROLL_POSITION_BUNDLE_KEY);
         }
     }
 
@@ -252,6 +265,7 @@ public class HomeActivity
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerViewMyShows.setLayoutManager(linearLayoutManager);
         mRecyclerViewMyShows.setAdapter(adapter);
+        mRecyclerViewMyShows.getLayoutManager().scrollToPosition(mScrollPosition);
 
         //Displays the user's email address in the NavigationDrawer
         super.displayUserDetails();
