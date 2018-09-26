@@ -260,20 +260,28 @@ public class HomeActivity
         super.displayUserDetails();
 
         if(lstShows.size() == 0){
-            //Displays ProgressBar
-            mProgressBar.setVisibility(View.VISIBLE);
+            //Fetches the Shows the user has added to My Series
+            fetchUsersShows();
+        }
+    }
 
-            //Displays the RecyclerView and hides other unnecessary Views
-            toggleViewVisibility(View.VISIBLE, View.INVISIBLE);
+    /**
+     * Fetches the user's Shows
+     */
+    public void fetchUsersShows(){
+        //Displays ProgressBar
+        mProgressBar.setVisibility(View.VISIBLE);
 
-            if(NetworkUtilities.isOnline(this)){
-                //Gets the unique key used by Firebase to store information about the user signed in, and fetches data based on the keys fetched
-                getShowIds(UserAccountUtilities.getUserKey(this));
-            }
-            else{
-                //Displays a message and Button to refresh the Activity
-                displayNoInternetMessage();
-            }
+        //Displays the RecyclerView and hides other unnecessary Views
+        toggleViewVisibility(View.VISIBLE, View.INVISIBLE);
+
+        if(NetworkUtilities.isOnline(this)){
+            //Gets the unique key used by Firebase to store information about the user signed in, and fetches data based on the keys fetched
+            getShowIds(UserAccountUtilities.getUserKey(this));
+        }
+        else{
+            //Displays a message and Button to refresh the Activity
+            displayNoInternetMessage();
         }
     }
 

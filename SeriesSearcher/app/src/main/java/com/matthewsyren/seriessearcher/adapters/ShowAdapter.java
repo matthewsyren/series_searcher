@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.matthewsyren.seriessearcher.R;
+import com.matthewsyren.seriessearcher.activities.HomeActivity;
 import com.matthewsyren.seriessearcher.activities.SpecificShowActivity;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
@@ -118,6 +119,10 @@ public class ShowAdapter
                                     //Removes the Show
                                     if(mIsHomeRecyclerView){
                                         sShows.remove(position);
+
+                                        if(sShows.size() == 0){
+                                            ((HomeActivity)mContext).fetchUsersShows();
+                                        }
                                     }
 
                                     viewHolder.ibToggleShow.setImageResource(R.drawable.ic_add_black_24dp);
