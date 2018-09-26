@@ -312,6 +312,9 @@ public class SpecificShowActivity
                     getSupportActionBar().setTitle(show.getShowTitle());
                 }
             }
+
+            //Displays the FloatingActionButton
+            mButtonSearchByEpisode.setVisibility(View.VISIBLE);
         }
     }
 
@@ -340,26 +343,14 @@ public class SpecificShowActivity
      * Takes the user to the SearchByEpisodeActivity
      */
     public void searchByEpisodeOnClick(View view) {
-        //Fetches the show name
-        String showName = null;
-
-        if(mToolbar != null && mToolbar.getTitle() != null){
-            showName = mToolbar.getTitle().toString();
-        }
-        else{
-            if(getSupportActionBar() != null && getSupportActionBar().getTitle() != null){
-                showName = getSupportActionBar().getTitle().toString();
-            }
-        }
-
         //Fetches the link for the show that the user clicked on from the Bundle
         Bundle bundle = getIntent().getExtras();
 
-        if(bundle != null){
+        if(bundle != null && mShow != null){
             //Opens the SpecificShowActivity
             String showNumber = bundle.getString(SHOW_ID_KEY);
             Intent intent = new Intent(SpecificShowActivity.this, SearchByEpisodeActivity.class);
-            intent.putExtra(SearchByEpisodeActivity.SHOW_TITLE_BUNDLE_KEY, showName);
+            intent.putExtra(SearchByEpisodeActivity.SHOW_TITLE_BUNDLE_KEY, mShow.getShowTitle());
             intent.putExtra(SearchByEpisodeActivity.SHOW_NUMBER_BUNDLE_KEY, showNumber);
             startActivity(intent);
         }

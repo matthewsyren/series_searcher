@@ -56,5 +56,6 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
         android:src="@drawable/ic_search_black_24dp"
-        android:onClick="searchByEpisodeOnClick" />
+        android:onClick="searchByEpisodeOnClick"
+        android:visibility="gone"/>
 </android.support.design.widget.CoordinatorLayout>
