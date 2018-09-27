@@ -44,7 +44,5 @@
             android:label="@string/title_activity_disclaimer"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activities.BaseActivity" />
-
-        <service android:name=".services.FirebaseService" />
     </application>
 </manifest>
