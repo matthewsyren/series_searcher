@@ -15,6 +15,7 @@ import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -27,6 +28,7 @@ import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
+import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 import com.squareup.picasso.Picasso;
 
@@ -57,6 +59,8 @@ public class SpecificShowActivity
     @Nullable
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.button_search_by_episode) FloatingActionButton mButtonSearchByEpisode;
+    @BindView(R.id.button_refresh) Button mButtonRefresh;
+    @BindView(R.id.text_no_internet) TextView mTextNoInternet;
 
     //Variables
     private Show mShow;
@@ -91,7 +95,7 @@ public class SpecificShowActivity
         super.onResume();
 
         //Displays the ProgressBar if the show's information hasn't been fetched yet
-        if(mShow == null){
+        if(mShow == null && NetworkUtilities.isOnline(this)){
             mProgressBar.setVisibility(View.VISIBLE);
         }
         else{
@@ -144,7 +148,14 @@ public class SpecificShowActivity
             sShowId = savedInstanceState.getString(SHOW_ID_BUNDLE_KEY);
         }
 
-        displayShowInformation(mShow);
+        if(mShow != null){
+            //Displays the Show's information
+            displayShowInformation(mShow);
+        }
+        else{
+            //Fetches the Show's infromation if it hasn't been fetched already
+            getShowInformation();
+        }
     }
 
     /**
@@ -217,11 +228,37 @@ public class SpecificShowActivity
             //Displays ProgressBar
             mProgressBar.setVisibility(View.VISIBLE);
 
-            //Fetches data from the TVMaze API using the link
-            ApiConnection api = new ApiConnection();
-            api.delegate = this;
-            api.execute(showLink);
+            if(NetworkUtilities.isOnline(this)){
+                //Fetches data from the TVMaze API using the link
+                ApiConnection api = new ApiConnection();
+                api.delegate = this;
+                api.execute(showLink);
+            }
+            else{
+                //Displays a refresh Button
+                displayRefreshButton();
+            }
         }
+    }
+
+    /**
+     * Displays the refresh Button and a no Internet connection message
+     */
+    private void displayRefreshButton(){
+        mTextNoInternet.setVisibility(View.VISIBLE);
+        mButtonRefresh.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.GONE);
+        mButtonSearchByEpisode.setVisibility(View.GONE);
+    }
+
+    /**
+     * Refreshes the Activity
+     */
+    public void refreshActivity(View view){
+        //Restarts the Activity
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
     }
 
     /**

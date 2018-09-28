@@ -19,6 +19,7 @@ import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
 import com.matthewsyren.seriessearcher.utilities.IOnDataSavingPreferenceChangedListener;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
+import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
 import org.json.JSONArray;
@@ -39,6 +40,7 @@ public class SearchActivity
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.text_search_series) EditText mTextSearchSeries;
     @BindView(R.id.tv_no_series_found) TextView mTvNoSeriesFound;
+    @BindView(R.id.text_no_internet_connection) TextView mTextNoInternetConnection;
 
     //Declarations
     private ApiConnection api = new ApiConnection();
@@ -126,19 +128,27 @@ public class SearchActivity
         //Fetches user's input
         String searchText = mTextSearchSeries.getText().toString();
 
-        //Displays ProgressBar and hides the TextView
+        //Displays ProgressBar and hides the TextViews
         mTvNoSeriesFound.setVisibility(View.INVISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
+        mTextNoInternetConnection.setVisibility(View.GONE);
 
         //Cancels any previous requests and clears the previous results
         api.cancel(true);
         lstShows.clear();
         adapter.notifyDataSetChanged();
 
-        //Connects to the TVMaze API using the specific URL for the selected show
-        api = new ApiConnection();
-        api.delegate = this;
-        api.execute(LinkUtilities.getSearchLink(searchText));
+        if(NetworkUtilities.isOnline(this)){
+            //Connects to the TVMaze API using the specific URL for the selected show
+            api = new ApiConnection();
+            api.delegate = this;
+            api.execute(LinkUtilities.getSearchLink(searchText));
+        }
+        else{
+            //Displays no Internet connection message and hides the ProgressBar
+            mTextNoInternetConnection.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+        }
     }
 
     /**

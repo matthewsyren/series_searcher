@@ -281,14 +281,14 @@ public class HomeActivity
         }
         else{
             //Displays a message and Button to refresh the Activity
-            displayNoInternetMessage();
+            displayRefreshButton();
         }
     }
 
     /**
      * Displays the refresh Button and a no Internet connection message
      */
-    private void displayNoInternetMessage(){
+    private void displayRefreshButton(){
         mTextNoInternet.setVisibility(View.VISIBLE);
         mButtonRefresh.setVisibility(View.VISIBLE);
     }
@@ -420,7 +420,8 @@ public class HomeActivity
                 Show.checkIfShowIsAdded(UserAccountUtilities.getUserKey(this), lstShows, null, null);
             }
             else{
-                Toast.makeText(getApplicationContext(), R.string.error_fetching_data_no_internet_connection, Toast.LENGTH_LONG).show();
+                //Displays a refresh Button
+                displayRefreshButton();
             }
 
             //Hides ProgressBar

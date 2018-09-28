@@ -63,6 +63,15 @@
             android:layout_centerHorizontal="true"
             style="@style/ButtonStyle"/>
 
+        <TextView
+            android:id="@+id/text_no_internet_connection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button_search"
+            style="@style/TextViewMessageStyle"
+            android:textAlignment="center"
+            android:text="@string/error_no_internet_connection"/>
+
         <LinearLayout
             android:id="@+id/ll_search_by_episode_information"
             android:layout_width="match_parent"

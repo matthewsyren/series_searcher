@@ -31,4 +31,14 @@
         style="@style/TextViewMessageStyle"
         android:layout_alignParentTop="true"
         android:layout_marginTop="@dimen/tv_no_series_found_margin_top"/>
+
+    <TextView
+        android:id="@+id/text_no_internet_connection"
+        android:layout_width="match_parent"
+        android:textAlignment="center"
+        android:layout_height="wrap_content"
+        android:text="@string/error_no_internet_connection"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/tv_no_series_found_margin_top"
+        style="@style/TextViewMessageStyle"/>
 </RelativeLayout>

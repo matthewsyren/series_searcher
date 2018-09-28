@@ -21,6 +21,7 @@ import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
+import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +43,7 @@ public class SearchByEpisodeActivity
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.button_search) Button mButtonSearch;
     @BindView(R.id.ll_search_by_episode_information) LinearLayout mLlSearchByEpisodeInformation;
+    @BindView(R.id.text_no_internet_connection) TextView mTextNoInternetConnection;
 
     //Variables
     private ShowEpisode mShowEpisode;
@@ -131,44 +133,53 @@ public class SearchByEpisodeActivity
      * Searches for the episode entered by the user
      */
     public void searchByEpisodeOnClick(View view){
-        try{
-            //Displays ProgressBar and hides the search Button and episode information
-            mLlSearchByEpisodeInformation.setVisibility(View.INVISIBLE);
-            mProgressBar.setVisibility(View.VISIBLE);
-            mButtonSearch.setVisibility(View.INVISIBLE);
+        if(NetworkUtilities.isOnline(this)){
+            try{
+                //Displays ProgressBar and hides the search Button, episode information and no Internet connection message
+                mLlSearchByEpisodeInformation.setVisibility(View.INVISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
+                mButtonSearch.setVisibility(View.INVISIBLE);
+                mTextNoInternetConnection.setVisibility(View.GONE);
 
-            //Hides the user's keyboard
-            InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            if(inputMethodManager != null){
-                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                //Hides the user's keyboard
+                InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                if(inputMethodManager != null){
+                    inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+
+                //Fetches the show title from the Bundle and assigns input values to the variables
+                Bundle bundle = getIntent().getExtras();
+                String showNumber = "";
+                if(bundle != null){
+                    showNumber = bundle.getString(SHOW_NUMBER_BUNDLE_KEY);
+                }
+
+                //Gets the user's input
+                int season = Integer.parseInt(mTextShowSeason.getText().toString());
+                int episode = Integer.parseInt(mTextShowEpisode.getText().toString());
+
+                //Fetches information from the TVMaze API
+                ApiConnection api = new ApiConnection();
+                api.delegate = this;
+                api.execute(LinkUtilities.getShowEpisodeInformationLink(showNumber, season, episode));
             }
+            catch(NumberFormatException nfe){
+                //Displays error message to the user
+                Toast.makeText(getApplicationContext(), R.string.error_enter_whole_number, Toast.LENGTH_LONG).show();
 
-            //Fetches the show title from the Bundle and assigns input values to the variables
-            Bundle bundle = getIntent().getExtras();
-            String showNumber = "";
-            if(bundle != null){
-                showNumber = bundle.getString(SHOW_NUMBER_BUNDLE_KEY);
+                //Hides and displays the appropriate Views
+                mProgressBar.setVisibility(View.INVISIBLE);
+                mButtonSearch.setVisibility(View.VISIBLE);
+
+                //Resets the search results
+                resetSearchResults();
             }
-
-            //Gets the user's input
-            int season = Integer.parseInt(mTextShowSeason.getText().toString());
-            int episode = Integer.parseInt(mTextShowEpisode.getText().toString());
-
-            //Fetches information from the TVMaze API
-            ApiConnection api = new ApiConnection();
-            api.delegate = this;
-            api.execute(LinkUtilities.getShowEpisodeInformationLink(showNumber, season, episode));
         }
-        catch(NumberFormatException nfe){
-            //Displays error message to the user
-            Toast.makeText(getApplicationContext(), R.string.error_enter_whole_number, Toast.LENGTH_LONG).show();
-
-            //Hides and displays the appropriate Views
-            mProgressBar.setVisibility(View.INVISIBLE);
-            mButtonSearch.setVisibility(View.VISIBLE);
-
-            //Resets the search results
-            resetSearchResults();
+        else{
+            //Hides the Show's information, displays the no Internet connection message and clears the previous episode data
+            mLlSearchByEpisodeInformation.setVisibility(View.GONE);
+            mTextNoInternetConnection.setVisibility(View.VISIBLE);
+            mShowEpisode = null;
         }
     }
 

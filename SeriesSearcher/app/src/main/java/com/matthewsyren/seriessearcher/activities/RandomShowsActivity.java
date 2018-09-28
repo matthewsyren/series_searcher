@@ -94,8 +94,7 @@ public class RandomShowsActivity
         }
         else{
             //Displays a refresh Button
-            mTextNoInternet.setVisibility(View.VISIBLE);
-            mButtonRefresh.setVisibility(View.VISIBLE);
+            displayRefreshButton();
         }
     }
 
@@ -194,7 +193,8 @@ public class RandomShowsActivity
                 Show.checkIfShowIsAdded(UserAccountUtilities.getUserKey(this), lstShows, null, this);
             }
             else{
-                Toast.makeText(getApplicationContext(), R.string.error_fetching_data_no_internet_connection, Toast.LENGTH_LONG).show();
+                //Displays a refresh Button
+                displayRefreshButton();
             }
         }
         catch(JSONException j){
@@ -221,6 +221,16 @@ public class RandomShowsActivity
 
         //Hides ProgressBar
         mProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * Displays the refresh Button and a no Internet connection message
+     */
+    private void displayRefreshButton(){
+        mTextNoInternet.setVisibility(View.VISIBLE);
+        mButtonRefresh.setVisibility(View.VISIBLE);
+
+        lstShows.clear();
     }
 
     @Override
