@@ -1,7 +1,10 @@
 package com.matthewsyren.seriessearcher.activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -11,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -354,5 +358,31 @@ public class SpecificShowActivity
             intent.putExtra(SearchByEpisodeActivity.SHOW_NUMBER_BUNDLE_KEY, showNumber);
             startActivity(intent);
         }
+    }
+
+    /**
+     * Displays the full Show poster in an AlertDialog
+     */
+    public void showPosterOnClick(View view){
+        //Creates an AlertDialog to display the Show's poster
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        View inflateView = View.inflate(this, R.layout.dialog_show_poster, null);
+        ImageView imageView = inflateView.findViewById(R.id.image_view_show_poster);
+
+        //Loads the poster
+        Picasso.with(this)
+                .load(mShow.getShowImageUrl())
+                .into(imageView);
+
+        //Sets the background to transparent and loads the View into the AlertDialog
+        Window window = alertDialog.getWindow();
+        if(window != null){
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        alertDialog.setView(inflateView);
+
+        //Displays the AlertDialog
+        alertDialog.show();
     }
 }

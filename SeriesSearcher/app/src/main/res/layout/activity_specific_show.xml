@@ -30,7 +30,8 @@
                 android:scaleType="centerCrop"
                 android:transitionName="@string/transition_image"
                 android:contentDescription="@string/content_description_show_poster"
-                android:background="@color/colorImageBackground"/>
+                android:background="@color/colorImageBackground"
+                android:onClick="showPosterOnClick"/>
 
             <View
                 android:layout_width="match_parent"
