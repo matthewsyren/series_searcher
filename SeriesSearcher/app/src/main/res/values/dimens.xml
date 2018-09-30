@@ -19,9 +19,6 @@
     <dimen name="text_specific_show_activity_margin_bottom">8dp</dimen>
     <dimen name="progress_bar_margin_top">32dp</dimen>
     <dimen name="show_information_margin_top">16dp</dimen>
-    <dimen name="specific_show_text_margin_right">10dp</dimen>
-    <dimen name="specific_show_text_margin_left">4dp</dimen>
-    <dimen name="specific_show_summary_margin_side">10dp</dimen>
     <dimen name="dialog_show_poster_height">300dp</dimen>
 
     <!-- SearchActivity -->
