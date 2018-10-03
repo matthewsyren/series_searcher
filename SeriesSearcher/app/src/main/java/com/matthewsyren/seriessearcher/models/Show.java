@@ -168,13 +168,6 @@ public class Show
     /**
      * Setter method
      */
-    public void setShowRuntime(String showRuntime) {
-        this.showRuntime = showRuntime;
-    }
-
-    /**
-     * Setter method
-     */
     public void setShowAdded(Boolean showAdded) {
         this.showAdded = showAdded;
     }
