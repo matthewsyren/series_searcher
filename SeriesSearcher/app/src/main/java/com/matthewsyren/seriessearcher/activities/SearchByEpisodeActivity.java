@@ -44,6 +44,8 @@ public class SearchByEpisodeActivity
     @BindView(R.id.button_search) Button mButtonSearch;
     @BindView(R.id.ll_search_by_episode_information) LinearLayout mLlSearchByEpisodeInformation;
     @BindView(R.id.text_no_internet_connection) TextView mTextNoInternetConnection;
+    @BindView(R.id.text_show_season_number) TextView mTextShowSeasonNumber;
+    @BindView(R.id.text_show_episode_number) TextView mTextShowEpisodeNumber;
 
     //Variables
     private ShowEpisode mShowEpisode;
@@ -238,6 +240,8 @@ public class SearchByEpisodeActivity
         mTextShowEpisodeName.setText(showEpisode.getEpisodeName());
         mTextShowAirDate.setText(showEpisode.getEpisodeAirDate());
         mTextShowSummary.setText(Html.fromHtml(showEpisode.getEpisodeSummary()));
+        mTextShowSeasonNumber.setText(showEpisode.getSeasonNumber());
+        mTextShowEpisodeNumber.setText(showEpisode.getEpisodeNumber());
 
         //Displays the appropriate unit for the runtime
         if(!showEpisode.getEpisodeRuntime().equals(getString(R.string.n_a))){

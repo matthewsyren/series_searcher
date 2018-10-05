@@ -9,15 +9,19 @@ public class ShowEpisode
     private String episodeAirDate;
     private String episodeRuntime;
     private String episodeSummary;
+    private String seasonNumber;
+    private String episodeNumber;
 
     /**
      * Constructor
      */
-    public ShowEpisode(String episodeName, String episodeAirDate, String episodeRuntime, String episodeSummary) {
+    public ShowEpisode(String episodeName, String episodeAirDate, String episodeRuntime, String episodeSummary, String seasonNumber, String episodeNumber) {
         this.episodeName = episodeName;
         this.episodeAirDate = episodeAirDate;
         this.episodeRuntime = episodeRuntime;
         this.episodeSummary = episodeSummary;
+        this.seasonNumber = seasonNumber;
+        this.episodeNumber = episodeNumber;
     }
 
     /**
@@ -46,6 +50,20 @@ public class ShowEpisode
      */
     public String getEpisodeSummary() {
         return episodeSummary;
+    }
+
+    /**
+     * Getter method
+     */
+    public String getSeasonNumber() {
+        return seasonNumber;
+    }
+
+    /**
+     * Getter method
+     */
+    public String getEpisodeNumber() {
+        return episodeNumber;
     }
 
     @Override

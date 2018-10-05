@@ -203,6 +203,8 @@ public class JsonUtilities {
         String episodeAirDate = json.getString("airdate");
         String episodeRuntime = json.getString("runtime");
         String episodeSummary = json.getString("summary");
+        String seasonNumber = json.getString("season");
+        String episodeNumber = json.getString("number");
 
         //Replaces any empty data with "N/A"
         if(episodeName.equalsIgnoreCase("null") || episodeName.length() == 0) {
@@ -217,8 +219,14 @@ public class JsonUtilities {
         if(episodeSummary.equalsIgnoreCase("null") || episodeSummary.length() == 0){
             episodeSummary = context.getString(R.string.no_summary_is_available);
         }
+        if(seasonNumber.equalsIgnoreCase("null") || seasonNumber.length() == 0){
+            seasonNumber = context.getString(R.string.n_a);
+        }
+        if(episodeNumber.equalsIgnoreCase("null") || episodeNumber.length() == 0){
+            episodeNumber = context.getString(R.string.n_a);
+        }
 
         //Creates a ShowEpisode object
-        return new ShowEpisode(episodeName, episodeAirDate, episodeRuntime, episodeSummary);
+        return new ShowEpisode(episodeName, episodeAirDate, episodeRuntime, episodeSummary, seasonNumber, episodeNumber);
     }
 }
