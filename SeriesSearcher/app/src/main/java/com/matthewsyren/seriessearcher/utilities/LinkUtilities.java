@@ -2,11 +2,11 @@ package com.matthewsyren.seriessearcher.utilities;
 
 public class LinkUtilities {
     //Constants
-    public static String SHOW_LINK = "http://www.tvmaze.com/shows";
-    public static String SHOW_INFORMATION_LINK = "http://api.tvmaze.com/shows/";
-    public static String RANDOM_SHOWS_LINK = "http://api.tvmaze.com/shows?page=";
-    public static String SEARCH_LINK = "http://api.tvmaze.com/search/shows?q=";
-    public static String EPISODE_LINK = "http://www.tvmaze.com/episodes";
+    public static final String SHOW_LINK = "http://www.tvmaze.com/shows";
+    public static final String SHOW_INFORMATION_LINK = "http://api.tvmaze.com/shows/";
+    public static final String RANDOM_SHOWS_LINK = "http://api.tvmaze.com/shows?page=";
+    public static final String SEARCH_LINK = "http://api.tvmaze.com/search/shows?q=";
+    public static final String EPISODE_LINK = "http://www.tvmaze.com/episodes";
 
     /**
      * Returns the link to the page with information about the specified Show

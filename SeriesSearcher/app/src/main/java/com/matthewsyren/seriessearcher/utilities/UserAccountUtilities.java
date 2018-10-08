@@ -14,7 +14,7 @@ import com.matthewsyren.seriessearcher.activities.HomeActivity;
 public class UserAccountUtilities {
     //Constants
     private static final String USER_KEY = "user_key";
-    public static String DATA_SAVING_MODE_KEY = "dataSavingMode";
+    public static final String DATA_SAVING_MODE_KEY = "dataSavingMode";
 
     /**
      * Returns the user's unique key (which is stored in SharedPreferences)
