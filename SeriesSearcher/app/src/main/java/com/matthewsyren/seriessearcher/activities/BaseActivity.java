@@ -57,7 +57,7 @@ public class BaseActivity
     /**
      * Registers listeners for the appropriate Views
      */
-    public void registerListeners(){
+    private void registerListeners(){
         //Sets up the OnItemSelectedListener
         mNavigationView.setNavigationItemSelectedListener(this);
 
