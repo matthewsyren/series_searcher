@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/show_poster_height"
         android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        tools:ignore="InconsistentLayout">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
@@ -43,7 +44,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.AppBarOverlay"/>
+                app:popupTheme="@style/AppTheme.AppBarOverlay"
+                tools:ignore="InconsistentLayout" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
