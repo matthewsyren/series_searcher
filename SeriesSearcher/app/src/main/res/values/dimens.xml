@@ -27,6 +27,9 @@
     <!-- SearchByEpisodeActivity -->
     <dimen name="search_by_episode_text_margin">10dp</dimen>
 
+    <!-- HelpActivity -->
+    <dimen name="tv_help_padding">16dp</dimen>
+
     <!-- RecyclerView row -->
     <dimen name="thumbnail_padding">2dp</dimen>
     <dimen name="list_row_show_poster_size">75dp</dimen>
