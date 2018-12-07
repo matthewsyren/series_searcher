@@ -3,13 +3,17 @@ package com.matthewsyren.seriessearcher.activities;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.MenuItem;
@@ -31,6 +35,7 @@ import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -375,8 +380,40 @@ public class SpecificShowActivity
                     .load(imageUrl)
                     .error(R.color.colorGray)
                     .placeholder(R.color.colorGray)
-                    .into(mImageViewSpecificShow);
-            mImageViewSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorImageBackground));
+                    .into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            //Displays the image
+                            mImageViewSpecificShow.setImageBitmap(bitmap);
+
+                            //Sets the image background to the dominant vibrant colour
+                            Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+                                @Override
+                                public void onGenerated(@NonNull Palette palette) {
+                                    //Gets the vibrant swatch
+                                    Palette.Swatch swatch = palette.getVibrantSwatch();
+
+                                    //Sets the image background colour
+                                    if (swatch == null) {
+                                        mImageViewSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorImageBackground));
+                                    }
+                                    else {
+                                        mImageViewSpecificShow.setBackgroundColor((swatch.getRgb()));
+                                    }
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Drawable errorDrawable) {
+
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                        }
+                    });
         }
     }
 
