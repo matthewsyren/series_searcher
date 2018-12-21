@@ -386,14 +386,14 @@ public class SpecificShowActivity
                             //Displays the image
                             mImageViewSpecificShow.setImageBitmap(bitmap);
 
-                            //Sets the image background to either the vibrant or muted swatch (depending on what's available)
+                            //Sets the image background to either the dominant or muted swatch (depending on what's available)
                             Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                                 @Override
                                 public void onGenerated(@NonNull Palette palette) {
-                                    //Gets the vibrant swatch
-                                    Palette.Swatch swatch = palette.getVibrantSwatch();
+                                    //Gets the dominant swatch
+                                    Palette.Swatch swatch = palette.getDominantSwatch();
 
-                                    //Gets the muted swatch if the vibrant swatch is null
+                                    //Gets the muted swatch if the dominant swatch is null
                                     if (swatch == null) {
                                         swatch = palette.getMutedSwatch();
                                     }
