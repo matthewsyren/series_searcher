@@ -43,8 +43,8 @@ public class ShowAdapter
         extends RecyclerView.Adapter<ShowAdapter.ViewHolder>{
     //Declarations
     private static ArrayList<Show> sShows;
-    private Context mContext;
-    private boolean mIsHomeRecyclerView;
+    private final Context mContext;
+    private final boolean mIsHomeRecyclerView;
 
     /**
      * Constructor
@@ -255,7 +255,7 @@ public class ShowAdapter
         @BindView(R.id.button_toggle_show) ImageButton ibToggleShow;
         
         //Variables
-        private Context mContext;
+        private final Context mContext;
 
         public ViewHolder(View itemView, Context context) {
             super(itemView);
