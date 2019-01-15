@@ -3,8 +3,9 @@
     android:id="@+id/menu_nav_drawer"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/group_one"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home_black_24dp"
@@ -18,10 +19,6 @@
             android:icon="@drawable/ic_search_black_24dp"
             android:title="@string/navigation_drawer_search" />
         <item
-            android:id="@+id/nav_disclaimer"
-            android:icon="@drawable/ic_copyright_black_24dp"
-            android:title="@string/navigation_drawer_disclaimer" />
-        <item
             android:id="@+id/nav_data_saving_mode"
             android:enabled="true"
             android:title="@string/navigation_drawer_data_saving_mode"
@@ -29,6 +26,14 @@
             android:visible="true"
             app:actionLayout="@layout/nav_switch"
             app:showAsAction="ifRoom" />
+    </group>
+    <group
+        android:id="@+id/group_two"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_disclaimer"
+            android:icon="@drawable/ic_copyright_black_24dp"
+            android:title="@string/navigation_drawer_disclaimer" />
         <item
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_help_black_24dp"
