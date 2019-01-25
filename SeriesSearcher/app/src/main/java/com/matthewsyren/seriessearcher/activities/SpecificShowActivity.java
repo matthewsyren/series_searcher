@@ -411,7 +411,8 @@ public class SpecificShowActivity
 
                         @Override
                         public void onBitmapFailed(Drawable errorDrawable) {
-
+                            //Displays a default colour when the image could not be loaded
+                            mImageViewSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorImageBackground));
                         }
 
                         @Override
