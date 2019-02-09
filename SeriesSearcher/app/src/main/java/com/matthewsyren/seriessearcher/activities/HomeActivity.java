@@ -205,6 +205,7 @@ public class HomeActivity
                                         .createSignInIntentBuilder()
                                         .setIsSmartLockEnabled(false)
                                         .setLogo(R.mipmap.ic_launcher)
+                                        .setTheme(R.style.LoginTheme)
                                         .setAvailableProviders(Arrays.asList(
                                                 new AuthUI.IdpConfig.EmailBuilder().build(),
                                                 new AuthUI.IdpConfig.GoogleBuilder().build()))
