@@ -63,6 +63,6 @@
     </style>
 
     <style name="FirebaseUI.Text.Link">
-        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textColor">@color/linkColor</item>
     </style>
 </resources>
