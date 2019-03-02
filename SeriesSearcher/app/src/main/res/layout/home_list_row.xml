@@ -14,13 +14,16 @@
         android:layout_alignParentStart="true"
         android:layout_centerInParent="true">
 
-        <ImageView
+        <com.matthewsyren.seriessearcher.customviews.RoundedImageView
             android:id="@+id/image_show_poster"
-            android:layout_width="@dimen/list_row_show_poster_size"
-            android:layout_height="@dimen/list_row_show_poster_size"
+            android:layout_width="@dimen/list_row_show_poster_width"
+            android:layout_height="@dimen/list_row_show_poster_height"
             android:transitionName="@string/transition_image"
-            android:contentDescription="@string/content_description_show_poster"/>
-    </LinearLayout>
+            android:contentDescription="@string/content_description_show_poster"
+            android:scaleType="centerCrop"
+            android:background="@color/colorWhite"
+            android:layout_marginEnd="@dimen/list_row_margin_end"/>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/text_show_title"

@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.activities.HomeActivity;
 import com.matthewsyren.seriessearcher.activities.SpecificShowActivity;
+import com.matthewsyren.seriessearcher.customviews.RoundedImageView;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 import com.squareup.picasso.Picasso;
@@ -146,7 +146,7 @@ public class ShowAdapter
     /**
      * Displays the images for each row
      */
-    private void displayImagesForRow(ViewHolder viewHolder, int position){
+    private void displayImagesForRow(final ViewHolder viewHolder, int position){
         //Displays the app's launcher icon if the show has no poster or if data saving mode has been activated
         if(UserAccountUtilities.getDataSavingPreference(mContext) || sShows.get(position).getShowImageUrl() == null){
             viewHolder.ivShowPoster.setImageResource(R.mipmap.ic_launcher);
@@ -244,7 +244,7 @@ public class ShowAdapter
             extends RecyclerView.ViewHolder
             implements View.OnClickListener{
         //View bindings
-        @BindView(R.id.image_show_poster) ImageView ivShowPoster;
+        @BindView(R.id.image_show_poster) RoundedImageView ivShowPoster;
         @BindView(R.id.text_show_title) TextView tvShowTitle;
         @BindView(R.id.text_show_rating) TextView tvShowRating;
         @BindView(R.id.text_show_status) TextView tvShowStatus;
