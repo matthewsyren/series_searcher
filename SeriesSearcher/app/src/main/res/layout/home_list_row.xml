@@ -23,7 +23,7 @@
             android:scaleType="centerCrop"
             android:background="@color/colorWhite"
             android:layout_marginEnd="@dimen/list_row_margin_end"/>
-    </RelativeLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/text_show_title"
