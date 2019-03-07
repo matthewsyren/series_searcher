@@ -439,30 +439,4 @@ public class SpecificShowActivity
             startActivity(intent);
         }
     }
-
-    /**
-     * Displays the full Show poster in an AlertDialog
-     */
-    public void showPosterOnClick(View view){
-        //Creates an AlertDialog to display the Show's poster
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        View inflateView = View.inflate(this, R.layout.dialog_show_poster, null);
-        ImageView imageView = inflateView.findViewById(R.id.image_view_show_poster);
-
-        //Loads the poster
-        Picasso.with(this)
-                .load(mShow.getShowImageUrl())
-                .into(imageView);
-
-        //Sets the background to transparent and loads the View into the AlertDialog
-        Window window = alertDialog.getWindow();
-        if(window != null){
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
-
-        alertDialog.setView(inflateView);
-
-        //Displays the AlertDialog
-        alertDialog.show();
-    }
 }

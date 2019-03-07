@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,7 +16,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -257,10 +261,17 @@ public class ShowAdapter
         //Variables
         private final Context mContext;
 
-        public ViewHolder(View itemView, Context context) {
+        public ViewHolder(View itemView, final Context context) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
+            ivShowPoster.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Displays an AlertDialog with the Show's poster
+                    displayShowPosterAlertDialog(context);
+                }
+            });
             mContext = context;
         }
 
@@ -276,6 +287,41 @@ public class ShowAdapter
                     .toBundle();
             
             mContext.startActivity(intent, bundle);
+        }
+
+        /**
+         * Displays the full Show poster in an AlertDialog
+         */
+        private void displayShowPosterAlertDialog(Context context){
+            //Creates an AlertDialog to display the Show's poster
+            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+            View inflateView = View.inflate(context, R.layout.dialog_show_poster, null);
+            ImageView imageView = inflateView.findViewById(R.id.image_view_show_poster);
+            String showImageUrl = sShows.get(getAdapterPosition()).getShowImageUrl();
+
+            //Displays a default image if the show doesn't have a poster or the user has enabled data saving mode, otherwise displays a default image
+            if(UserAccountUtilities.getDataSavingPreference(context) || showImageUrl == null){
+                //Displays a default image
+                imageView.setScaleType(ImageView.ScaleType.CENTER);
+                imageView.setImageResource(R.mipmap.ic_launcher);
+            }
+            else{
+                //Loads the poster
+                Picasso.with(context)
+                        .load(showImageUrl)
+                        .into(imageView);
+            }
+
+            //Sets the background to transparent and loads the View into the AlertDialog
+            Window window = alertDialog.getWindow();
+            if(window != null){
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
+
+            alertDialog.setView(inflateView);
+
+            //Displays the AlertDialog
+            alertDialog.show();
         }
     }
 }
