@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -195,8 +196,16 @@ public class ShowAdapter
         //Displays the data in the appropriate Views
         Resources resources = mContext.getResources();
         viewHolder.tvShowTitle.setText(sShows.get(position).getShowTitle());
-        viewHolder.tvShowRating.setText(resources.getString(R.string.text_rating, sShows.get(position).getShowRating()));
-        viewHolder.tvShowStatus.setText(resources.getString(R.string.text_status, sShows.get(position).getShowStatus()));
+
+        viewHolder.tvShowRating.setText(
+                Html.fromHtml(resources.getString(
+                        R.string.text_rating,
+                        sShows.get(position).getShowRating())));
+
+        viewHolder.tvShowStatus.setText(
+                Html.fromHtml(resources.getString(
+                        R.string.text_status,
+                        sShows.get(position).getShowStatus())));
     }
 
     /**
@@ -208,22 +217,25 @@ public class ShowAdapter
 
         //Displays the text for Views that aren't shared between the two layout files
         if(mIsHomeRecyclerView && viewHolder.tvShowNextEpisode != null){
-            viewHolder.tvShowNextEpisode.setText(resources.getString(R.string.text_next_episode, sShows.get(position).getShowNextEpisode()));
+            viewHolder.tvShowNextEpisode.setText(
+                    Html.fromHtml(resources.getString(
+                            R.string.text_next_episode,
+                            sShows.get(position).getShowNextEpisode())));
         }
         else{
             //Displays the appropriate unit for the runtime
             if(viewHolder.tvShowRuntime != null){
                 if(!sShows.get(position).getShowRuntime().equals(mContext.getString(R.string.n_a))){
                     viewHolder.tvShowRuntime.setText(
-                            resources.getString(
+                            Html.fromHtml(resources.getString(
                                     R.string.text_runtime_minutes,
-                                    sShows.get(position).getShowRuntime()));
+                                    sShows.get(position).getShowRuntime())));
                 }
                 else{
                     viewHolder.tvShowRuntime.setText(
-                            resources.getString(
+                            Html.fromHtml(resources.getString(
                                     R.string.text_runtime,
-                                    sShows.get(position).getShowRuntime()));
+                                    sShows.get(position).getShowRuntime())));
                 }
             }
         }
