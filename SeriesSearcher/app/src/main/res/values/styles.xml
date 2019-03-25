@@ -71,4 +71,21 @@
     <style name="FirebaseUI.Text.Link">
         <item name="android:textColor">@color/linkColor</item>
     </style>
+
+    <style name="RecyclerViewLargeText">
+        <item name="android:textColor">@color/recyclerViewLargeTextColor</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textSize">@dimen/list_row_title_text_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="RecyclerViewSmallText">
+        <item name="android:textColor">@color/recyclerViewSmallTextColor</item>
+        <item name="android:textSize">@dimen/list_row_text_size</item>
+        <item name="android:layout_marginTop">@dimen/list_row_text_margin_top</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 </resources>

@@ -27,46 +27,29 @@
 
     <TextView
         android:id="@+id/text_show_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/RecyclerViewLargeText"
         android:layout_alignTop="@+id/thumbnail"
         android:layout_toEndOf="@+id/thumbnail"
-        android:textColor="#040404"
-        android:typeface="sans"
-        android:textSize="@dimen/list_row_title_text_size"
-        android:textStyle="bold"
         android:layout_toStartOf="@+id/linear_layout_button"/>
 
     <TextView
         android:id="@+id/text_show_rating"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        style="@style/RecyclerViewSmallText"
         android:layout_below="@id/text_show_title"
-        android:textColor="#343434"
-        android:textSize="@dimen/list_row_text_size"
-        android:layout_marginTop="@dimen/list_row_text_margin_top"
         android:layout_toEndOf="@+id/thumbnail"
         android:layout_toStartOf="@+id/linear_layout_button"/>
 
     <TextView
         android:id="@+id/text_show_status"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        style="@style/RecyclerViewSmallText"
         android:layout_below="@id/text_show_rating"
-        android:textColor="#343434"
-        android:textSize="@dimen/list_row_text_size"
-        android:layout_marginTop="@dimen/list_row_text_margin_top"
         android:layout_toEndOf="@+id/thumbnail"
         android:layout_toStartOf="@+id/linear_layout_button"/>
 
     <TextView
         android:id="@+id/text_show_next_episode_date"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        style="@style/RecyclerViewSmallText"
         android:layout_below="@id/text_show_status"
-        android:textColor="#343434"
-        android:textSize="@dimen/list_row_text_size"
-        android:layout_marginTop="@dimen/list_row_text_margin_top"
         android:layout_toEndOf="@+id/thumbnail"
         android:layout_toStartOf="@+id/linear_layout_button"/>
 

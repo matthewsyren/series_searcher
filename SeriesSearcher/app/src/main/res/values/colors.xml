@@ -11,4 +11,6 @@
     <color name="gradientCenterColor">#00000000</color>
     <color name="gradientEndColor">#00000000</color>
     <color name="linkColor">#0000EE</color>
+    <color name="recyclerViewSmallTextColor">#343434</color>
+    <color name="recyclerViewLargeTextColor">#040404</color>
 </resources>
