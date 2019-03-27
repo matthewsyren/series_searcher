@@ -38,6 +38,7 @@
     <string name="text_rating">&lt;b>Rating:&lt;/b> %s</string>
     <string name="text_genres_sections">%s, %s</string>
     <string name="text_next_episode">&lt;b>Next Episode:&lt;/b> %s</string>
+    <string name="toggle">Toggle</string>
 
     <!-- SearchActivity -->
     <string name="label_search">Type to search&#8230;</string>

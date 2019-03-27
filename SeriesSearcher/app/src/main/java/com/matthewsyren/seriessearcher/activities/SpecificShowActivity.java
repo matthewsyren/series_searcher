@@ -1,24 +1,23 @@
 package com.matthewsyren.seriessearcher.activities;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -66,15 +65,26 @@ public class SpecificShowActivity
     @BindView(R.id.button_search_by_episode) FloatingActionButton mButtonSearchByEpisode;
     @BindView(R.id.button_refresh) Button mButtonRefresh;
     @BindView(R.id.text_no_internet) TextView mTextNoInternet;
+    @Nullable
+    @BindView(R.id.toolbar_layout) CollapsingToolbarLayout mCollapsingToolbarLayout;
 
     //Variables
     private Show mShow;
-    private static String sShowId;
+    private String mShowId;
+    private boolean mIsShowAdded;
+    private Boolean mChanged;
+    private boolean mShadowIcon = false;
 
     //Constants
     public static final String SHOW_ID_KEY = "show_id_key";
+    public static final String SHOW_IS_ADDED_KEY = "show_is_added_key";
     private static final String SHOW_BUNDLE_KEY = "show_bundle_key";
     private static final String SHOW_ID_BUNDLE_KEY = "show_id_bundle_key";
+    private static final String CHANGED_BUNDLE_KEY = "changed_bundle_key";
+
+    //Codes
+    public static final int SPECIFIC_SHOW_ACTIVITY_REQUEST_CODE = 1000;
+    public static final int SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +92,11 @@ public class SpecificShowActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_specific_show);
         ButterKnife.bind(this);
+
+        //Sets the SupportActionBar if it hasn't been set already
+        if(getSupportActionBar() == null && mToolbar != null){
+            setSupportActionBar(mToolbar);
+        }
 
         //Displays the back arrow icon
         setUpBackArrowIcon();
@@ -116,8 +131,12 @@ public class SpecificShowActivity
             outState.putParcelable(SHOW_BUNDLE_KEY, mShow);
         }
 
-        if(sShowId != null){
-            outState.putString(SHOW_ID_BUNDLE_KEY, sShowId);
+        if(mShowId != null){
+            outState.putString(SHOW_ID_BUNDLE_KEY, mShowId);
+        }
+
+        if(mChanged != null){
+            outState.putBoolean(CHANGED_BUNDLE_KEY, mChanged);
         }
     }
 
@@ -129,6 +148,20 @@ public class SpecificShowActivity
             onBackPressed();
             return true;
         }
+        else if(id == R.id.mi_specific_show_activity_toggle_show_added){
+            //Updates the data in the Firebase database (toggles showAdded from true to false, or vice versa)
+            if(mShow.isShowAdded()){
+                mShow.pushUserShowSelection(UserAccountUtilities.getUserKey(this), false, this);
+            }
+            else{
+                mShow.pushUserShowSelection(UserAccountUtilities.getUserKey(this), true, this);
+            }
+
+            //Sets mChanged to true and refreshes the options menu
+            mChanged = true;
+            invalidateOptionsMenu();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -137,8 +170,48 @@ public class SpecificShowActivity
     public void onBackPressed() {
         super.onBackPressed();
 
+        //Sets the result for the Activity if the user toggled the showAdded value of the Show (by using the menu)
+        if(mChanged != null && mChanged){
+            setResult(SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED);
+        }
+
+        //Resets mChanged
+        mChanged = null;
+
         //Hides the FloatingActionButton
         mButtonSearchByEpisode.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(mShow != null){
+            //Inflates the Menu
+            MenuInflater menuInflater = getMenuInflater();
+            menuInflater.inflate(R.menu.activity_specific_show, menu);
+            MenuItem menuItem = menu.findItem(R.id.mi_specific_show_activity_toggle_show_added);
+
+            //Shows the appropriate icon for the Menu (a delete icon if the Show has been added to My Series, otherwise an add icon. A shadow is added to the icon if the AppBar is open in order to allow the icon to be visible over white images)
+            if(mShow != null && mShow.isShowAdded() != null){
+                if(mShow.isShowAdded()){
+                    if(mShadowIcon){
+                        menuItem.setIcon(R.drawable.ic_delete_white_shadow);
+                    }
+                    else{
+                        menuItem.setIcon(R.drawable.ic_delete_white_24dp);
+                    }
+                }
+                else{
+                    if(mShadowIcon){
+                        menuItem.setIcon(R.drawable.ic_add_white_shadow);
+                    }
+                    else{
+                        menuItem.setIcon(R.drawable.ic_add_white_24dp);
+                    }
+                }
+            }
+        }
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -150,7 +223,11 @@ public class SpecificShowActivity
         }
 
         if(savedInstanceState.containsKey(SHOW_ID_BUNDLE_KEY)){
-            sShowId = savedInstanceState.getString(SHOW_ID_BUNDLE_KEY);
+            mShowId = savedInstanceState.getString(SHOW_ID_BUNDLE_KEY);
+        }
+
+        if(savedInstanceState.containsKey(CHANGED_BUNDLE_KEY)){
+            mChanged = savedInstanceState.getBoolean(CHANGED_BUNDLE_KEY);
         }
 
         if(mShow != null){
@@ -158,7 +235,7 @@ public class SpecificShowActivity
             displayShowInformation(mShow);
         }
         else{
-            //Fetches the Show's infromation if it hasn't been fetched already
+            //Fetches the Show's information if it hasn't been fetched already
             getShowInformation();
         }
     }
@@ -188,11 +265,16 @@ public class SpecificShowActivity
                         if (Math.abs(verticalOffset) - appBarLayout.getTotalScrollRange() == 0) {
                             //Displays a back Button icon with no shadow when the AppBar is collapsed
                             mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+                            mShadowIcon = false;
                         }
                         else {
                             //Displays a back Button icon with a shadow when the AppBar is expanded (in order to make the icon visible regardless of the image behind it)
                             mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_shadow);
+                            mShadowIcon = true;
                         }
+
+                        //Updates the Menu icons
+                        invalidateOptionsMenu();
                     }
                 });
             }
@@ -227,8 +309,10 @@ public class SpecificShowActivity
 
         if(bundle != null){
             //Gets the link to the Show
-            sShowId = bundle.getString(SHOW_ID_KEY);
-            String showLink = LinkUtilities.getShowInformationLink(sShowId);
+            mShowId = bundle.getString(SHOW_ID_KEY);
+            mIsShowAdded = bundle.getBoolean(SHOW_IS_ADDED_KEY);
+
+            String showLink = LinkUtilities.getShowInformationLink(mShowId);
 
             //Displays ProgressBar
             mProgressBar.setVisibility(View.VISIBLE);
@@ -281,6 +365,7 @@ public class SpecificShowActivity
                 if(url.startsWith(LinkUtilities.SHOW_LINK)){
                     //Parses the Show's main information and displays it
                     mShow = JsonUtilities.parseFullShowJson(json, this, this);
+                    mShow.setShowAdded(mIsShowAdded);
                     displayShowInformation(mShow);
                 }
                 else if(url.startsWith(LinkUtilities.EPISODE_LINK)){
@@ -297,6 +382,7 @@ public class SpecificShowActivity
 
                     //Displays the Show's information
                     displayShowInformation(mShow);
+                    invalidateOptionsMenu();
                 }
             }
             else{
@@ -350,13 +436,11 @@ public class SpecificShowActivity
             displayImage(show.getShowImageUrl());
 
             //Displays the title for the Activity
-            if(mToolbar != null){
-                mToolbar.setTitle(show.getShowTitle());
+            if(mCollapsingToolbarLayout != null){
+                mCollapsingToolbarLayout.setTitle(show.getShowTitle());
             }
-            else{
-                if(getSupportActionBar() != null){
-                    getSupportActionBar().setTitle(show.getShowTitle());
-                }
+            else if(getSupportActionBar() != null){
+                getSupportActionBar().setTitle(show.getShowTitle());
             }
 
             //Displays the FloatingActionButton

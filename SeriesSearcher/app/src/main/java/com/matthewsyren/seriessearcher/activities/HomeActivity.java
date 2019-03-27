@@ -145,6 +145,12 @@ public class HomeActivity
                 finish();
             }
         }
+        else if(requestCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_REQUEST_CODE){
+            //Refreshes the Activity if the user added/removed a Show from My Series on the SpecificShowActivity
+            if(resultCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED){
+                refreshActivity(null);
+            }
+        }
     }
 
     @Override

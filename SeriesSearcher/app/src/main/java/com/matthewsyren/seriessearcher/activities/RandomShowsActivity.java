@@ -107,6 +107,22 @@ public class RandomShowsActivity
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_REQUEST_CODE){
+            //Updates the RecyclerView if the user added/removed a Show from My Series on the SpecificShowActivity
+            if(resultCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED){
+                Show.markShowsThatAreAddedToMySeries(
+                        UserAccountUtilities.getUserKey(this),
+                        lstShows,
+                        null,
+                        this);
+            }
+        }
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 

@@ -21,7 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="?android:attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:title=" ">
             <ImageView
                 android:id="@+id/image_view_specific_show"
                 android:layout_width="match_parent"
@@ -44,7 +45,8 @@
                 android:layout_height="?android:attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.AppBarOverlay"
-                tools:ignore="InconsistentLayout" />
+                tools:ignore="InconsistentLayout"
+                app:title=" "/>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 

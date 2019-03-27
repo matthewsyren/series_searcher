@@ -291,15 +291,21 @@ public class ShowAdapter
         @Override
         public void onClick(View v) {
             //Takes the user to the SpecificShowActivity
+            Show show = sShows.get(getAdapterPosition());
             Intent intent = new Intent(mContext, SpecificShowActivity.class);
-            intent.putExtra(SpecificShowActivity.SHOW_ID_KEY, "" + sShows.get(getAdapterPosition()).getShowId());
+            intent.putExtra(SpecificShowActivity.SHOW_ID_KEY, "" + show.getShowId());
+            intent.putExtra(SpecificShowActivity.SHOW_IS_ADDED_KEY, show.isShowAdded());
 
             //Animates image
             Bundle bundle = ActivityOptions
                     .makeSceneTransitionAnimation((Activity) mContext, ivShowPoster, ivShowPoster.getTransitionName())
                     .toBundle();
-            
-            mContext.startActivity(intent, bundle);
+
+            //Starts the SpecificShowActivity and requests that a result be sent to the current Activity
+            ((Activity) mContext).startActivityForResult(
+                    intent,
+                    SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_REQUEST_CODE ,
+                    bundle);
         }
 
         /**
