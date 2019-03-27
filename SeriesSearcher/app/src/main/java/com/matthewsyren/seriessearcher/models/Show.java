@@ -1,14 +1,17 @@
 package com.matthewsyren.seriessearcher.models;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.activities.RandomShowsActivity;
 import com.matthewsyren.seriessearcher.activities.SearchActivity;
 
@@ -231,6 +234,21 @@ public class Show
                 }
             });
         }
+    }
+
+    /**
+     * Updates the Shows that the user has added to My Series in the Firebase database
+     */
+    public void pushUserShowSelection(String userKey, boolean showAdded, Context context){
+        //Establishes a connection to the Firebase database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference().child(userKey);
+        String message = showAdded ? context.getString(R.string.added_to_my_series, showTitle) : context.getString(R.string.removed_from_my_series, showTitle);
+
+        //Saves the updated data to the Firebase database
+        databaseReference.child("" + this.showId).setValue(showAdded);
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+        setShowAdded(showAdded);
     }
 
     @Override

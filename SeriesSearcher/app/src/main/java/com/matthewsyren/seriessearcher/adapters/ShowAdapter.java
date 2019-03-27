@@ -94,12 +94,21 @@ public class ShowAdapter
         viewHolder.ibToggleShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final Show show = sShows.get(position);
+
                 //Adds the Show to My Series if the Show isn't already there, or prompts the user to confirm the removal of the Show from My Series if the Show is already there
                 if(!sShows.get(position).isShowAdded()){
-                    //Adds Show to My Series
+                    //Sets showAdded to true and changes the Button image to a delete icon
                     viewHolder.ibToggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
                     sShows.get(position).setShowAdded(true);
-                    pushUserShowSelection(UserAccountUtilities.getUserKey(mContext), "" + sShows.get(position).getShowId(), sShows.get(position).getShowTitle(), true);
+
+                    //Updates the values in the Firebase database
+                    show.pushUserShowSelection(
+                            UserAccountUtilities.getUserKey(mContext),
+                            true,
+                            mContext);
+
+                    //Updates the RecyclerView's data
                     notifyDataSetChanged();
                 }
                 else{
@@ -117,8 +126,13 @@ public class ShowAdapter
                             switch(button){
                                 //Removes the selected show from the My Series list
                                 case AlertDialog.BUTTON_POSITIVE:
-                                    //Updates the FirebaseDatabase and the UI
-                                    pushUserShowSelection(UserAccountUtilities.getUserKey(mContext), "" + sShows.get(position).getShowId(), sShows.get(position).getShowTitle(), false);
+                                    //Updates the Firebase database and the UI
+                                    show.pushUserShowSelection(
+                                            UserAccountUtilities.getUserKey(mContext),
+                                            false,
+                                            mContext);
+
+                                    //Sets showAdded to false
                                     sShows.get(position).setShowAdded(false);
 
                                     //Removes the Show
@@ -130,6 +144,7 @@ public class ShowAdapter
                                         }
                                     }
 
+                                    //Sets the Button's image to an add icon
                                     viewHolder.ibToggleShow.setImageResource(R.drawable.ic_add_black_24dp);
                                     notifyDataSetChanged();
                                     break;
@@ -239,20 +254,6 @@ public class ShowAdapter
                 }
             }
         }
-    }
-
-    /**
-     * Updates the shows that the user has added to 'My Series' in the Firebase database
-     */
-    private void pushUserShowSelection(String userKey, String showID, String showTitle, boolean showAdded){
-        //Establishes a connection to the Firebase database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = database.getReference().child(userKey);
-        String message = showAdded ? mContext.getString(R.string.added_to_my_series, showTitle) : mContext.getString(R.string.removed_from_my_series, showTitle);
-
-        //Generates the user's key and saves the value (the user's email address) to the Firebase database
-        databaseReference.child(showID).setValue(showAdded);
-        Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
     }
 
     //ViewHolder class used to decrease the findViewById calls
