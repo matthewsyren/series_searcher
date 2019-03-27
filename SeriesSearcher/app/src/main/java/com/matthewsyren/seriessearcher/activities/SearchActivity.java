@@ -174,7 +174,11 @@ public class SearchActivity
                     }
                 }
                 //Determines which Shows have been added to My Series by the user
-                Show.checkIfShowIsAdded(UserAccountUtilities.getUserKey(this), lstShows, this, null);
+                Show.markShowsThatAreAddedToMySeries(
+                        UserAccountUtilities.getUserKey(this),
+                        lstShows,
+                        this,
+                        null);
             }
             else{
                 Toast.makeText(getApplicationContext(), R.string.error_fetching_data_no_internet_connection, Toast.LENGTH_LONG).show();

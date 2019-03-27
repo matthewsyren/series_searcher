@@ -190,7 +190,11 @@ public class RandomShowsActivity
                 }
 
                 //Determines which Shows have been added to My Series by the user
-                Show.checkIfShowIsAdded(UserAccountUtilities.getUserKey(this), lstShows, null, this);
+                Show.markShowsThatAreAddedToMySeries(
+                        UserAccountUtilities.getUserKey(this),
+                        lstShows,
+                        null,
+                        this);
             }
             else{
                 //Displays a refresh Button

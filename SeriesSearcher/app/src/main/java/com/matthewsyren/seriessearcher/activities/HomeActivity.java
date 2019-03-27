@@ -419,7 +419,11 @@ public class HomeActivity
                 }
 
                 //Determines which Shows have been added to My Series by the user
-                Show.checkIfShowIsAdded(UserAccountUtilities.getUserKey(this), lstShows, null, null);
+                Show.markShowsThatAreAddedToMySeries(
+                        UserAccountUtilities.getUserKey(this),
+                        lstShows,
+                        null,
+                        null);
             }
             else{
                 //Displays a refresh Button
