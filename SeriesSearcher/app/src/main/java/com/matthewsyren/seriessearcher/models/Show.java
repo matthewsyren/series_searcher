@@ -52,7 +52,8 @@ public class Show
     /**
      * Constructor (used for more detailed information on the Show)
      */
-    public Show(String showImageUrl, String showTitle, String showRating, String showStatus, String showNextEpisode, String showRuntime, Boolean showAdded, String showPremieredDate, String showLanguages, String showGenres, String showSummary, String showPreviousEpisode) {
+    public Show(int showId, String showImageUrl, String showTitle, String showRating, String showStatus, String showNextEpisode, String showRuntime, Boolean showAdded, String showPremieredDate, String showLanguages, String showGenres, String showSummary, String showPreviousEpisode) {
+        this.showId = showId;
         this.showImageUrl = showImageUrl;
         this.showTitle = showTitle;
         this.showRating = showRating;

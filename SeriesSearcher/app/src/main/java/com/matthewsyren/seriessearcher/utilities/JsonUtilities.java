@@ -148,6 +148,7 @@ public class JsonUtilities {
 
         //Creates a Show object with the appropriate information
         show = new Show(
+                show.getShowId(),
                 show.getShowImageUrl(),
                 show.getShowTitle(),
                 show.getShowRating(),
