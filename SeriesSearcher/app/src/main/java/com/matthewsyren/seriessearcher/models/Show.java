@@ -12,8 +12,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.matthewsyren.seriessearcher.R;
-import com.matthewsyren.seriessearcher.activities.RandomShowsActivity;
-import com.matthewsyren.seriessearcher.activities.SearchActivity;
 
 import java.util.ArrayList;
 
@@ -185,7 +183,7 @@ public class Show
     /**
      * Loops through all Shows that the user has added to My Series, and sets showAdded to true for each Show in lstShows that has been added to My Series
      */
-    public static void markShowsThatAreAddedToMySeries(String userKey, final ArrayList<Show> lstShows, final SearchActivity searchActivity, final RandomShowsActivity randomShowsActivity){
+    public static void markShowsThatAreAddedToMySeries(String userKey, final ArrayList<Show> lstShows, final IShowUpdatedListener iShowUpdatedListener){
         if(userKey != null){
             //Establishes a connection to Firebase
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -218,13 +216,8 @@ public class Show
                         }
                     }
 
-                    //Updates the appropriate Activity's data
-                    if(searchActivity != null){
-                        searchActivity.setLstShows(lstShows);
-                    }
-                    else if(randomShowsActivity != null){
-                        randomShowsActivity.setLstShows(lstShows);
-                    }
+                    //Tells the appropriate Activity that the Shows have been updated
+                    iShowUpdatedListener.showsUpdated();
                 }
 
                 @Override

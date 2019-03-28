@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
+import com.matthewsyren.seriessearcher.models.IShowUpdatedListener;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
@@ -46,7 +47,8 @@ import butterknife.ButterKnife;
 public class HomeActivity
         extends BaseActivity
         implements IApiConnectionResponse,
-        IOnDataSavingPreferenceChangedListener {
+        IOnDataSavingPreferenceChangedListener,
+        IShowUpdatedListener {
     //View bindings
     @BindView(R.id.recycler_view_my_shows) RecyclerView mRecyclerViewMyShows;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
@@ -148,7 +150,11 @@ public class HomeActivity
         else if(requestCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_REQUEST_CODE){
             //Refreshes the Activity if the user added/removed a Show from My Series on the SpecificShowActivity
             if(resultCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED){
-                refreshActivity(null);
+                //Determines which Shows have been added to My Series by the user
+                Show.markShowsThatAreAddedToMySeries(
+                        UserAccountUtilities.getUserKey(this),
+                        lstShows,
+                        this);
             }
         }
     }
@@ -428,8 +434,7 @@ public class HomeActivity
                 Show.markShowsThatAreAddedToMySeries(
                         UserAccountUtilities.getUserKey(this),
                         lstShows,
-                        null,
-                        null);
+                        this);
             }
             else{
                 //Displays a refresh Button
@@ -447,6 +452,21 @@ public class HomeActivity
     @Override
     public void onDataSavingPreferenceChanged() {
         //Updates the images in the RecyclerView
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showsUpdated() {
+        //Removes a Show if it has not been added to My Series
+        for(int i = 0; i < lstShows.size(); i++){
+            if(!lstShows.get(i).isShowAdded()){
+                //Removes the Show and decrements the i variable to cater for the removed object
+                lstShows.remove(i);
+                i--;
+            }
+        }
+
+        //Refreshes the RecyclerView's data
         adapter.notifyDataSetChanged();
     }
 }

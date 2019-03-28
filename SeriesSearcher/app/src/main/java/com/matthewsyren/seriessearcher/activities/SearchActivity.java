@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
+import com.matthewsyren.seriessearcher.models.IShowUpdatedListener;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
@@ -35,7 +36,8 @@ import butterknife.ButterKnife;
 public class SearchActivity
         extends BaseActivity
         implements IApiConnectionResponse,
-        IOnDataSavingPreferenceChangedListener {
+        IOnDataSavingPreferenceChangedListener,
+        IShowUpdatedListener {
     //View bindings
     @BindView(R.id.recycler_view_search_results) RecyclerView mRecyclerViewSearchResults;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
@@ -111,8 +113,7 @@ public class SearchActivity
                 Show.markShowsThatAreAddedToMySeries(
                         UserAccountUtilities.getUserKey(this),
                         lstShows,
-                        this,
-                        null);
+                        this);
             }
         }
     }
@@ -194,8 +195,7 @@ public class SearchActivity
                 Show.markShowsThatAreAddedToMySeries(
                         UserAccountUtilities.getUserKey(this),
                         lstShows,
-                        this,
-                        null);
+                        this);
             }
             else{
                 Toast.makeText(getApplicationContext(), R.string.error_fetching_data_no_internet_connection, Toast.LENGTH_LONG).show();
@@ -212,13 +212,9 @@ public class SearchActivity
         adapter.notifyDataSetChanged();
     }
 
-    /**
-     * Setter method
-     */
-    public void setLstShows(ArrayList<Show> lstShows){
-        this.lstShows = lstShows;
-
-        //Updates the Adapter
+    @Override
+    public void showsUpdated() {
+        //Refreshes the RecyclerView's data
         adapter.notifyDataSetChanged();
 
         //Displays a message if no series are found

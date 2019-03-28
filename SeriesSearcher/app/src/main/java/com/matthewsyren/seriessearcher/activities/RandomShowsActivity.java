@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
+import com.matthewsyren.seriessearcher.models.IShowUpdatedListener;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
@@ -35,7 +36,8 @@ import butterknife.ButterKnife;
 public class RandomShowsActivity
         extends BaseActivity
         implements IApiConnectionResponse,
-        IOnDataSavingPreferenceChangedListener {
+        IOnDataSavingPreferenceChangedListener,
+        IShowUpdatedListener {
     //View bindings
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.recycler_view_random_shows) RecyclerView mRecyclerViewRandomShows;
@@ -116,7 +118,6 @@ public class RandomShowsActivity
                 Show.markShowsThatAreAddedToMySeries(
                         UserAccountUtilities.getUserKey(this),
                         lstShows,
-                        null,
                         this);
             }
         }
@@ -209,7 +210,6 @@ public class RandomShowsActivity
                 Show.markShowsThatAreAddedToMySeries(
                         UserAccountUtilities.getUserKey(this),
                         lstShows,
-                        null,
                         this);
             }
             else{
@@ -222,25 +222,21 @@ public class RandomShowsActivity
         }
     }
 
+    @Override
+    public void showsUpdated() {
+        //Refreshes the RecyclerView's data
+        adapter.notifyDataSetChanged();
+
+        //Hides ProgressBar
+        mProgressBar.setVisibility(View.INVISIBLE);
+    }
+
     /**
      * Refreshes the Activity in order to fetch 20 new randomised series
      */
     private void refreshActivity(){
         finish();
         startActivity(new Intent(this, RandomShowsActivity.class));
-    }
-
-    /**
-     * Setter method
-     */
-    public void setLstShows(ArrayList<Show> lstShows){
-        this.lstShows = lstShows;
-
-        //Updates the Adapter
-        adapter.notifyDataSetChanged();
-
-        //Hides ProgressBar
-        mProgressBar.setVisibility(View.INVISIBLE);
     }
 
     /**
