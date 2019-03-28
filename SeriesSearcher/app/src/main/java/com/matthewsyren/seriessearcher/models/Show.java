@@ -18,7 +18,6 @@ import com.matthewsyren.seriessearcher.activities.SearchActivity;
 import java.util.ArrayList;
 
 /**
- * Created by matthew on 2017/01/28.
  * Class holds the details that are retrieved for the TV Shows
  */
 

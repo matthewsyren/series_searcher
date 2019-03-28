@@ -21,10 +21,7 @@ import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.activities.HomeActivity;
 import com.matthewsyren.seriessearcher.activities.SpecificShowActivity;
@@ -39,7 +36,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by matthew on 2017/01/28.
  * Class populates a RecyclerView with the data that is passed into the constructor
  */
 

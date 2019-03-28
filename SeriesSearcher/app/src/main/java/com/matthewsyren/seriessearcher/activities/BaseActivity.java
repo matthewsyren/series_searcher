@@ -24,7 +24,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by matthew on 2017/02/04.
  * Class provides a base for the NavigationDrawer that is shared amongst the activities
  */
 

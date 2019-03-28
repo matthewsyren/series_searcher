@@ -1,7 +1,6 @@
 package com.matthewsyren.seriessearcher.network;
 
 /**
- * Created by matthew on 2017/02/03.
  * This interface is used to pass data to the class that implements this interface
  */
 
