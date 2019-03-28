@@ -364,8 +364,7 @@ public class SpecificShowActivity
                 //Parses the JSON based on the URL of the response
                 if(url.startsWith(LinkUtilities.SHOW_LINK)){
                     //Parses the Show's main information and displays it
-                    mShow = JsonUtilities.parseFullShowJson(json, this, this);
-                    mShow.setShowAdded(mIsShowAdded);
+                    mShow = JsonUtilities.parseFullShowJson(json, this, this, mIsShowAdded);
                     displayShowInformation(mShow);
                 }
                 else if(url.startsWith(LinkUtilities.EPISODE_LINK)){

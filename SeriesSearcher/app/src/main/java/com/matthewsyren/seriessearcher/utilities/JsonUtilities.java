@@ -21,7 +21,7 @@ public class JsonUtilities {
      * @param fetchNextEpisode Set as true to fetch information about the Show's next episode
      * @return A Show object with the parsed JSON as values
      */
-    public static Show parseShowJson(JSONObject json, Context context, IApiConnectionResponse delegate, boolean fetchNextEpisode) throws JSONException{
+    public static Show parseShowJson(JSONObject json, Context context, IApiConnectionResponse delegate, boolean fetchNextEpisode, Boolean showAdded) throws JSONException{
         //Fetches values
         int id = json.getInt("id");
         String name = json.getString("name");
@@ -59,12 +59,16 @@ public class JsonUtilities {
             api.execute(nextEpisodeLink);
         }
 
-        //Instantiates a Show object and adds it to the lstShows ArrayList
-        Show show = new Show(id, name, rating, status, imageUrl, runtime);
-        show.setShowNextEpisode(context.getString(R.string.n_a));
-        show.setShowAdded(null);
-
-        return show;
+        //Instantiates a Show object and returns it
+        return new Show(
+                id,
+                name,
+                rating,
+                status,
+                imageUrl,
+                runtime,
+                showAdded,
+                context.getString(R.string.n_a));
     }
 
     /**
@@ -74,9 +78,9 @@ public class JsonUtilities {
      * @param delegate The class that implements IApiConnectionResponse
      * @return A Show object with the parsed JSON as values
      */
-    public static Show parseFullShowJson(JSONObject json, Context context, IApiConnectionResponse delegate) throws JSONException{
+    public static Show parseFullShowJson(JSONObject json, Context context, IApiConnectionResponse delegate, Boolean showAdded) throws JSONException{
         //Parses the small version of the Show
-        Show show = parseShowJson(json, context, delegate, false);
+        Show show = parseShowJson(json, context, delegate, false, showAdded);
 
         //Parses the rest of the Show
         String premiered = json.getString("premiered");
@@ -146,8 +150,8 @@ public class JsonUtilities {
             nextEpisode = context.getString(R.string.n_a);
         }
 
-        //Creates a Show object with the appropriate information
-        show = new Show(
+        //Returns a Show object with the appropriate information
+        return new Show(
                 show.getShowId(),
                 show.getShowImageUrl(),
                 show.getShowTitle(),
@@ -155,14 +159,12 @@ public class JsonUtilities {
                 show.getShowStatus(),
                 nextEpisode,
                 show.getShowRuntime(),
-                null,
+                showAdded,
                 premiered,
                 language,
                 genres,
                 summary,
                 previousEpisode);
-
-        return show;
     }
 
     /**
@@ -228,6 +230,12 @@ public class JsonUtilities {
         }
 
         //Creates a ShowEpisode object
-        return new ShowEpisode(episodeName, episodeAirDate, episodeRuntime, episodeSummary, seasonNumber, episodeNumber);
+        return new ShowEpisode(
+                episodeName,
+                episodeAirDate,
+                episodeRuntime,
+                episodeSummary,
+                seasonNumber,
+                episodeNumber);
     }
 }

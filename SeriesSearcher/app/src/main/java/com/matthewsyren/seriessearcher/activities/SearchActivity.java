@@ -188,7 +188,7 @@ public class SearchActivity
 
                     //Assigns values to the JSONObject if the JSON returned from the API is not null
                     if(json != null){
-                        lstShows.add(JsonUtilities.parseShowJson(json, this, this, false));
+                        lstShows.add(JsonUtilities.parseShowJson(json, this, this, false, null));
                     }
                 }
                 //Determines which Shows have been added to My Series by the user

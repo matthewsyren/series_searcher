@@ -40,13 +40,15 @@ public class Show
     /**
      * Constructor (used for the ListViews)
      */
-    public Show(int showId, String showTitle, String showRating, String showStatus, String showImageUrl, String showRuntime) {
+    public Show(int showId, String showTitle, String showRating, String showStatus, String showImageUrl, String showRuntime, Boolean showAdded, String showNextEpisode) {
         this.showId = showId;
         this.showTitle = showTitle;
         this.showRating = showRating;
         this.showStatus = showStatus;
         this.showImageUrl = showImageUrl;
         this.showRuntime = showRuntime;
+        this.showAdded = showAdded;
+        this.showNextEpisode = showNextEpisode;
     }
 
     /**

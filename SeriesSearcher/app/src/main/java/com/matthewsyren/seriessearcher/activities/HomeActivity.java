@@ -409,7 +409,7 @@ public class HomeActivity
                     if(json != null){
                         String url = json.getString("url");
                         if(url.startsWith(LinkUtilities.SHOW_LINK)){
-                            lstShows.add(JsonUtilities.parseShowJson(json, this, this, true));
+                            lstShows.add(JsonUtilities.parseShowJson(json, this, this, true, true));
                             adapter.notifyDataSetChanged();
                         }
                         else if(url.startsWith(LinkUtilities.EPISODE_LINK)){
@@ -429,12 +429,6 @@ public class HomeActivity
                         }
                     }
                 }
-
-                //Determines which Shows have been added to My Series by the user
-                Show.markShowsThatAreAddedToMySeries(
-                        UserAccountUtilities.getUserKey(this),
-                        lstShows,
-                        this);
             }
             else{
                 //Displays a refresh Button
