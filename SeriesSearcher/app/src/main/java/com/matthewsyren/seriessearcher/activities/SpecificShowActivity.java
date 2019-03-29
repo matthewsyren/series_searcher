@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -74,6 +75,7 @@ public class SpecificShowActivity
     private boolean mIsShowAdded;
     private Boolean mChanged;
     private boolean mShadowIcon = false;
+    private ApiConnection mApiConnection;
 
     //Constants
     public static final String SHOW_ID_KEY = "show_id_key";
@@ -120,6 +122,16 @@ public class SpecificShowActivity
         }
         else{
             mProgressBar.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        //Cancels the AsyncTask if it is still running
+        if(mApiConnection != null && mApiConnection.getStatus() == AsyncTask.Status.RUNNING && !mApiConnection.isCancelled()){
+            mApiConnection.cancel(true);
         }
     }
 
@@ -319,9 +331,9 @@ public class SpecificShowActivity
 
             if(NetworkUtilities.isOnline(this)){
                 //Fetches data from the TVMaze API using the link
-                ApiConnection api = new ApiConnection();
-                api.delegate = this;
-                api.execute(showLink);
+                mApiConnection = new ApiConnection();
+                mApiConnection.delegate = this;
+                mApiConnection.execute(showLink);
             }
             else{
                 //Displays a refresh Button

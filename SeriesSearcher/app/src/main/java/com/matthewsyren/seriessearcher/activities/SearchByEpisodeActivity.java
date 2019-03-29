@@ -1,6 +1,7 @@
 package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -49,6 +50,7 @@ public class SearchByEpisodeActivity
 
     //Variables
     private ShowEpisode mShowEpisode;
+    private ApiConnection mApiConnection;
 
     //Constants
     private static final String SHOW_EPISODE_BUNDLE_KEY = "show_episode_bundle_key";
@@ -83,6 +85,16 @@ public class SearchByEpisodeActivity
 
         if(mShowEpisode != null){
             outState.putParcelable(SHOW_EPISODE_BUNDLE_KEY, mShowEpisode);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        //Cancels the AsyncTask if it is still running
+        if(mApiConnection != null && mApiConnection.getStatus() == AsyncTask.Status.RUNNING && !mApiConnection.isCancelled()){
+            mApiConnection.cancel(true);
         }
     }
 
@@ -161,9 +173,9 @@ public class SearchByEpisodeActivity
                 int episode = Integer.parseInt(mTextShowEpisode.getText().toString());
 
                 //Fetches information from the TVMaze API
-                ApiConnection api = new ApiConnection();
-                api.delegate = this;
-                api.execute(LinkUtilities.getShowEpisodeInformationLink(showNumber, season, episode));
+                mApiConnection = new ApiConnection();
+                mApiConnection.delegate = this;
+                mApiConnection.execute(LinkUtilities.getShowEpisodeInformationLink(showNumber, season, episode));
             }
             catch(NumberFormatException nfe){
                 //Displays error message to the user

@@ -1,6 +1,7 @@
 package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,7 +58,7 @@ public class HomeActivity
     @BindView(R.id.button_refresh) Button mButtonRefresh;
     @BindView(R.id.text_no_internet) TextView mTextNoInternet;
 
-    //Declarations
+    //Variables
     private ArrayList<Show> lstShows = new ArrayList<>();
     private ShowAdapter adapter;
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
@@ -66,6 +67,7 @@ public class HomeActivity
     private boolean mIsSignInRequestSent = false;
     private int mScrollPosition;
     private static final String SCROLL_POSITION_BUNDLE_KEY = "scroll_position_bundle_key";
+    private ApiConnection mApiConnection;
 
     //Request codes
     private static final int SIGN_IN_REQUEST_CODE = 1;
@@ -103,6 +105,11 @@ public class HomeActivity
         //Removes the AuthStateListener
         if(mAuthStateListener != null){
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        }
+
+        //Cancels the AsyncTask if it is still running
+        if(mApiConnection != null && mApiConnection.getStatus() == AsyncTask.Status.RUNNING && !mApiConnection.isCancelled()){
+            mApiConnection.cancel(true);
         }
     }
 
@@ -369,9 +376,9 @@ public class HomeActivity
             }
 
             //Fetches the data from the TVMaze API
-            ApiConnection api = new ApiConnection();
-            api.delegate = this;
-            api.execute(arrShows);
+            mApiConnection = new ApiConnection();
+            mApiConnection.delegate = this;
+            mApiConnection.execute(arrShows);
         }
         else{
             toggleViewVisibility(View.INVISIBLE,View.VISIBLE);

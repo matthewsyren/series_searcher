@@ -1,6 +1,7 @@
 package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +48,7 @@ public class RandomShowsActivity
     //Variables
     private ArrayList<Show> lstShows = new ArrayList<>();
     private ShowAdapter adapter;
+    private ApiConnection mApiConnection;
 
     //Constants
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
@@ -89,9 +91,9 @@ public class RandomShowsActivity
                 else{
                     page = (int) (Math.random() * 100);
                 }
-                ApiConnection api = new ApiConnection();
-                api.delegate = this;
-                api.execute(LinkUtilities.getMultipleShowPageLink(page));
+                mApiConnection = new ApiConnection();
+                mApiConnection.delegate = this;
+                mApiConnection.execute(LinkUtilities.getMultipleShowPageLink(page));
             }
         }
         else{
@@ -106,6 +108,16 @@ public class RandomShowsActivity
 
         //Sets the selected item in the NavigationDrawer to RandomShowsActivity
         super.setSelectedNavItem(R.id.nav_random_shows);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        //Cancels the AsyncTask if it is still running
+        if(mApiConnection != null && mApiConnection.getStatus() == AsyncTask.Status.RUNNING && !mApiConnection.isCancelled()){
+            mApiConnection.cancel(true);
+        }
     }
 
     @Override

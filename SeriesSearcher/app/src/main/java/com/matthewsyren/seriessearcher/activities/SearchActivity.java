@@ -1,6 +1,7 @@
 package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -46,7 +47,7 @@ public class SearchActivity
     @BindView(R.id.text_no_internet_connection) TextView mTextNoInternetConnection;
 
     //Declarations
-    private ApiConnection api = new ApiConnection();
+    private ApiConnection mApiConnection = new ApiConnection();
     private ArrayList<Show> lstShows =  new ArrayList<>();
     private ShowAdapter adapter;
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
@@ -104,6 +105,16 @@ public class SearchActivity
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        //Cancels the AsyncTask if it is still running
+        if(mApiConnection != null && mApiConnection.getStatus() == AsyncTask.Status.RUNNING && !mApiConnection.isCancelled()){
+            mApiConnection.cancel(true);
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -152,15 +163,15 @@ public class SearchActivity
         mTextNoInternetConnection.setVisibility(View.GONE);
 
         //Cancels any previous requests and clears the previous results
-        api.cancel(true);
+        mApiConnection.cancel(true);
         lstShows.clear();
         adapter.notifyDataSetChanged();
 
         if(NetworkUtilities.isOnline(this)){
             //Connects to the TVMaze API using the specific URL for the selected show
-            api = new ApiConnection();
-            api.delegate = this;
-            api.execute(LinkUtilities.getSearchLink(searchText));
+            mApiConnection = new ApiConnection();
+            mApiConnection.delegate = this;
+            mApiConnection.execute(LinkUtilities.getSearchLink(searchText));
         }
         else{
             //Displays no Internet connection message and hides the ProgressBar
