@@ -1,2 +1,5 @@
-
-SeriesSearcher/.idea/caches/build_file_checksums.ser
+SeriesSearcher/.idea/**/workspace.xml
+SeriesSearcher/.idea/**/gradle.xml
+SeriesSearcher/.idea/**/libraries
+SeriesSearcher/.idea/**/modules.xml
+SeriesSearcher/.idea/**/caches
