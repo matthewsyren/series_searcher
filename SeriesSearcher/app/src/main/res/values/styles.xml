@@ -46,7 +46,6 @@
     <style name="TextViewMessageStyle">
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:textAlignment">center</item>
-        <item name="android:visibility">gone</item>
         <item name="android:textColor">@color/colorBlack</item>
     </style>
 

@@ -43,20 +43,6 @@
         android:layout_centerVertical="true"
         android:visibility="visible"/>
 
-    <TextView
-        android:id="@+id/text_no_internet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/error_no_internet_connection"
-        style="@style/TextViewMessageStyle"/>
-
-    <Button
-        android:id="@+id/button_refresh"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_centerInParent="true"
-        android:text="@string/refresh"
-        android:onClick="refreshActivity"
-        style="@style/ButtonStyle"
-        android:visibility="gone"/>
+    <include
+        layout="@layout/no_internet_connection"/>
 </RelativeLayout>

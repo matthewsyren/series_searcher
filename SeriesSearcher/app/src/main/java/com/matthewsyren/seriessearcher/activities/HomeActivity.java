@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -55,8 +56,7 @@ public class HomeActivity
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.text_no_shows) TextView mTextNoShows;
     @BindView(R.id.button_add_shows) Button mButtonAddShows;
-    @BindView(R.id.button_refresh) Button mButtonRefresh;
-    @BindView(R.id.text_no_internet) TextView mTextNoInternet;
+    @BindView(R.id.cl_no_internet_connection) ConstraintLayout mClNoInternetConnection;
 
     //Variables
     private ArrayList<Show> lstShows = new ArrayList<>();
@@ -296,22 +296,27 @@ public class HomeActivity
         //Displays the RecyclerView and hides other unnecessary Views
         toggleViewVisibility(View.VISIBLE, View.INVISIBLE);
 
-        if(NetworkUtilities.isOnline(this)){
+        //Displays/hides Views based on Internet connection status
+        boolean online = NetworkUtilities.isOnline(this);
+        toggleNoInternetMessageVisibility(online);
+
+        //Fetches Shows if there is an Internet connection
+        if(online){
             //Gets the unique key used by Firebase to store information about the user signed in, and fetches data based on the keys fetched
             getShowIds(UserAccountUtilities.getUserKey(this));
-        }
-        else{
-            //Displays a message and Button to refresh the Activity
-            displayRefreshButton();
         }
     }
 
     /**
-     * Displays the refresh Button and a no Internet connection message
+     * Toggles the visibility of a no Internet connection message
      */
-    private void displayRefreshButton(){
-        mTextNoInternet.setVisibility(View.VISIBLE);
-        mButtonRefresh.setVisibility(View.VISIBLE);
+    private void toggleNoInternetMessageVisibility(boolean online){
+        if(online){
+            mClNoInternetConnection.setVisibility(View.GONE);
+        }
+        else{
+            mClNoInternetConnection.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -355,13 +360,12 @@ public class HomeActivity
     }
 
     /**
-     * Refreshes the Activity
+     * Fetches the user's Shows
      */
     public void refreshActivity(View view){
-        //Restarts the Activity
-        Intent intent = getIntent();
-        finish();
-        startActivity(intent);
+        if(UserAccountUtilities.getUserKey(this) != null){
+            fetchUsersShows();
+        }
     }
 
     /**
@@ -438,8 +442,8 @@ public class HomeActivity
                 }
             }
             else{
-                //Displays a refresh Button
-                displayRefreshButton();
+                //Displays a no Internet connection message
+                toggleNoInternetMessageVisibility(false);
             }
 
             //Hides ProgressBar

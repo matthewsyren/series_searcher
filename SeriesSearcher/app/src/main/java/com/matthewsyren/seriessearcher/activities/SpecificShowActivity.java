@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -19,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -64,8 +64,7 @@ public class SpecificShowActivity
     @Nullable
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.button_search_by_episode) FloatingActionButton mButtonSearchByEpisode;
-    @BindView(R.id.button_refresh) Button mButtonRefresh;
-    @BindView(R.id.text_no_internet) TextView mTextNoInternet;
+    @BindView(R.id.cl_no_internet_connection) ConstraintLayout mClNoInternetConnection;
     @Nullable
     @BindView(R.id.toolbar_layout) CollapsingToolbarLayout mCollapsingToolbarLayout;
 
@@ -117,7 +116,7 @@ public class SpecificShowActivity
         super.onResume();
 
         //Displays the ProgressBar if the show's information hasn't been fetched yet
-        if(mShow == null && NetworkUtilities.isOnline(this)){
+        if(mShow == null && NetworkUtilities.isOnline(this) && mApiConnection != null && mApiConnection.getStatus() == AsyncTask.Status.RUNNING){
             mProgressBar.setVisibility(View.VISIBLE);
         }
         else{
@@ -320,46 +319,48 @@ public class SpecificShowActivity
         Bundle bundle = getIntent().getExtras();
 
         if(bundle != null){
-            //Gets the link to the Show
+            //Gets the data from the Bundle and the link to the Show
             mShowId = bundle.getString(SHOW_ID_KEY);
             mIsShowAdded = bundle.getBoolean(SHOW_IS_ADDED_KEY);
-
             String showLink = LinkUtilities.getShowInformationLink(mShowId);
 
             //Displays ProgressBar
             mProgressBar.setVisibility(View.VISIBLE);
 
-            if(NetworkUtilities.isOnline(this)){
+            //Displays/hides Views based on Internet connection status
+            boolean online = NetworkUtilities.isOnline(this);
+            toggleNoInternetMessageVisibility(online);
+
+            if(online){
                 //Fetches data from the TVMaze API using the link
                 mApiConnection = new ApiConnection();
                 mApiConnection.delegate = this;
                 mApiConnection.execute(showLink);
             }
-            else{
-                //Displays a refresh Button
-                displayRefreshButton();
-            }
         }
     }
 
     /**
-     * Displays the refresh Button and a no Internet connection message
+     * Toggles the visibility of a no Internet connection message
      */
-    private void displayRefreshButton(){
-        mTextNoInternet.setVisibility(View.VISIBLE);
-        mButtonRefresh.setVisibility(View.VISIBLE);
-        mProgressBar.setVisibility(View.GONE);
-        mButtonSearchByEpisode.setVisibility(View.GONE);
+    private void toggleNoInternetMessageVisibility(boolean online){
+        if(online){
+            mClNoInternetConnection.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.VISIBLE);
+            mButtonSearchByEpisode.setVisibility(View.VISIBLE);
+        }
+        else{
+            mClNoInternetConnection.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+            mButtonSearchByEpisode.setVisibility(View.GONE);
+        }
     }
 
     /**
-     * Refreshes the Activity
+     * Fetches the Show's information
      */
     public void refreshActivity(View view){
-        //Restarts the Activity
-        Intent intent = getIntent();
-        finish();
-        startActivity(intent);
+        getShowInformation();
     }
 
     /**

@@ -30,7 +30,8 @@
         android:text="@string/no_series_found"
         style="@style/TextViewMessageStyle"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/tv_no_series_found_margin_top"/>
+        android:layout_marginTop="@dimen/tv_no_series_found_margin_top"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/text_no_internet_connection"
@@ -40,5 +41,6 @@
         android:text="@string/error_no_internet_connection"
         android:layout_alignParentTop="true"
         android:layout_marginTop="@dimen/tv_no_series_found_margin_top"
-        style="@style/TextViewMessageStyle"/>
+        style="@style/TextViewMessageStyle"
+        android:visibility="gone"/>
 </RelativeLayout>

@@ -3,14 +3,13 @@ package com.matthewsyren.seriessearcher.activities;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
@@ -42,8 +41,7 @@ public class RandomShowsActivity
     //View bindings
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.recycler_view_random_shows) RecyclerView mRecyclerViewRandomShows;
-    @BindView(R.id.button_refresh) Button mButtonRefresh;
-    @BindView(R.id.text_no_internet) TextView mTextNoInternet;
+    @BindView(R.id.cl_no_internet_connection) ConstraintLayout mClNoInternetConnection;
 
     //Variables
     private ArrayList<Show> lstShows = new ArrayList<>();
@@ -71,34 +69,12 @@ public class RandomShowsActivity
             restoreData(savedInstanceState);
         }
 
-        //Sets up Adapter to RecyclerView
-        adapter = new ShowAdapter(this, lstShows, false);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mRecyclerViewRandomShows.setLayoutManager(linearLayoutManager);
-        mRecyclerViewRandomShows.setAdapter(adapter);
+        //Sets up the Adapter
+        setUpAdapter();
 
-        if(NetworkUtilities.isOnline(this)){
-            if(lstShows.size() == 0){
-                //Displays the ProgressBar
-                mProgressBar.setVisibility(View.VISIBLE);
-
-                //Fetches JSON from API (If a page on the API has already been determined, then it is fetched from the Bundle, otherwise the Math.random() method chooses a random page from the API to fetch)
-                Bundle bundle = getIntent().getExtras();
-                int page;
-                if(bundle != null && bundle.getInt(API_PAGE_BUNDLE_KEY) != -1){
-                    page = bundle.getInt(API_PAGE_BUNDLE_KEY);
-                }
-                else{
-                    page = (int) (Math.random() * 100);
-                }
-                mApiConnection = new ApiConnection();
-                mApiConnection.delegate = this;
-                mApiConnection.execute(LinkUtilities.getMultipleShowPageLink(page));
-            }
-        }
-        else{
-            //Displays a refresh Button
-            displayRefreshButton();
+        //Fetches data if it hasn't been fetched already
+        if(lstShows.size() == 0){
+            getRandomShows();
         }
     }
 
@@ -156,10 +132,53 @@ public class RandomShowsActivity
 
         switch (id){
             case R.id.mi_refresh:
-                refreshActivity();
+                getRandomShows();
                 return true;
              default:
                  return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Sets up the Adapter
+     */
+    private void setUpAdapter(){
+        //Sets up Adapter to RecyclerView
+        adapter = new ShowAdapter(this, lstShows, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRecyclerViewRandomShows.setLayoutManager(linearLayoutManager);
+        mRecyclerViewRandomShows.setAdapter(adapter);
+    }
+
+    /**
+     * Fetches 20 random Shows
+     */
+    private void getRandomShows(){
+        //Displays/hides Views based on Internet connection status
+        boolean online = NetworkUtilities.isOnline(this);
+        toggleNoInternetMessageVisibility(online);
+
+        //Clears the previous Shows
+        lstShows.clear();
+        adapter.notifyDataSetChanged();
+
+        //Fetches the Shows if there is an Internet connection
+        if(online){
+            //Displays the ProgressBar
+            mProgressBar.setVisibility(View.VISIBLE);
+
+            //Fetches JSON from API (If a page on the API has already been determined, then it is fetched from the Bundle, otherwise the Math.random() method chooses a random page from the API to fetch)
+            Bundle bundle = getIntent().getExtras();
+            int page;
+            if(bundle != null && bundle.getInt(API_PAGE_BUNDLE_KEY) != -1){
+                page = bundle.getInt(API_PAGE_BUNDLE_KEY);
+            }
+            else{
+                page = (int) (Math.random() * 100);
+            }
+            mApiConnection = new ApiConnection();
+            mApiConnection.delegate = this;
+            mApiConnection.execute(LinkUtilities.getMultipleShowPageLink(page));
         }
     }
 
@@ -176,11 +195,10 @@ public class RandomShowsActivity
     }
 
     /**
-     * Refreshes the Activity
+     * Fetches 20 random Shows
      */
     public void refreshActivity(View view){
-        //Restarts the Activity
-        refreshActivity();
+        getRandomShows();
     }
 
     /**
@@ -225,8 +243,8 @@ public class RandomShowsActivity
                         this);
             }
             else{
-                //Displays a refresh Button
-                displayRefreshButton();
+                //Displays a no Internet connection message
+                toggleNoInternetMessageVisibility(false);
             }
         }
         catch(JSONException j){
@@ -244,21 +262,16 @@ public class RandomShowsActivity
     }
 
     /**
-     * Refreshes the Activity in order to fetch 20 new randomised series
+     * Toggles the visibility of a no Internet connection message
      */
-    private void refreshActivity(){
-        finish();
-        startActivity(new Intent(this, RandomShowsActivity.class));
-    }
-
-    /**
-     * Displays the refresh Button and a no Internet connection message
-     */
-    private void displayRefreshButton(){
-        mTextNoInternet.setVisibility(View.VISIBLE);
-        mButtonRefresh.setVisibility(View.VISIBLE);
-
-        lstShows.clear();
+    private void toggleNoInternetMessageVisibility(boolean online){
+        if(online || lstShows.size() > 0){
+            mClNoInternetConnection.setVisibility(View.GONE);
+        }
+        else{
+            mClNoInternetConnection.setVisibility(View.VISIBLE);
+            lstShows.clear();
+        }
     }
 
     @Override
