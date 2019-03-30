@@ -471,6 +471,11 @@ public class HomeActivity
             }
         }
 
+        //Displays a message telling the user to add Shows if lstShows is empty
+        if(lstShows.size() == 0){
+            toggleViewVisibility(View.GONE, View.VISIBLE);
+        }
+
         //Refreshes the RecyclerView's data
         adapter.notifyDataSetChanged();
     }
