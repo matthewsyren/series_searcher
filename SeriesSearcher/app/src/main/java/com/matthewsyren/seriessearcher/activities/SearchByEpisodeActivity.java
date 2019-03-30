@@ -54,8 +54,8 @@ public class SearchByEpisodeActivity
 
     //Constants
     private static final String SHOW_EPISODE_BUNDLE_KEY = "show_episode_bundle_key";
-    public static final String SHOW_TITLE_BUNDLE_KEY = "showTitle";
-    public static final String SHOW_NUMBER_BUNDLE_KEY = "showNumber";
+    public static final String SHOW_TITLE_BUNDLE_KEY = "show_title";
+    public static final String SHOW_NUMBER_BUNDLE_KEY = "show_number";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

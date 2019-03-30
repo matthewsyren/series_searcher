@@ -59,17 +59,19 @@ public class HomeActivity
     @BindView(R.id.cl_no_internet_connection) ConstraintLayout mClNoInternetConnection;
 
     //Variables
-    private ArrayList<Show> lstShows = new ArrayList<>();
-    private ShowAdapter adapter;
-    private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
+    private ArrayList<Show> mShows = new ArrayList<>();
+    private ShowAdapter mAdapter;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private boolean mIsSignInRequestSent = false;
     private int mScrollPosition;
-    private static final String SCROLL_POSITION_BUNDLE_KEY = "scroll_position_bundle_key";
     private ApiConnection mApiConnection;
 
-    //Request codes
+    //Constants
+    private static final String SCROLL_POSITION_BUNDLE_KEY = "scroll_position_bundle_key";
+    private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
+
+    //Codes
     private static final int SIGN_IN_REQUEST_CODE = 1;
 
     @Override
@@ -117,8 +119,8 @@ public class HomeActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if(lstShows.size() > 0){
-            outState.putParcelableArrayList(SHOWS_BUNDLE_KEY, lstShows);
+        if(mShows.size() > 0){
+            outState.putParcelableArrayList(SHOWS_BUNDLE_KEY, mShows);
         }
 
         if(mRecyclerViewMyShows.getLayoutManager() != null){
@@ -160,7 +162,7 @@ public class HomeActivity
                 //Determines which Shows have been added to My Series by the user
                 Show.markShowsThatAreAddedToMySeries(
                         UserAccountUtilities.getUserKey(this),
-                        lstShows,
+                        mShows,
                         this);
             }
         }
@@ -188,7 +190,7 @@ public class HomeActivity
      */
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
-            lstShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
+            mShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
 
             //Hides ProgressBar
             mProgressBar.setVisibility(View.GONE);
@@ -257,11 +259,11 @@ public class HomeActivity
         UserAccountUtilities.setUserKey(this, null);
 
         //Clears the user's series
-        if(lstShows != null){
-            lstShows.clear();
+        if(mShows != null){
+            mShows.clear();
 
-            if(adapter != null){
-                adapter.notifyDataSetChanged();
+            if(mAdapter != null){
+                mAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -271,16 +273,16 @@ public class HomeActivity
      */
     private void setUpActivity(){
         //Sets a custom adapter for the RecyclerView to display the user's Shows
-        adapter = new ShowAdapter(this, lstShows, true);
+        mAdapter = new ShowAdapter(this, mShows, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerViewMyShows.setLayoutManager(linearLayoutManager);
-        mRecyclerViewMyShows.setAdapter(adapter);
+        mRecyclerViewMyShows.setAdapter(mAdapter);
         mRecyclerViewMyShows.getLayoutManager().scrollToPosition(mScrollPosition);
 
         //Displays the user's email address in the NavigationDrawer
         super.displayUserDetails();
 
-        if(lstShows.size() == 0){
+        if(mShows.size() == 0){
             //Fetches the Shows the user has added to My Series
             fetchUsersShows();
         }
@@ -338,18 +340,18 @@ public class HomeActivity
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //Loops through all shows and adds each show key to the lstShows ArrayList
+                //Loops through all shows and adds each show key to the mShows ArrayList
                 Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
-                ArrayList<String> lstShows = new ArrayList<>();
+                ArrayList<String> mShows = new ArrayList<>();
                 for(DataSnapshot snapshot : lstSnapshots){
                     String showKey = snapshot.getKey();
                     if((boolean) snapshot.getValue()){
-                        lstShows.add(showKey);
+                        mShows.add(showKey);
                     }
                 }
 
                 //Fetches the data for the Shows
-                getUserShowData(lstShows);
+                getUserShowData(mShows);
             }
 
             @Override
@@ -371,12 +373,12 @@ public class HomeActivity
     /**
      * Fetches the shows the user has added to 'My Series' using the keys passed in with the ArrayList
      */
-    private void getUserShowData(ArrayList<String> lstShows){
-        if(lstShows.size() > 0){
-            //Transfers the data from lstShows to an array containing the necessary links to the API (an array can be passed in to the ApiConnection class to fetch data from the API)
-            String[] arrShows = new String[lstShows.size()];
-            for(int i = 0; i < lstShows.size(); i++){
-                arrShows[i] = LinkUtilities.getShowInformationLink(lstShows.get(i));
+    private void getUserShowData(ArrayList<String> shows){
+        if(shows.size() > 0){
+            //Transfers the data from shows to an array containing the necessary links to the API (an array can be passed in to the ApiConnection class to fetch data from the API)
+            String[] arrShows = new String[shows.size()];
+            for(int i = 0; i < shows.size(); i++){
+                arrShows[i] = LinkUtilities.getShowInformationLink(shows.get(i));
             }
 
             //Fetches the data from the TVMaze API
@@ -420,21 +422,21 @@ public class HomeActivity
                     if(json != null){
                         String url = json.getString("url");
                         if(url.startsWith(LinkUtilities.SHOW_LINK)){
-                            lstShows.add(JsonUtilities.parseShowJson(json, this, this, true, true));
-                            adapter.notifyDataSetChanged();
+                            mShows.add(JsonUtilities.parseShowJson(json, this, this, true, true));
+                            mAdapter.notifyDataSetChanged();
                         }
                         else if(url.startsWith(LinkUtilities.EPISODE_LINK)){
                             //Gets the next episode information
                             String displayText = JsonUtilities.parseShowEpisodeDate(json, this, false);
 
                             //Sets the next episode date for the appropriate series
-                            for(int s = 0; s < lstShows.size(); s++){
-                                String seriesName = lstShows.get(s).getShowTitle().toLowerCase();
+                            for(int s = 0; s < mShows.size(); s++){
+                                String seriesName = mShows.get(s).getShowTitle().toLowerCase();
                                 seriesName = seriesName.replaceAll("[^a-z A-Z]", "");
                                 seriesName = seriesName.replaceAll(" ", "-");
                                 if(url.toLowerCase().contains(seriesName)){
-                                    lstShows.get(s).setShowNextEpisode(displayText);
-                                    adapter.notifyDataSetChanged();
+                                    mShows.get(s).setShowNextEpisode(displayText);
+                                    mAdapter.notifyDataSetChanged();
                                 }
                             }
                         }
@@ -457,26 +459,26 @@ public class HomeActivity
     @Override
     public void onDataSavingPreferenceChanged() {
         //Updates the images in the RecyclerView
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void showsUpdated() {
         //Removes a Show if it has not been added to My Series
-        for(int i = 0; i < lstShows.size(); i++){
-            if(!lstShows.get(i).isShowAdded()){
+        for(int i = 0; i < mShows.size(); i++){
+            if(!mShows.get(i).isShowAdded()){
                 //Removes the Show and decrements the i variable to cater for the removed object
-                lstShows.remove(i);
+                mShows.remove(i);
                 i--;
             }
         }
 
-        //Displays a message telling the user to add Shows if lstShows is empty
-        if(lstShows.size() == 0){
+        //Displays a message telling the user to add Shows if mShows is empty
+        if(mShows.size() == 0){
             toggleViewVisibility(View.GONE, View.VISIBLE);
         }
 
         //Refreshes the RecyclerView's data
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 }

@@ -48,8 +48,8 @@ public class SearchActivity
 
     //Declarations
     private ApiConnection mApiConnection = new ApiConnection();
-    private ArrayList<Show> lstShows =  new ArrayList<>();
-    private ShowAdapter adapter;
+    private ArrayList<Show> mShows =  new ArrayList<>();
+    private ShowAdapter mAdapter;
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
 
     @Override
@@ -72,10 +72,10 @@ public class SearchActivity
         }
 
         //Sets a custom adapter for the recycler_view_search_results RecyclerView to display the search results
-        adapter = new ShowAdapter(this, lstShows, false);
+        mAdapter = new ShowAdapter(this, mShows, false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerViewSearchResults.setLayoutManager(linearLayoutManager);
-        mRecyclerViewSearchResults.setAdapter(adapter);
+        mRecyclerViewSearchResults.setAdapter(mAdapter);
 
         mTextSearchSeries.addTextChangedListener(new TextWatcher() {
             @Override
@@ -123,7 +123,7 @@ public class SearchActivity
             if(resultCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED){
                 Show.markShowsThatAreAddedToMySeries(
                         UserAccountUtilities.getUserKey(this),
-                        lstShows,
+                        mShows,
                         this);
             }
         }
@@ -133,8 +133,8 @@ public class SearchActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if(lstShows.size() > 0){
-            outState.putParcelableArrayList(SHOWS_BUNDLE_KEY, lstShows);
+        if(mShows.size() > 0){
+            outState.putParcelableArrayList(SHOWS_BUNDLE_KEY, mShows);
         }
     }
 
@@ -143,7 +143,7 @@ public class SearchActivity
      */
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
-            lstShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
+            mShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
 
             //Hides ProgressBar
             mProgressBar.setVisibility(View.GONE);
@@ -164,8 +164,8 @@ public class SearchActivity
 
         //Cancels any previous requests and clears the previous results
         mApiConnection.cancel(true);
-        lstShows.clear();
-        adapter.notifyDataSetChanged();
+        mShows.clear();
+        mAdapter.notifyDataSetChanged();
 
         if(NetworkUtilities.isOnline(this)){
             //Connects to the TVMaze API using the specific URL for the selected show
@@ -189,7 +189,7 @@ public class SearchActivity
             //JSONArray stores the JSON returned from the TVMaze API
             if(response != null){
                 JSONArray jsonArray = new JSONArray(response);
-                lstShows.clear();
+                mShows.clear();
 
                 //Loops through all Shows returned from the TVMaze API search result
                 for(int i = 0; i < jsonArray.length(); i++){
@@ -199,13 +199,13 @@ public class SearchActivity
 
                     //Assigns values to the JSONObject if the JSON returned from the API is not null
                     if(json != null){
-                        lstShows.add(JsonUtilities.parseShowJson(json, this, this, false, null));
+                        mShows.add(JsonUtilities.parseShowJson(json, this, this, false, null));
                     }
                 }
                 //Determines which Shows have been added to My Series by the user
                 Show.markShowsThatAreAddedToMySeries(
                         UserAccountUtilities.getUserKey(this),
-                        lstShows,
+                        mShows,
                         this);
             }
             else{
@@ -220,16 +220,16 @@ public class SearchActivity
     @Override
     public void onDataSavingPreferenceChanged() {
         //Updates the images in the RecyclerView
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void showsUpdated() {
         //Refreshes the RecyclerView's data
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
 
         //Displays a message if no series are found
-        if(lstShows.size() == 0){
+        if(mShows.size() == 0){
             mTvNoSeriesFound.setVisibility(View.VISIBLE);
         }
         else{

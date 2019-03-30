@@ -183,17 +183,17 @@ public class Show
     }
 
     /**
-     * Loops through all Shows that the user has added to My Series, and sets showAdded to true for each Show in lstShows that has been added to My Series
+     * Loops through all Shows that the user has added to My Series, and sets showAdded to true for each Show in shows that has been added to My Series
      */
-    public static void markShowsThatAreAddedToMySeries(String userKey, final ArrayList<Show> lstShows, final IShowUpdatedListener iShowUpdatedListener){
+    public static void markShowsThatAreAddedToMySeries(String userKey, final ArrayList<Show> shows, final IShowUpdatedListener iShowUpdatedListener){
         if(userKey != null){
             //Establishes a connection to Firebase
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
 
-            //Sets the previous values for showAdded in lstShows to false
-            for(int i = 0; i < lstShows.size(); i++){
-                lstShows.get(i).setShowAdded(false);
+            //Sets the previous values for showAdded in shows to false
+            for(int i = 0; i < shows.size(); i++){
+                shows.get(i).setShowAdded(false);
             }
 
             //Fetches the user's Shows
@@ -208,11 +208,11 @@ public class Show
                         //Fetches the showId
                         String showId = snapshot.getKey();
 
-                        //Loops through lstShows to find a match in showId
-                        for(int i = 0; i < lstShows.size(); i++){
+                        //Loops through shows to find a match in showId
+                        for(int i = 0; i < shows.size(); i++){
                             //Sets showAdded to true if the showIds match and the boolean is set to true
-                            if(showId != null && showId.equals("" + lstShows.get(i).getShowId()) && (boolean) snapshot.getValue()){
-                                lstShows.get(i).setShowAdded(true);
+                            if(showId != null && showId.equals("" + shows.get(i).getShowId()) && (boolean) snapshot.getValue()){
+                                shows.get(i).setShowAdded(true);
                                 break;
                             }
                         }

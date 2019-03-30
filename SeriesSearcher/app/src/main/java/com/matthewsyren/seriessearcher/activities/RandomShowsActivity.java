@@ -44,14 +44,14 @@ public class RandomShowsActivity
     @BindView(R.id.cl_no_internet_connection) ConstraintLayout mClNoInternetConnection;
 
     //Variables
-    private ArrayList<Show> lstShows = new ArrayList<>();
-    private ShowAdapter adapter;
+    private ArrayList<Show> mShows = new ArrayList<>();
+    private ShowAdapter mAdapter;
     private ApiConnection mApiConnection;
 
     //Constants
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
-    private static final String API_PAGE_BUNDLE_KEY = "apiPage";
-    private static final String API_STARTING_SHOW_BUNDLE_KEY = "apiStartingShow";
+    private static final String API_PAGE_BUNDLE_KEY = "api_age";
+    private static final String API_STARTING_SHOW_BUNDLE_KEY = "api_starting_show";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,7 @@ public class RandomShowsActivity
         setUpAdapter();
 
         //Fetches data if it hasn't been fetched already
-        if(lstShows.size() == 0){
+        if(mShows.size() == 0){
             getRandomShows();
         }
     }
@@ -105,7 +105,7 @@ public class RandomShowsActivity
             if(resultCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED){
                 Show.markShowsThatAreAddedToMySeries(
                         UserAccountUtilities.getUserKey(this),
-                        lstShows,
+                        mShows,
                         this);
             }
         }
@@ -115,8 +115,8 @@ public class RandomShowsActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if(lstShows.size() > 0){
-            outState.putParcelableArrayList(SHOWS_BUNDLE_KEY, lstShows);
+        if(mShows.size() > 0){
+            outState.putParcelableArrayList(SHOWS_BUNDLE_KEY, mShows);
         }
     }
 
@@ -144,10 +144,10 @@ public class RandomShowsActivity
      */
     private void setUpAdapter(){
         //Sets up Adapter to RecyclerView
-        adapter = new ShowAdapter(this, lstShows, false);
+        mAdapter = new ShowAdapter(this, mShows, false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerViewRandomShows.setLayoutManager(linearLayoutManager);
-        mRecyclerViewRandomShows.setAdapter(adapter);
+        mRecyclerViewRandomShows.setAdapter(mAdapter);
     }
 
     /**
@@ -159,8 +159,8 @@ public class RandomShowsActivity
         toggleNoInternetMessageVisibility(online);
 
         //Clears the previous Shows
-        lstShows.clear();
-        adapter.notifyDataSetChanged();
+        mShows.clear();
+        mAdapter.notifyDataSetChanged();
 
         //Fetches the Shows if there is an Internet connection
         if(online){
@@ -187,7 +187,7 @@ public class RandomShowsActivity
      */
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
-            lstShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
+            mShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
 
             //Hides the ProgressBar
             mProgressBar.setVisibility(View.GONE);
@@ -228,7 +228,7 @@ public class RandomShowsActivity
 
                     //Assigns values to the JSONObject if the JSON returned from the API is not null
                     if(json != null){
-                        lstShows.add(JsonUtilities.parseShowJson(json, this, this, false, null));
+                        mShows.add(JsonUtilities.parseShowJson(json, this, this, false, null));
                     }
                     else{
                         //Exits the loop if the JSON returned is null
@@ -239,7 +239,7 @@ public class RandomShowsActivity
                 //Determines which Shows have been added to My Series by the user
                 Show.markShowsThatAreAddedToMySeries(
                         UserAccountUtilities.getUserKey(this),
-                        lstShows,
+                        mShows,
                         this);
             }
             else{
@@ -255,7 +255,7 @@ public class RandomShowsActivity
     @Override
     public void showsUpdated() {
         //Refreshes the RecyclerView's data
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
 
         //Hides ProgressBar
         mProgressBar.setVisibility(View.INVISIBLE);
@@ -265,18 +265,18 @@ public class RandomShowsActivity
      * Toggles the visibility of a no Internet connection message
      */
     private void toggleNoInternetMessageVisibility(boolean online){
-        if(online || lstShows.size() > 0){
+        if(online || mShows.size() > 0){
             mClNoInternetConnection.setVisibility(View.GONE);
         }
         else{
             mClNoInternetConnection.setVisibility(View.VISIBLE);
-            lstShows.clear();
+            mShows.clear();
         }
     }
 
     @Override
     public void onDataSavingPreferenceChanged() {
         //Updates the images in the RecyclerView
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 }
