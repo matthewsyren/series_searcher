@@ -3,6 +3,7 @@ package com.matthewsyren.seriessearcher.activities;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -469,6 +471,12 @@ public class SpecificShowActivity
             //Displays a default image
             mImageViewSpecificShow.setScaleType(ImageView.ScaleType.CENTER);
             mImageViewSpecificShow.setImageResource(R.mipmap.ic_launcher);
+
+            //Sets the maxWidth of the ImageView to a quarter of the user's screen
+            Display display = getWindowManager().getDefaultDisplay();
+            Point point = new Point();
+            display.getSize(point);
+            mImageViewSpecificShow.setMaxWidth(point.x / 4);
         }
         else{
             //Displays the show's poster
