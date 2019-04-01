@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.net.Network;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -172,18 +173,24 @@ public class SpecificShowActivity
             return true;
         }
         else if(id == R.id.mi_specific_show_activity_toggle_show_added){
-            //Updates the data in the Firebase database (toggles showAdded from true to false, or vice versa)
-            if(mShow.isShowAdded()){
-                mShow.pushUserShowSelection(UserAccountUtilities.getUserKey(this), false, this);
+            if(NetworkUtilities.isOnline(this)){
+                //Updates the data in the Firebase database (toggles showAdded from true to false, or vice versa)
+                if(mShow.isShowAdded()){
+                    mShow.pushUserShowSelection(UserAccountUtilities.getUserKey(this), false, this);
+                }
+                else{
+                    mShow.pushUserShowSelection(UserAccountUtilities.getUserKey(this), true, this);
+                }
+
+                //Sets mChanged to true and refreshes the options menu
+                mChanged = true;
+                invalidateOptionsMenu();
+                return true;
             }
             else{
-                mShow.pushUserShowSelection(UserAccountUtilities.getUserKey(this), true, this);
+                //Displays a message telling the user to connect to the Internet
+                Toast.makeText(getApplicationContext(), getString(R.string.error_no_internet_connection), Toast.LENGTH_LONG).show();
             }
-
-            //Sets mChanged to true and refreshes the options menu
-            mChanged = true;
-            invalidateOptionsMenu();
-            return true;
         }
 
         return super.onOptionsItemSelected(item);

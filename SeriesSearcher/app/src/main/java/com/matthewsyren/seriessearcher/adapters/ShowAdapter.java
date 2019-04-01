@@ -21,12 +21,14 @@ import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.activities.HomeActivity;
 import com.matthewsyren.seriessearcher.activities.SpecificShowActivity;
 import com.matthewsyren.seriessearcher.customviews.RoundedImageView;
 import com.matthewsyren.seriessearcher.models.Show;
+import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 import com.squareup.picasso.Picasso;
 
@@ -90,70 +92,76 @@ public class ShowAdapter
         viewHolder.ibToggleShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Show show = sShows.get(position);
+                if(NetworkUtilities.isOnline(mContext)){
+                    final Show show = sShows.get(position);
 
-                //Adds the Show to My Series if the Show isn't already there, or prompts the user to confirm the removal of the Show from My Series if the Show is already there
-                if(!sShows.get(position).isShowAdded()){
-                    //Sets showAdded to true and changes the Button image to a delete icon
-                    viewHolder.ibToggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
-                    sShows.get(position).setShowAdded(true);
+                    //Adds the Show to My Series if the Show isn't already there, or prompts the user to confirm the removal of the Show from My Series if the Show is already there
+                    if(!sShows.get(position).isShowAdded()){
+                        //Sets showAdded to true and changes the Button image to a delete icon
+                        viewHolder.ibToggleShow.setImageResource(R.drawable.ic_delete_black_24dp);
+                        sShows.get(position).setShowAdded(true);
 
-                    //Updates the values in the Firebase database
-                    show.pushUserShowSelection(
-                            UserAccountUtilities.getUserKey(mContext),
-                            true,
-                            mContext);
+                        //Updates the values in the Firebase database
+                        show.pushUserShowSelection(
+                                UserAccountUtilities.getUserKey(mContext),
+                                true,
+                                mContext);
 
-                    //Updates the RecyclerView's data
-                    notifyDataSetChanged();
+                        //Updates the RecyclerView's data
+                        notifyDataSetChanged();
+                    }
+                    else{
+                        //Creates an AlertDialog to prompt the user to confirm their decision to remove the series from My Series
+                        AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+                        View view = View.inflate(mContext, R.layout.dialog_remove_series, null);
+                        TextView textView = view.findViewById(R.id.tv_remove_series);
+                        textView.setText(mContext.getString(R.string.series_removal_confirmation, sShows.get(position).getShowTitle()));
+                        alertDialog.setView(view);
+
+                        //Creates OnClickListener for the Dialog message
+                        DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int button) {
+                                switch(button){
+                                    //Removes the selected show from the My Series list
+                                    case AlertDialog.BUTTON_POSITIVE:
+                                        //Updates the Firebase database and the UI
+                                        show.pushUserShowSelection(
+                                                UserAccountUtilities.getUserKey(mContext),
+                                                false,
+                                                mContext);
+
+                                        //Sets showAdded to false
+                                        sShows.get(position).setShowAdded(false);
+
+                                        //Removes the Show
+                                        if(mIsHomeRecyclerView){
+                                            sShows.remove(position);
+
+                                            if(sShows.size() == 0){
+                                                ((HomeActivity)mContext).fetchUsersShows();
+                                            }
+                                        }
+
+                                        //Sets the Button's image to an add icon
+                                        viewHolder.ibToggleShow.setImageResource(R.drawable.ic_add_black_24dp);
+                                        notifyDataSetChanged();
+                                        break;
+                                    case AlertDialog.BUTTON_NEGATIVE:
+                                        break;
+                                }
+                            }
+                        };
+
+                        //Assigns button an OnClickListener for the AlertDialog and displays the AlertDialog
+                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, mContext.getString(R.string.yes), dialogOnClickListener);
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, mContext.getString(R.string.no), dialogOnClickListener);
+                        alertDialog.show();
+                    }
                 }
                 else{
-                    //Creates an AlertDialog to prompt the user to confirm their decision to remove the series from My Series
-                    AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
-                    View view = View.inflate(mContext, R.layout.dialog_remove_series, null);
-                    TextView textView = view.findViewById(R.id.tv_remove_series);
-                    textView.setText(mContext.getString(R.string.series_removal_confirmation, sShows.get(position).getShowTitle()));
-                    alertDialog.setView(view);
-
-                    //Creates OnClickListener for the Dialog message
-                    DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
-                        @Override
-                        public void onClick(DialogInterface dialog, int button) {
-                            switch(button){
-                                //Removes the selected show from the My Series list
-                                case AlertDialog.BUTTON_POSITIVE:
-                                    //Updates the Firebase database and the UI
-                                    show.pushUserShowSelection(
-                                            UserAccountUtilities.getUserKey(mContext),
-                                            false,
-                                            mContext);
-
-                                    //Sets showAdded to false
-                                    sShows.get(position).setShowAdded(false);
-
-                                    //Removes the Show
-                                    if(mIsHomeRecyclerView){
-                                        sShows.remove(position);
-
-                                        if(sShows.size() == 0){
-                                            ((HomeActivity)mContext).fetchUsersShows();
-                                        }
-                                    }
-
-                                    //Sets the Button's image to an add icon
-                                    viewHolder.ibToggleShow.setImageResource(R.drawable.ic_add_black_24dp);
-                                    notifyDataSetChanged();
-                                    break;
-                                case AlertDialog.BUTTON_NEGATIVE:
-                                    break;
-                            }
-                        }
-                    };
-
-                    //Assigns button an OnClickListener for the AlertDialog and displays the AlertDialog
-                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, mContext.getString(R.string.yes), dialogOnClickListener);
-                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, mContext.getString(R.string.no), dialogOnClickListener);
-                    alertDialog.show();
+                    //Displays a message telling the user to connect to the Internet
+                    Toast.makeText(mContext, mContext.getString(R.string.error_no_internet_connection), Toast.LENGTH_LONG).show();
                 }
             }
         });
