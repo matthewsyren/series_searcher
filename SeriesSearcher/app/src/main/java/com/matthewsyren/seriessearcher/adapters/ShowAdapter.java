@@ -291,6 +291,7 @@ public class ShowAdapter
             Intent intent = new Intent(mContext, SpecificShowActivity.class);
             intent.putExtra(SpecificShowActivity.SHOW_ID_KEY, "" + show.getShowId());
             intent.putExtra(SpecificShowActivity.SHOW_IS_ADDED_KEY, show.isShowAdded());
+            intent.putExtra(SpecificShowActivity.SHOW_TITLE_KEY, show.getShowTitle());
 
             //Animates image
             Bundle bundle = ActivityOptions

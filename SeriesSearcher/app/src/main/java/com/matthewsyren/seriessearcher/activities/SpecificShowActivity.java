@@ -73,6 +73,7 @@ public class SpecificShowActivity
     //Variables
     private Show mShow;
     private String mShowId;
+    private String mShowTitle;
     private boolean mIsShowAdded;
     private Boolean mChanged;
     private boolean mShadowIcon = false;
@@ -80,9 +81,11 @@ public class SpecificShowActivity
 
     //Constants
     public static final String SHOW_ID_KEY = "show_id_key";
+    public static final String SHOW_TITLE_KEY = "show_title_key";
     public static final String SHOW_IS_ADDED_KEY = "show_is_added_key";
     private static final String SHOW_BUNDLE_KEY = "show_bundle_key";
     private static final String SHOW_ID_BUNDLE_KEY = "show_id_bundle_key";
+    private static final String SHOW_TITLE_BUNDLE_KEY = "show_title_bundle_key";
     private static final String CHANGED_BUNDLE_KEY = "changed_bundle_key";
 
     //Codes
@@ -111,6 +114,9 @@ public class SpecificShowActivity
         else{
             getShowInformation();
         }
+
+        //Displays the Activity's title
+        displayActivityTitle();
     }
 
     @Override
@@ -150,6 +156,10 @@ public class SpecificShowActivity
 
         if(mChanged != null){
             outState.putBoolean(CHANGED_BUNDLE_KEY, mChanged);
+        }
+
+        if(mShowTitle != null){
+            outState.putString(SHOW_TITLE_BUNDLE_KEY, mShowTitle);
         }
     }
 
@@ -243,6 +253,10 @@ public class SpecificShowActivity
             mChanged = savedInstanceState.getBoolean(CHANGED_BUNDLE_KEY);
         }
 
+        if(savedInstanceState.containsKey(SHOW_TITLE_BUNDLE_KEY)){
+            mShowTitle = savedInstanceState.getString(SHOW_TITLE_BUNDLE_KEY);
+        }
+
         if(mShow != null){
             //Displays the Show's information
             displayShowInformation(mShow);
@@ -324,6 +338,7 @@ public class SpecificShowActivity
             //Gets the data from the Bundle and the link to the Show
             mShowId = bundle.getString(SHOW_ID_KEY);
             mIsShowAdded = bundle.getBoolean(SHOW_IS_ADDED_KEY);
+            mShowTitle = bundle.getString(SHOW_TITLE_KEY);
             String showLink = LinkUtilities.getShowInformationLink(mShowId);
 
             //Displays ProgressBar
@@ -449,16 +464,22 @@ public class SpecificShowActivity
             //Displays the image for the Show
             displayImage(show.getShowImageUrl());
 
-            //Displays the title for the Activity
-            if(mCollapsingToolbarLayout != null){
-                mCollapsingToolbarLayout.setTitle(show.getShowTitle());
-            }
-            else if(getSupportActionBar() != null){
-                getSupportActionBar().setTitle(show.getShowTitle());
-            }
-
             //Displays the FloatingActionButton
             mButtonSearchByEpisode.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Sets the title for the Activity
+     */
+    private void displayActivityTitle(){
+        if(mShowTitle != null){
+            if(mCollapsingToolbarLayout != null){
+                mCollapsingToolbarLayout.setTitle(mShowTitle);
+            }
+            else if(getSupportActionBar() != null){
+                getSupportActionBar().setTitle(mShowTitle);
+            }
         }
     }
 
