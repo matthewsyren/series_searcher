@@ -87,4 +87,20 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+
+    <style name="ShowPosterActivity" parent="Base.Theme.AppCompat.DialogWhenLarge">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowMinWidthMajor">100%</item>
+        <item name="android:windowMinWidthMinor">100%</item>
+        <item name="windowFixedHeightMajor">100%</item>
+        <item name="windowFixedHeightMinor">100%</item>
+    </style>
+
+    <style name="ShowPosterTitle">
+        <item name="android:textSize">@dimen/show_poster_title_text_size</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">@dimen/show_poster_title_padding</item>
+    </style>
 </resources>

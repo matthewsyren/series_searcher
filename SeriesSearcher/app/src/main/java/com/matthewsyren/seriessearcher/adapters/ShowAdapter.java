@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,14 +15,13 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.activities.HomeActivity;
+import com.matthewsyren.seriessearcher.activities.ShowPosterActivity;
 import com.matthewsyren.seriessearcher.activities.SpecificShowActivity;
 import com.matthewsyren.seriessearcher.customviews.RoundedImageView;
 import com.matthewsyren.seriessearcher.models.Show;
@@ -44,7 +41,7 @@ import butterknife.ButterKnife;
 @SuppressWarnings("WeakerAccess")
 public class ShowAdapter
         extends RecyclerView.Adapter<ShowAdapter.ViewHolder>{
-    //Declarations
+    //Variables
     private static ArrayList<Show> sShows;
     private final Context mContext;
     private final boolean mIsHomeRecyclerView;
@@ -274,7 +271,7 @@ public class ShowAdapter
         @Nullable
         @BindView(R.id.text_show_runtime) TextView tvShowRuntime;
         @BindView(R.id.button_toggle_show) ImageButton ibToggleShow;
-        
+
         //Variables
         private final Context mContext;
 
@@ -285,8 +282,8 @@ public class ShowAdapter
             ivShowPoster.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Displays an AlertDialog with the Show's poster
-                    displayShowPosterAlertDialog(context);
+                    //Displays a Dialog with the Show's poster
+                    displayShowPosterDialog();
                 }
             });
             mContext = context;
@@ -314,38 +311,21 @@ public class ShowAdapter
         }
 
         /**
-         * Displays the full Show poster in an AlertDialog
+         * Displays the full Show poster in a Dialog
          */
-        private void displayShowPosterAlertDialog(Context context){
-            //Creates an AlertDialog to display the Show's poster
-            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-            View inflateView = View.inflate(context, R.layout.dialog_show_poster, null);
-            ImageView imageView = inflateView.findViewById(R.id.image_view_show_poster);
-            String showImageUrl = sShows.get(getAdapterPosition()).getShowImageUrl();
+        private void displayShowPosterDialog(){
+            //Fetches the Show
+            Show show = sShows.get(getAdapterPosition());
 
-            //Displays a default image if the show doesn't have a poster or the user has enabled data saving mode, otherwise displays a default image
-            if(UserAccountUtilities.getDataSavingPreference(context) || showImageUrl == null){
-                //Displays a default image
-                imageView.setScaleType(ImageView.ScaleType.CENTER);
-                imageView.setImageResource(R.mipmap.ic_launcher);
-            }
-            else{
-                //Loads the poster
-                Picasso.with(context)
-                        .load(showImageUrl)
-                        .into(imageView);
-            }
+            //Creates a Bundle to animate the shared image
+            Bundle bundle = ActivityOptions
+                    .makeSceneTransitionAnimation((Activity) mContext, ivShowPoster, ivShowPoster.getTransitionName())
+                    .toBundle();
 
-            //Sets the background to transparent and loads the View into the AlertDialog
-            Window window = alertDialog.getWindow();
-            if(window != null){
-                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            }
-
-            alertDialog.setView(inflateView);
-
-            //Displays the AlertDialog
-            alertDialog.show();
+            //Opens ShowPosterActivity
+            Intent intent = new Intent(mContext, ShowPosterActivity.class);
+            intent.putExtra(ShowPosterActivity.SHOW_KEY, show);
+            mContext.startActivity(intent, bundle);
         }
     }
 }
