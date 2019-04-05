@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:onClick="closeDialog"
-    android:layout_margin="@dimen/activity_horizontal_margin">
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/ShowPosterActivityOuterConstraintLayout">
     <android.support.constraint.Guideline
         android:id="@+id/guideline_1"
         android:layout_width="match_parent"
@@ -20,8 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/guideline_2"
-        android:background="@drawable/show_poster_activity_background"
-        android:padding="@dimen/show_poster_activity_padding">
+        style="@style/ShowPosterActivityInnerConstraintLayout">
         <TextView
             android:id="@+id/text_view_show_title"
             android:layout_width="match_parent"
@@ -29,26 +26,18 @@
             style="@style/ShowPosterTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:clickable="true"
-            android:focusable="true"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/image_view_show_poster"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
             app:layout_constraintHeight_max="@dimen/show_poster_height"
             app:layout_constrainedHeight="true"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:transitionName="@string/transition_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_view_show_title"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:contentDescription="@string/content_description_show_poster"
-            android:clickable="true"
-            android:focusable="true"/>
+            style="@style/ShowPosterActivityImageView"
+            tools:ignore="ContentDescription" />
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.Guideline
