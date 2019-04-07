@@ -51,6 +51,7 @@ public class SearchActivity
     private ArrayList<Show> mShows =  new ArrayList<>();
     private ShowAdapter mAdapter;
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
+    private boolean mRestored = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,29 +72,9 @@ public class SearchActivity
             restoreData(savedInstanceState);
         }
 
-        //Sets a custom adapter for the recycler_view_search_results RecyclerView to display the search results
-        mAdapter = new ShowAdapter(this, mShows, false);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mRecyclerViewSearchResults.setLayoutManager(linearLayoutManager);
-        mRecyclerViewSearchResults.setAdapter(mAdapter);
-
-        mTextSearchSeries.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //Performs a search using the text the user has entered
-                searchShows();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        //Sets up the Adapter and typing listener
+        setUpAdapter();
+        setUpTypingListener();
     }
 
     @Override
@@ -144,10 +125,48 @@ public class SearchActivity
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
             mShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
+            mRestored = true;
 
             //Hides ProgressBar
             mProgressBar.setVisibility(View.GONE);
         }
+    }
+
+    /**
+     * Sets up the Adapter
+     */
+    private void setUpAdapter(){
+        //Sets up Adapter to RecyclerView
+        mAdapter = new ShowAdapter(this, mShows, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRecyclerViewSearchResults.setLayoutManager(linearLayoutManager);
+        mRecyclerViewSearchResults.setAdapter(mAdapter);
+    }
+
+    /**
+     * Sets up the typing listener
+     */
+    private void setUpTypingListener(){
+        mTextSearchSeries.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(!mRestored){
+                    //Performs a search using the text the user has entered
+                    searchShows();
+                }
+                mRestored = false;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     /**
