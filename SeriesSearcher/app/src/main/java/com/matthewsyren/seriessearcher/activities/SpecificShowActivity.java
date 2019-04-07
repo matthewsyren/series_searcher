@@ -1,11 +1,11 @@
 package com.matthewsyren.seriessearcher.activities;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.net.Network;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,6 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
+import com.matthewsyren.seriessearcher.fragments.IRemoveShowFromMySeriesFragmentOnClickListener;
+import com.matthewsyren.seriessearcher.fragments.RemoveShowFromMySeriesFragment;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
@@ -48,7 +50,8 @@ import butterknife.ButterKnife;
 
 public class SpecificShowActivity
         extends AppCompatActivity
-        implements IApiConnectionResponse {
+        implements IApiConnectionResponse,
+        IRemoveShowFromMySeriesFragmentOnClickListener {
     //View bindings
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.text_show_next_episode) TextView mTextShowNextEpisode;
@@ -79,6 +82,7 @@ public class SpecificShowActivity
     private Boolean mChanged;
     private boolean mShadowIcon = false;
     private ApiConnection mApiConnection;
+    private RemoveShowFromMySeriesFragment mRemoveShowFromMySeriesFragment;
 
     //Constants
     public static final String SHOW_ID_KEY = "show_id_key";
@@ -176,15 +180,24 @@ public class SpecificShowActivity
             if(NetworkUtilities.isOnline(this)){
                 //Updates the data in the Firebase database (toggles showAdded from true to false, or vice versa)
                 if(mShow.isShowAdded()){
-                    mShow.pushUserShowSelection(UserAccountUtilities.getUserKey(this), false, this);
+                    //Initialises a DialogFragment that makes the user confirm their decision to remove a Show from My Series
+                    FragmentManager fragmentManager = getFragmentManager();
+                    mRemoveShowFromMySeriesFragment = new RemoveShowFromMySeriesFragment();
+
+                    //Sends data to the DialogFragment
+                    Bundle arguments = new Bundle();
+                    arguments.putParcelable(RemoveShowFromMySeriesFragment.SHOW_KEY, mShow);
+                    mRemoveShowFromMySeriesFragment.setRemoveShowFromMySeriesFragmentOnClickListener(this);
+                    mRemoveShowFromMySeriesFragment.setArguments(arguments);
+
+                    //Displays the DialogFragment
+                    mRemoveShowFromMySeriesFragment.show(fragmentManager, RemoveShowFromMySeriesFragment.REMOVE_SHOW_FROM_MY_SERIES_FRAGMENT_TAG);
                 }
                 else{
+                    //Adds the Show to My Series
                     mShow.pushUserShowSelection(UserAccountUtilities.getUserKey(this), true, this);
+                    showIsAddedStatusChanged();
                 }
-
-                //Sets mChanged to true and refreshes the options menu
-                mChanged = true;
-                invalidateOptionsMenu();
                 return true;
             }
             else{
@@ -245,6 +258,15 @@ public class SpecificShowActivity
     }
 
     /**
+     * Marks the Show isAdded status to changed and updates the Menu icon
+     */
+    private void showIsAddedStatusChanged(){
+        //Sets mChanged to true and refreshes the options menu
+        mChanged = true;
+        invalidateOptionsMenu();
+    }
+
+    /**
      * Restores the Activity's data
      */
     private void restoreData(Bundle savedInstanceState){
@@ -262,6 +284,15 @@ public class SpecificShowActivity
 
         if(savedInstanceState.containsKey(SHOW_TITLE_BUNDLE_KEY)){
             mShowTitle = savedInstanceState.getString(SHOW_TITLE_BUNDLE_KEY);
+        }
+
+        //Fetches the RemoveShowFromMySeriesFragment
+        mRemoveShowFromMySeriesFragment = (RemoveShowFromMySeriesFragment) getFragmentManager()
+                .findFragmentByTag(RemoveShowFromMySeriesFragment.REMOVE_SHOW_FROM_MY_SERIES_FRAGMENT_TAG);
+
+        //Ensures updates from RemoveShowFromMySeriesFragment are sent to this Activity
+        if(mRemoveShowFromMySeriesFragment != null){
+            mRemoveShowFromMySeriesFragment.setRemoveShowFromMySeriesFragmentOnClickListener(this);
         }
 
         if(mShow != null){
@@ -569,6 +600,14 @@ public class SpecificShowActivity
             intent.putExtra(SearchByEpisodeActivity.SHOW_TITLE_BUNDLE_KEY, mShow.getShowTitle());
             intent.putExtra(SearchByEpisodeActivity.SHOW_NUMBER_BUNDLE_KEY, showNumber);
             startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onRemoveShowFromMySeriesFragmentClick(boolean removed, Show show) {
+        //Updates the options menu if the user has removed the Show from My Series
+        if(removed){
+            showIsAddedStatusChanged();
         }
     }
 }

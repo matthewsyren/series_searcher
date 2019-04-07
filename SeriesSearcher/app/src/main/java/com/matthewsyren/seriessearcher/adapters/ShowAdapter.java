@@ -2,14 +2,14 @@ package com.matthewsyren.seriessearcher.adapters;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -24,6 +24,8 @@ import com.matthewsyren.seriessearcher.activities.HomeActivity;
 import com.matthewsyren.seriessearcher.activities.ShowPosterActivity;
 import com.matthewsyren.seriessearcher.activities.SpecificShowActivity;
 import com.matthewsyren.seriessearcher.customviews.RoundedImageView;
+import com.matthewsyren.seriessearcher.fragments.IRemoveShowFromMySeriesFragmentOnClickListener;
+import com.matthewsyren.seriessearcher.fragments.RemoveShowFromMySeriesFragment;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
@@ -40,11 +42,13 @@ import butterknife.ButterKnife;
 
 @SuppressWarnings("WeakerAccess")
 public class ShowAdapter
-        extends RecyclerView.Adapter<ShowAdapter.ViewHolder>{
+        extends RecyclerView.Adapter<ShowAdapter.ViewHolder>
+        implements IRemoveShowFromMySeriesFragmentOnClickListener{
     //Variables
     private static ArrayList<Show> sShows;
     private final Context mContext;
     private final boolean mIsHomeRecyclerView;
+    private IRemoveShowFromMySeriesFragmentOnClickListener mRemoveShowFromMySeriesFragmentOnClickListener;
 
     /**
      * Constructor
@@ -53,6 +57,7 @@ public class ShowAdapter
         mContext = context;
         sShows = shows;
         mIsHomeRecyclerView = isHomeRecyclerView;
+        mRemoveShowFromMySeriesFragmentOnClickListener = this;
     }
 
     @NonNull
@@ -60,6 +65,16 @@ public class ShowAdapter
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(getLayoutToInflate(), parent, false);
+
+        //Fetches the RemoveShowFromMySeriesFragment
+        RemoveShowFromMySeriesFragment removeShowFromMySeriesFragment = (RemoveShowFromMySeriesFragment) ((AppCompatActivity)mContext).getFragmentManager()
+                .findFragmentByTag(RemoveShowFromMySeriesFragment.REMOVE_SHOW_FROM_MY_SERIES_FRAGMENT_TAG);
+
+        //Ensures updates from RemoveShowFromMySeriesFragment are sent to this class
+        if(removeShowFromMySeriesFragment != null){
+            removeShowFromMySeriesFragment.setRemoveShowFromMySeriesFragmentOnClickListener(this);
+        }
+
         return new ViewHolder(view, mContext);
     }
 
@@ -108,52 +123,18 @@ public class ShowAdapter
                         notifyDataSetChanged();
                     }
                     else{
-                        //Creates an AlertDialog to prompt the user to confirm their decision to remove the series from My Series
-                        AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
-                        View view = View.inflate(mContext, R.layout.dialog_remove_series, null);
-                        TextView textView = view.findViewById(R.id.tv_remove_series);
-                        textView.setText(mContext.getString(R.string.series_removal_confirmation, sShows.get(position).getShowTitle()));
-                        alertDialog.setView(view);
+                        //Initialises a DialogFragment that makes the user confirm their decision
+                        FragmentManager fragmentManager = ((AppCompatActivity)mContext).getFragmentManager();
+                        RemoveShowFromMySeriesFragment removeShowFromMySeriesFragment = new RemoveShowFromMySeriesFragment();
 
-                        //Creates OnClickListener for the Dialog message
-                        DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
-                            @Override
-                            public void onClick(DialogInterface dialog, int button) {
-                                switch(button){
-                                    //Removes the selected show from the My Series list
-                                    case AlertDialog.BUTTON_POSITIVE:
-                                        //Updates the Firebase database and the UI
-                                        show.pushUserShowSelection(
-                                                UserAccountUtilities.getUserKey(mContext),
-                                                false,
-                                                mContext);
+                        //Sends data to the DialogFragment
+                        Bundle arguments = new Bundle();
+                        arguments.putParcelable(RemoveShowFromMySeriesFragment.SHOW_KEY, show);
+                        removeShowFromMySeriesFragment.setRemoveShowFromMySeriesFragmentOnClickListener(mRemoveShowFromMySeriesFragmentOnClickListener);
+                        removeShowFromMySeriesFragment.setArguments(arguments);
 
-                                        //Sets showAdded to false
-                                        sShows.get(position).setShowAdded(false);
-
-                                        //Removes the Show
-                                        if(mIsHomeRecyclerView){
-                                            sShows.remove(position);
-
-                                            if(sShows.size() == 0){
-                                                ((HomeActivity)mContext).fetchUsersShows();
-                                            }
-                                        }
-
-                                        //Sets the Button's image to an add icon
-                                        viewHolder.ibToggleShow.setImageResource(R.drawable.ic_add_black_24dp);
-                                        notifyDataSetChanged();
-                                        break;
-                                    case AlertDialog.BUTTON_NEGATIVE:
-                                        break;
-                                }
-                            }
-                        };
-
-                        //Assigns button an OnClickListener for the AlertDialog and displays the AlertDialog
-                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, mContext.getString(R.string.yes), dialogOnClickListener);
-                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, mContext.getString(R.string.no), dialogOnClickListener);
-                        alertDialog.show();
+                        //Displays the DialogFragment
+                        removeShowFromMySeriesFragment.show(fragmentManager, RemoveShowFromMySeriesFragment.REMOVE_SHOW_FROM_MY_SERIES_FRAGMENT_TAG);
                     }
                 }
                 else{
@@ -253,6 +234,34 @@ public class ShowAdapter
                                     R.string.text_runtime,
                                     sShows.get(position).getShowRuntime())));
                 }
+            }
+        }
+    }
+
+    @Override
+    public void onRemoveShowFromMySeriesFragmentClick(boolean removed, Show show) {
+        //Performs various tasks if the user removed the Show from My Series
+        if(removed){
+            //Fetches the position of the Show
+            int position = sShows.indexOf(show);
+
+            //Removes the Show if the HomeActivity is open, otherwise changes the Button icon for the Show from a delete icon to an add icon
+            if(mIsHomeRecyclerView){
+                if(sShows.size() > 0){
+                    //Removes the Show from the sShows List
+                    sShows.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, getItemCount());
+                }
+
+                if(sShows.size() == 0){
+                    //Displays a message telling the user to add Shows to My Series if My Series is empty
+                    ((HomeActivity)mContext).fetchUsersShows();
+                }
+            }
+            else{
+                //Updates the Button icon for the Show
+                notifyItemChanged(position);
             }
         }
     }
