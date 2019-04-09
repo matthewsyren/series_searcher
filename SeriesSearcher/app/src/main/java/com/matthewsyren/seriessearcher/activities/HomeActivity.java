@@ -109,10 +109,8 @@ public class HomeActivity
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
 
-        //Cancels the AsyncTask if it is still running
-        if(mApiConnection != null && mApiConnection.getStatus() == AsyncTask.Status.RUNNING && !mApiConnection.isCancelled()){
-            mApiConnection.cancel(true);
-        }
+        //Cancels the AsyncTask
+        cancelAsyncTask();
     }
 
     @Override
@@ -205,6 +203,16 @@ public class HomeActivity
     }
 
     /**
+     * Cancels the AsyncTask
+     */
+    private void cancelAsyncTask(){
+        //Cancels the AsyncTask if it is still running
+        if(mApiConnection != null && mApiConnection.getStatus() == AsyncTask.Status.RUNNING && !mApiConnection.isCancelled()){
+            mApiConnection.cancel(true);
+        }
+    }
+
+    /**
      * Checks if the user is signed in, and signs them in if they aren't signed in already
      */
     private void setUpAuthListener(){
@@ -258,13 +266,14 @@ public class HomeActivity
         //Clears the user's key from SharedPreferences
         UserAccountUtilities.setUserKey(this, null);
 
-        //Clears the user's series
-        if(mShows != null){
-            mShows.clear();
+        //Cancels the AsyncTask
+        cancelAsyncTask();
 
-            if(mAdapter != null){
-                mAdapter.notifyDataSetChanged();
-            }
+        //Clears the user's series
+        mShows.clear();
+
+        if(mAdapter != null){
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -408,7 +417,7 @@ public class HomeActivity
     public void parseJsonResponse(String response) {
         try{
             //JSONArray stores the JSON returned from the TVMaze API
-            if(response != null){
+            if(response != null && mFirebaseAuth.getCurrentUser() != null){
                 //Creates JSONArray from the response
                 response = "[\n" + response + "\n]";
                 JSONArray jsonArray = new JSONArray(response);
