@@ -75,8 +75,9 @@ public class ShowPosterActivity
     }
 
     /**
-     * Closes the Dialog
+     * Closes the Dialog (suppressed the unused warning as the onClick attribute is set in styles.xml, under the ShowPosterActivityOuterConstraintLayout style)
      */
+    @SuppressWarnings("unused")
     public void closeDialog(View view){
         onBackPressed();
     }
