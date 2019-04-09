@@ -1,7 +1,6 @@
 package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -30,6 +29,7 @@ import com.matthewsyren.seriessearcher.models.IShowUpdatedListener;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
+import com.matthewsyren.seriessearcher.utilities.AsyncTaskUtilities;
 import com.matthewsyren.seriessearcher.utilities.IOnDataSavingPreferenceChangedListener;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
@@ -110,7 +110,7 @@ public class HomeActivity
         }
 
         //Cancels the AsyncTask
-        cancelAsyncTask();
+        AsyncTaskUtilities.cancelAsyncTask(mApiConnection);
     }
 
     @Override
@@ -203,16 +203,6 @@ public class HomeActivity
     }
 
     /**
-     * Cancels the AsyncTask
-     */
-    private void cancelAsyncTask(){
-        //Cancels the AsyncTask if it is still running
-        if(mApiConnection != null && mApiConnection.getStatus() == AsyncTask.Status.RUNNING && !mApiConnection.isCancelled()){
-            mApiConnection.cancel(true);
-        }
-    }
-
-    /**
      * Checks if the user is signed in, and signs them in if they aren't signed in already
      */
     private void setUpAuthListener(){
@@ -267,7 +257,7 @@ public class HomeActivity
         UserAccountUtilities.setUserKey(this, null);
 
         //Cancels the AsyncTask
-        cancelAsyncTask();
+        AsyncTaskUtilities.cancelAsyncTask(mApiConnection);
 
         //Clears the user's series
         mShows.clear();

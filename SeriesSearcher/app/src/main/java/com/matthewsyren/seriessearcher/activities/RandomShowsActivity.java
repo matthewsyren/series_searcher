@@ -1,7 +1,6 @@
 package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +17,7 @@ import com.matthewsyren.seriessearcher.models.IShowUpdatedListener;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
+import com.matthewsyren.seriessearcher.utilities.AsyncTaskUtilities;
 import com.matthewsyren.seriessearcher.utilities.IOnDataSavingPreferenceChangedListener;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
@@ -91,9 +91,7 @@ public class RandomShowsActivity
         super.onDestroy();
 
         //Cancels the AsyncTask if it is still running
-        if(mApiConnection != null && mApiConnection.getStatus() == AsyncTask.Status.RUNNING && !mApiConnection.isCancelled()){
-            mApiConnection.cancel(true);
-        }
+        AsyncTaskUtilities.cancelAsyncTask(mApiConnection);
     }
 
     @Override

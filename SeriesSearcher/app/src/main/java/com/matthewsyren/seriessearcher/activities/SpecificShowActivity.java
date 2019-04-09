@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,6 +34,7 @@ import com.matthewsyren.seriessearcher.fragments.RemoveShowFromMySeriesFragment;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
+import com.matthewsyren.seriessearcher.utilities.AsyncTaskUtilities;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
@@ -129,7 +129,7 @@ public class SpecificShowActivity
         super.onResume();
 
         //Displays the ProgressBar if the show's information hasn't been fetched yet
-        if(mShow == null && NetworkUtilities.isOnline(this) && mApiConnection != null && mApiConnection.getStatus() == AsyncTask.Status.RUNNING){
+        if(mShow == null && NetworkUtilities.isOnline(this) && AsyncTaskUtilities.isAsyncTaskRunning(mApiConnection)){
             mProgressBar.setVisibility(View.VISIBLE);
         }
         else{
@@ -142,9 +142,7 @@ public class SpecificShowActivity
         super.onDestroy();
 
         //Cancels the AsyncTask if it is still running
-        if(mApiConnection != null && mApiConnection.getStatus() == AsyncTask.Status.RUNNING && !mApiConnection.isCancelled()){
-            mApiConnection.cancel(true);
-        }
+        AsyncTaskUtilities.cancelAsyncTask(mApiConnection);
     }
 
     @Override
