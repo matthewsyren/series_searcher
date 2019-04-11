@@ -1,17 +1,16 @@
 package com.matthewsyren.seriessearcher.models;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
+import android.os.ResultReceiver;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.matthewsyren.seriessearcher.R;
+import com.matthewsyren.seriessearcher.services.FirebaseService;
+import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
 import java.util.ArrayList;
 
@@ -38,7 +37,7 @@ public class Show
     private String showPreviousEpisode;
 
     /**
-     * Constructor (used for the ListViews)
+     * Constructor (used for the RecyclerViews)
      */
     public Show(int showId, String showTitle, String showRating, String showStatus, String showImageUrl, String showRuntime, Boolean showAdded, String showNextEpisode) {
         this.showId = showId;
@@ -183,66 +182,65 @@ public class Show
     }
 
     /**
-     * Loops through all Shows that the user has added to My Series, and sets showAdded to true for each Show in shows that has been added to My Series
+     * Starts a Service action that will loop through all Shows that the user has added to My Series, and set showAdded to true for each Show in shows that have been added to My Series
+     * @param context The Context of the calling Activity
+     * @param shows The ArrayList of Shows that must be marked if they have been added to My Series
+     * @param resultReceiver The ResultReceiver to which data from the Service must be sent
      */
-    public static void markShowsThatAreAddedToMySeries(String userKey, final ArrayList<Show> shows, final IShowUpdatedListener iShowUpdatedListener){
-        if(userKey != null){
-            //Establishes a connection to Firebase
-            final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
+    public static void markShowsInMySeries(Context context, final ArrayList<Show> shows, ResultReceiver resultReceiver){
+        //Sets up the Service
+        Intent intent = new Intent(context, FirebaseService.class);
+        Bundle bundle = new Bundle();
+        intent.setAction(FirebaseService.ACTION_MARK_SHOWS_IN_MY_SERIES);
+        intent.putExtra(FirebaseService.RESULT_RECEIVER, resultReceiver);
+        bundle.putParcelableArrayList(FirebaseService.EXTRA_SHOWS, shows);
+        bundle.putString(FirebaseService.EXTRA_USER_KEY, UserAccountUtilities.getUserKey(context));
+        intent.putExtras(bundle);
 
-            //Sets the previous values for showAdded in shows to false
-            for(int i = 0; i < shows.size(); i++){
-                shows.get(i).setShowAdded(false);
-            }
-
-            //Fetches the user's Shows
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    //Gets the children of the Snapshot from the database
-                    Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
-
-                    //Loops through all Shows and sets showAdded to true if the showIds match and the boolean is set to true
-                    for(DataSnapshot snapshot : lstSnapshots){
-                        //Fetches the showId
-                        String showId = snapshot.getKey();
-
-                        //Loops through shows to find a match in showId
-                        for(int i = 0; i < shows.size(); i++){
-                            //Sets showAdded to true if the showIds match and the boolean is set to true
-                            if(showId != null && showId.equals("" + shows.get(i).getShowId()) && (boolean) snapshot.getValue()){
-                                shows.get(i).setShowAdded(true);
-                                break;
-                            }
-                        }
-                    }
-
-                    //Tells the appropriate Activity that the Shows have been updated
-                    iShowUpdatedListener.showsUpdated();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
+        //Starts the Service
+        context.startService(intent);
     }
 
     /**
-     * Updates the Shows that the user has added to My Series in the Firebase database
+     * Starts a Service action that will update the Show that the user has either added to or deleted from My Series in the Firebase Database
+     * @param showAdded True if the user added the Show, otherwise false
+     * @param context The Context of the calling Activity
      */
-    public void pushUserShowSelection(String userKey, boolean showAdded, Context context){
-        //Establishes a connection to the Firebase database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = database.getReference().child(userKey);
-        String message = showAdded ? context.getString(R.string.added_to_my_series, showTitle) : context.getString(R.string.removed_from_my_series, showTitle);
+    public void updateShowInDatabase(boolean showAdded, Context context){
+        //Sets up the Service
+        Intent intent = new Intent(context, FirebaseService.class);
+        Bundle bundle = new Bundle();
+        intent.setAction(FirebaseService.ACTION_UPDATE_SHOW_IN_DATABASE);
+        bundle.putString(FirebaseService.EXTRA_USER_KEY, UserAccountUtilities.getUserKey(context));
+        bundle.putInt(FirebaseService.EXTRA_SHOW_ID, this.showId);
+        bundle.putBoolean(FirebaseService.EXTRA_IS_SHOW_ADDED, showAdded);
+        intent.putExtras(bundle);
 
-        //Saves the updated data to the Firebase database
-        databaseReference.child("" + this.showId).setValue(showAdded);
+        //Starts the Service
+        context.startService(intent);
+
+        //Displays a message and updates the Show object
+        String message = showAdded ? context.getString(R.string.added_to_my_series, showTitle) : context.getString(R.string.removed_from_my_series, showTitle);
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
         setShowAdded(showAdded);
+    }
+
+    /**
+     * Starts a Service action that fetches the Show IDs of Shows that the user has added to My Series
+     * @param context The Context of the calling Activity
+     * @param resultReceiver The ResultReceiver to which data from the Service must be sent
+     */
+    public static void getShowIdsInMySeries(Context context, ResultReceiver resultReceiver){
+        //Sets up the Service
+        Intent intent = new Intent(context, FirebaseService.class);
+        Bundle bundle = new Bundle();
+        intent.setAction(FirebaseService.ACTION_GET_SHOW_IDS);
+        intent.putExtra(FirebaseService.RESULT_RECEIVER, resultReceiver);
+        bundle.putString(FirebaseService.EXTRA_USER_KEY, UserAccountUtilities.getUserKey(context));
+        intent.putExtras(bundle);
+
+        //Starts the Service
+        context.startService(intent);
     }
 
     @Override

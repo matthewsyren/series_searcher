@@ -193,7 +193,7 @@ public class SpecificShowActivity
                 }
                 else{
                     //Adds the Show to My Series
-                    mShow.pushUserShowSelection(UserAccountUtilities.getUserKey(this), true, this);
+                    mShow.updateShowInDatabase(true, this);
                     showIsAddedStatusChanged();
                 }
                 return true;

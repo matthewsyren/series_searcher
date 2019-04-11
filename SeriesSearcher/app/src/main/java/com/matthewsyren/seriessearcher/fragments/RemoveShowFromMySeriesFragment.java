@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.Show;
-import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
 public class RemoveShowFromMySeriesFragment
         extends DialogFragment {
@@ -43,10 +42,7 @@ public class RemoveShowFromMySeriesFragment
                         //Removes the selected show from the My Series list
                         case AlertDialog.BUTTON_POSITIVE:
                             //Updates the Firebase database and the UI
-                            show.pushUserShowSelection(
-                                    UserAccountUtilities.getUserKey(getActivity()),
-                                    false,
-                                    getActivity());
+                            show.updateShowInDatabase(false, getActivity());
 
                             //Sets showAdded to false
                             show.setShowAdded(false);

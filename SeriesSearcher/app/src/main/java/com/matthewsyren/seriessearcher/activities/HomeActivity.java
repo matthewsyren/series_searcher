@@ -2,6 +2,8 @@ package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,17 +20,12 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
-import com.matthewsyren.seriessearcher.models.IShowUpdatedListener;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
+import com.matthewsyren.seriessearcher.services.FirebaseService;
 import com.matthewsyren.seriessearcher.utilities.AsyncTaskUtilities;
 import com.matthewsyren.seriessearcher.utilities.IOnDataSavingPreferenceChangedListener;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
@@ -49,8 +46,7 @@ import butterknife.ButterKnife;
 public class HomeActivity
         extends BaseActivity
         implements IApiConnectionResponse,
-        IOnDataSavingPreferenceChangedListener,
-        IShowUpdatedListener {
+        IOnDataSavingPreferenceChangedListener {
     //View bindings
     @BindView(R.id.recycler_view_my_shows) RecyclerView mRecyclerViewMyShows;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
@@ -158,10 +154,7 @@ public class HomeActivity
             //Refreshes the Activity if the user added/removed a Show from My Series on the SpecificShowActivity
             if(resultCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED){
                 //Determines which Shows have been added to My Series by the user
-                Show.markShowsThatAreAddedToMySeries(
-                        UserAccountUtilities.getUserKey(this),
-                        mShows,
-                        this);
+                Show.markShowsInMySeries(this, mShows, new DataReceiver(new Handler()));
             }
         }
     }
@@ -303,8 +296,7 @@ public class HomeActivity
 
         //Fetches Shows if there is an Internet connection
         if(online){
-            //Gets the unique key used by Firebase to store information about the user signed in, and fetches data based on the keys fetched
-            getShowIds(UserAccountUtilities.getUserKey(this));
+            Show.getShowIdsInMySeries(this, new DataReceiver(new Handler()));
         }
     }
 
@@ -326,38 +318,6 @@ public class HomeActivity
     public void openSearchShows(View view) {
         Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
-    }
-
-    /**
-     * Fetches all Show IDs associated with the user's key, and adds them to an ArrayList. The ArrayList is then passed to the getUserShowData method, which fetches the JSON data for each show from the TVMAze API
-     */
-    private void getShowIds(String userKey){
-        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference databaseReference = firebaseDatabase.getReference().child(userKey);
-
-        //Adds Listeners for when the data is changed
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //Loops through all shows and adds each show key to the mShows ArrayList
-                Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
-                ArrayList<String> mShows = new ArrayList<>();
-                for(DataSnapshot snapshot : lstSnapshots){
-                    String showKey = snapshot.getKey();
-                    if((boolean) snapshot.getValue()){
-                        mShows.add(showKey);
-                    }
-                }
-
-                //Fetches the data for the Shows
-                getUserShowData(mShows);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 
     /**
@@ -461,23 +421,58 @@ public class HomeActivity
         mAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void showsUpdated() {
-        //Removes a Show if it has not been added to My Series
-        for(int i = 0; i < mShows.size(); i++){
-            if(!mShows.get(i).isShowAdded()){
-                //Removes the Show and decrements the i variable to cater for the removed object
-                mShows.remove(i);
-                i--;
+    /**
+     * Used to receive data from Services
+     */
+    private class DataReceiver
+            extends ResultReceiver{
+
+        /**
+         * Constructor
+         */
+        private DataReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            super.onReceiveResult(resultCode, resultData);
+
+            if(resultCode == FirebaseService.ACTION_GET_SHOW_IDS_RESULT_CODE){
+                //Fetches the user's Show data from the Service
+                ArrayList<String> showIds = resultData.getStringArrayList(FirebaseService.EXTRA_SHOW_IDS);
+
+                //Fetches the Show IDs from the Service. The ArrayList is then passed to the getUserShowData method, which fetches the JSON data for each Show from the TVMAze API
+                if(showIds != null){
+                    getUserShowData(showIds);
+                }
+            }
+            else if(resultCode == FirebaseService.ACTION_MARK_SHOWS_IN_MY_SERIES_RESULT_CODE){
+                //Updates the mShows ArrayList with the new data
+                if(resultData != null && resultData.containsKey(FirebaseService.EXTRA_SHOWS)){
+                    mShows = resultData.getParcelableArrayList(FirebaseService.EXTRA_SHOWS);
+
+                    //Refreshes the RecyclerView's data
+                    mAdapter.setShows(mShows);
+                }
+
+                //Removes a Show if it has not been added to My Series
+                for(int i = 0; i < mShows.size(); i++){
+                    if(!mShows.get(i).isShowAdded()){
+                        //Removes the Show and decrements the i variable to cater for the removed object
+                        mShows.remove(i);
+                        i--;
+                    }
+                }
+
+                //Displays a message telling the user to add Shows if mShows is empty
+                if(mShows.size() == 0){
+                    toggleViewVisibility(View.GONE, View.VISIBLE);
+                }
+
+                //Refreshes the RecyclerView's data
+                mAdapter.notifyDataSetChanged();
             }
         }
-
-        //Displays a message telling the user to add Shows if mShows is empty
-        if(mShows.size() == 0){
-            toggleViewVisibility(View.GONE, View.VISIBLE);
-        }
-
-        //Refreshes the RecyclerView's data
-        mAdapter.notifyDataSetChanged();
     }
 }

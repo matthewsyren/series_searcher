@@ -2,6 +2,8 @@ package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -14,10 +16,10 @@ import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
-import com.matthewsyren.seriessearcher.models.IShowUpdatedListener;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
+import com.matthewsyren.seriessearcher.services.FirebaseService;
 import com.matthewsyren.seriessearcher.utilities.AsyncTaskUtilities;
 import com.matthewsyren.seriessearcher.utilities.IOnDataSavingPreferenceChangedListener;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
@@ -37,8 +39,7 @@ import butterknife.ButterKnife;
 public class SearchActivity
         extends BaseActivity
         implements IApiConnectionResponse,
-        IOnDataSavingPreferenceChangedListener,
-        IShowUpdatedListener {
+        IOnDataSavingPreferenceChangedListener{
     //View bindings
     @BindView(R.id.recycler_view_search_results) RecyclerView mRecyclerViewSearchResults;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
@@ -100,10 +101,7 @@ public class SearchActivity
         if(requestCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_REQUEST_CODE){
             //Updates the RecyclerView if the user added/removed a Show from My Series on the SpecificShowActivity
             if(resultCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED){
-                Show.markShowsThatAreAddedToMySeries(
-                        UserAccountUtilities.getUserKey(this),
-                        mShows,
-                        this);
+                Show.markShowsInMySeries(this, mShows, new DataReceiver(new Handler()));
             }
         }
     }
@@ -220,10 +218,7 @@ public class SearchActivity
                     }
                 }
                 //Determines which Shows have been added to My Series by the user
-                Show.markShowsThatAreAddedToMySeries(
-                        UserAccountUtilities.getUserKey(this),
-                        mShows,
-                        this);
+                Show.markShowsInMySeries(this, mShows, new DataReceiver(new Handler()));
             }
             else{
                 Toast.makeText(getApplicationContext(), R.string.error_fetching_data_no_internet_connection, Toast.LENGTH_LONG).show();
@@ -240,20 +235,44 @@ public class SearchActivity
         mAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void showsUpdated() {
-        //Refreshes the RecyclerView's data
-        mAdapter.notifyDataSetChanged();
+    /**
+     * Used to receive data from Services
+     */
+    private class DataReceiver
+            extends ResultReceiver {
 
-        //Displays a message if no series are found
-        if(mShows.size() == 0){
-            mTvNoSeriesFound.setVisibility(View.VISIBLE);
-        }
-        else{
-            mTvNoSeriesFound.setVisibility(View.INVISIBLE);
+        /**
+         * Constructor
+         */
+        private DataReceiver(Handler handler) {
+            super(handler);
         }
 
-        //Hides ProgressBar
-        mProgressBar.setVisibility(View.INVISIBLE);
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            super.onReceiveResult(resultCode, resultData);
+
+            if(resultCode == FirebaseService.ACTION_MARK_SHOWS_IN_MY_SERIES_RESULT_CODE){
+                //Updates the mShows ArrayList with the new data
+                if(resultData != null && resultData.containsKey(FirebaseService.EXTRA_SHOWS)){
+                    mShows = resultData.getParcelableArrayList(FirebaseService.EXTRA_SHOWS);
+
+                    //Refreshes the RecyclerView's data
+                    mAdapter.setShows(mShows);
+                    mAdapter.notifyDataSetChanged();
+                }
+
+                //Displays a message if no series are found
+                if(mShows.size() == 0){
+                    mTvNoSeriesFound.setVisibility(View.VISIBLE);
+                }
+                else{
+                    mTvNoSeriesFound.setVisibility(View.INVISIBLE);
+                }
+
+                //Hides ProgressBar
+                mProgressBar.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 }

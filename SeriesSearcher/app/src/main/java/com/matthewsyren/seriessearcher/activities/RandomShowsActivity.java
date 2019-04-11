@@ -2,6 +2,8 @@ package com.matthewsyren.seriessearcher.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,10 +15,10 @@ import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
-import com.matthewsyren.seriessearcher.models.IShowUpdatedListener;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
+import com.matthewsyren.seriessearcher.services.FirebaseService;
 import com.matthewsyren.seriessearcher.utilities.AsyncTaskUtilities;
 import com.matthewsyren.seriessearcher.utilities.IOnDataSavingPreferenceChangedListener;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
@@ -36,8 +38,7 @@ import butterknife.ButterKnife;
 public class RandomShowsActivity
         extends BaseActivity
         implements IApiConnectionResponse,
-        IOnDataSavingPreferenceChangedListener,
-        IShowUpdatedListener {
+        IOnDataSavingPreferenceChangedListener{
     //View bindings
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.recycler_view_random_shows) RecyclerView mRecyclerViewRandomShows;
@@ -101,10 +102,7 @@ public class RandomShowsActivity
         if(requestCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_REQUEST_CODE){
             //Updates the RecyclerView if the user added/removed a Show from My Series on the SpecificShowActivity
             if(resultCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED){
-                Show.markShowsThatAreAddedToMySeries(
-                        UserAccountUtilities.getUserKey(this),
-                        mShows,
-                        this);
+                Show.markShowsInMySeries(this, mShows, new DataReceiver(new Handler()));
             }
         }
     }
@@ -235,10 +233,7 @@ public class RandomShowsActivity
                 }
 
                 //Determines which Shows have been added to My Series by the user
-                Show.markShowsThatAreAddedToMySeries(
-                        UserAccountUtilities.getUserKey(this),
-                        mShows,
-                        this);
+                Show.markShowsInMySeries(this, mShows, new DataReceiver(new Handler()));
             }
             else{
                 //Displays a no Internet connection message
@@ -248,15 +243,6 @@ public class RandomShowsActivity
         catch(JSONException j){
             Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
         }
-    }
-
-    @Override
-    public void showsUpdated() {
-        //Refreshes the RecyclerView's data
-        mAdapter.notifyDataSetChanged();
-
-        //Hides ProgressBar
-        mProgressBar.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -276,5 +262,38 @@ public class RandomShowsActivity
     public void onDataSavingPreferenceChanged() {
         //Updates the images in the RecyclerView
         mAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Used to receive data from Services
+     */
+    private class DataReceiver
+            extends ResultReceiver {
+
+        /**
+         * Constructor
+         */
+        private DataReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            super.onReceiveResult(resultCode, resultData);
+
+            if(resultCode == FirebaseService.ACTION_MARK_SHOWS_IN_MY_SERIES_RESULT_CODE){
+                //Updates the mShows ArrayList with the new data
+                if(resultData != null && resultData.containsKey(FirebaseService.EXTRA_SHOWS)){
+                    mShows = resultData.getParcelableArrayList(FirebaseService.EXTRA_SHOWS);
+
+                    //Refreshes the RecyclerView's data
+                    mAdapter.setShows(mShows);
+                    mAdapter.notifyDataSetChanged();
+                }
+
+                //Hides ProgressBar
+                mProgressBar.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 }

@@ -60,6 +60,13 @@ public class ShowAdapter
         mRemoveShowFromMySeriesFragmentOnClickListener = this;
     }
 
+    /**
+     * Setter method
+     */
+    public void setShows(ArrayList<Show> shows){
+        sShows = shows;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -114,10 +121,7 @@ public class ShowAdapter
                         sShows.get(position).setShowAdded(true);
 
                         //Updates the values in the Firebase database
-                        show.pushUserShowSelection(
-                                UserAccountUtilities.getUserKey(mContext),
-                                true,
-                                mContext);
+                        show.updateShowInDatabase(true, mContext);
 
                         //Updates the RecyclerView's data
                         notifyDataSetChanged();
