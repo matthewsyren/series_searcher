@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.matthewsyren.seriessearcher.R;
-import com.matthewsyren.seriessearcher.utilities.IOnDataSavingPreferenceChangedListener;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
 import butterknife.BindView;
@@ -183,5 +182,15 @@ public class BaseActivity
      */
     protected void closeNavigationDrawer(){
         mDrawerLayout.closeDrawer(GravityCompat.START, true);
+    }
+
+    /**
+     * Interface is used to tell the appropriate Activities when the data saving preferences are changed
+     */
+    public interface IOnDataSavingPreferenceChangedListener {
+        /**
+         * Executed when the user changes their data saving preference
+         */
+        void onDataSavingPreferenceChanged();
     }
 }

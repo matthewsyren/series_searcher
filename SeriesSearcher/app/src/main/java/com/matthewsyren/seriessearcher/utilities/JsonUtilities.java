@@ -6,7 +6,7 @@ import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.models.ShowEpisode;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
-import com.matthewsyren.seriessearcher.network.IApiConnectionResponse;
+import com.matthewsyren.seriessearcher.network.ApiConnection.IApiConnectionResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;

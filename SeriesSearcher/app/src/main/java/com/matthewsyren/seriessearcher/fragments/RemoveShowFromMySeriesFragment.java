@@ -86,4 +86,14 @@ public class RemoveShowFromMySeriesFragment
     public void setRemoveShowFromMySeriesFragmentOnClickListener(IRemoveShowFromMySeriesFragmentOnClickListener iRemoveShowFromMySeriesFragmentOnClickListener){
         mRemoveShowFromMySeriesFragmentOnClickListener = iRemoveShowFromMySeriesFragmentOnClickListener;
     }
+
+    /**
+     * Interface is used to send data back to the appropriate Activity once the user has made a decision on this Fragment
+     */
+    public interface IRemoveShowFromMySeriesFragmentOnClickListener {
+        /**
+         * Sends data back to the appropriate Activity once a decision has been made on RemoveShowFromMySeriesFragment
+         */
+        void onRemoveShowFromMySeriesFragmentClick(boolean removed, Show show);
+    }
 }
