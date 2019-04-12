@@ -173,7 +173,7 @@ public class RandomShowsActivity
                 page = (int) (Math.random() * 100);
             }
             mApiConnection = new ApiConnection();
-            mApiConnection.delegate = this;
+            mApiConnection.setApiConnectionResponse(this);
             mApiConnection.execute(LinkUtilities.getMultipleShowPageLink(page));
         }
     }

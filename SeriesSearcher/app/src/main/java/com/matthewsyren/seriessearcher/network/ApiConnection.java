@@ -16,7 +16,7 @@ import java.net.URL;
 public class ApiConnection
         extends AsyncTask<String, Void, String> {
     //Declares an object of the IApiConnectionResponse interface, which will be used to send the JSON back to the  thread
-    public IApiConnectionResponse delegate = null;
+    public IApiConnectionResponse mApiConnectionResponse = null;
 
     /**
      * Retrieves the JSON returned from the API
@@ -63,9 +63,16 @@ public class ApiConnection
      * Passes the JSON back to the Main thread (to the point from which this class was instantiated)
      */
     protected void onPostExecute(String response) {
-        if(delegate != null){
-            delegate.parseJsonResponse(response);
+        if(mApiConnectionResponse != null){
+            mApiConnectionResponse.parseJsonResponse(response);
         }
+    }
+
+    /**
+     * Setter method (used to set the
+     */
+    public void setApiConnectionResponse(IApiConnectionResponse iApiConnectionResponse){
+        mApiConnectionResponse = iApiConnectionResponse;
     }
 
     /**

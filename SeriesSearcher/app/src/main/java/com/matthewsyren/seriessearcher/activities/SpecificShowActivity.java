@@ -387,7 +387,7 @@ public class SpecificShowActivity
             if(online){
                 //Fetches data from the TVMaze API using the link
                 mApiConnection = new ApiConnection();
-                mApiConnection.delegate = this;
+                mApiConnection.setApiConnectionResponse(this);
                 mApiConnection.execute(showLink);
             }
         }

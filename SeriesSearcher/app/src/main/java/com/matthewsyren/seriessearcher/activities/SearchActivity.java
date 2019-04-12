@@ -185,7 +185,7 @@ public class SearchActivity
         if(NetworkUtilities.isOnline(this)){
             //Connects to the TVMaze API using the specific URL for the selected show
             mApiConnection = new ApiConnection();
-            mApiConnection.delegate = this;
+            mApiConnection.setApiConnectionResponse(this);
             mApiConnection.execute(LinkUtilities.getSearchLink(searchText));
         }
         else{

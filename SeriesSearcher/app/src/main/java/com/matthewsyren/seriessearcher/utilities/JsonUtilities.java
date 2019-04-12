@@ -17,11 +17,11 @@ public class JsonUtilities {
      * Returns a Show object parsed from the JSONObject passed in
      * @param json The JSON to be parsed
      * @param context The Context of the calling Activity
-     * @param delegate The class that implements IApiConnectionResponse
+     * @param iApiConnectionResponse The class that implements IApiConnectionResponse
      * @param fetchNextEpisode Set as true to fetch information about the Show's next episode
      * @return A Show object with the parsed JSON as values
      */
-    public static Show parseShowJson(JSONObject json, Context context, IApiConnectionResponse delegate, boolean fetchNextEpisode, Boolean showAdded) throws JSONException{
+    public static Show parseShowJson(JSONObject json, Context context, IApiConnectionResponse iApiConnectionResponse, boolean fetchNextEpisode, Boolean showAdded) throws JSONException{
         //Fetches values
         int id = json.getInt("id");
         String name = json.getString("name");
@@ -55,7 +55,7 @@ public class JsonUtilities {
 
             //Fetches data from the TVMaze API using the link
             ApiConnection api = new ApiConnection();
-            api.delegate = delegate;
+            api.setApiConnectionResponse(iApiConnectionResponse);
             api.execute(nextEpisodeLink);
         }
 
@@ -75,12 +75,12 @@ public class JsonUtilities {
      * Returns a Show object parsed from the JSONObject passed in
      * @param json The JSON to be parsed
      * @param context The Context of the calling Activity
-     * @param delegate The class that implements IApiConnectionResponse
+     * @param iApiConnectionResponse The class that implements IApiConnectionResponse
      * @return A Show object with the parsed JSON as values
      */
-    public static Show parseFullShowJson(JSONObject json, Context context, IApiConnectionResponse delegate, Boolean showAdded) throws JSONException{
+    public static Show parseFullShowJson(JSONObject json, Context context, IApiConnectionResponse iApiConnectionResponse, Boolean showAdded) throws JSONException{
         //Parses the small version of the Show
-        Show show = parseShowJson(json, context, delegate, false, showAdded);
+        Show show = parseShowJson(json, context, iApiConnectionResponse, false, showAdded);
 
         //Parses the rest of the Show
         String premiered = json.getString("premiered");
@@ -131,7 +131,7 @@ public class JsonUtilities {
 
             //Fetches data from the TVMaze API using the link
             ApiConnection api = new ApiConnection();
-            api.delegate = delegate;
+            api.setApiConnectionResponse(iApiConnectionResponse);
             api.execute(previousEpisodeLink);
         }
         else{
@@ -143,7 +143,7 @@ public class JsonUtilities {
 
             //Fetches data from the TVMaze API using the link
             ApiConnection api = new ApiConnection();
-            api.delegate = delegate;
+            api.setApiConnectionResponse(iApiConnectionResponse);
             api.execute(nextEpisodeLink);
         }
         else{

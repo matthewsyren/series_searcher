@@ -172,7 +172,7 @@ public class SearchByEpisodeActivity
 
                 //Fetches information from the TVMaze API
                 mApiConnection = new ApiConnection();
-                mApiConnection.delegate = this;
+                mApiConnection.setApiConnectionResponse(this);
                 mApiConnection.execute(LinkUtilities.getShowEpisodeInformationLink(showNumber, season, episode));
             }
             catch(NumberFormatException nfe){

@@ -355,7 +355,7 @@ public class HomeActivity
 
             //Fetches the data from the TVMaze API
             mApiConnection = new ApiConnection();
-            mApiConnection.delegate = this;
+            mApiConnection.setApiConnectionResponse(this);
             mApiConnection.execute(arrShows);
         }
         else{

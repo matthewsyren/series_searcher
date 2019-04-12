@@ -35,7 +35,7 @@ public class BaseActivity
     @BindView(R.id.toolbar) Toolbar mToolbar;
 
     //Variables
-    private IOnDataSavingPreferenceChangedListener mIOnDataSavingPreferenceChangedListener;
+    private IOnDataSavingPreferenceChangedListener mOnDataSavingPreferenceChangedListener;
 
     /**
      * Sets up the Activity
@@ -46,7 +46,7 @@ public class BaseActivity
         displayUserDetails();
 
         //Assigns a Listener for when the user's data saving preference changes
-        mIOnDataSavingPreferenceChangedListener = iOnDataSavingPreferenceChangedListener;
+        mOnDataSavingPreferenceChangedListener = iOnDataSavingPreferenceChangedListener;
 
         //Registers the appropriate listeners
         registerListeners();
@@ -85,8 +85,8 @@ public class BaseActivity
                 UserAccountUtilities.toggleDataSavingPreference(buttonView.getContext());
 
                 //Updates the images that are currently being displayed
-                if(mIOnDataSavingPreferenceChangedListener != null){
-                    mIOnDataSavingPreferenceChangedListener.onDataSavingPreferenceChanged();
+                if(mOnDataSavingPreferenceChangedListener != null){
+                    mOnDataSavingPreferenceChangedListener.onDataSavingPreferenceChanged();
                 }
 
                 //Closes the NavigationDrawer
