@@ -62,6 +62,7 @@ public class HomeActivity
     private boolean mIsSignInRequestSent = false;
     private int mScrollPosition;
     private ApiConnection mApiConnection;
+    private boolean mSignedOut;
 
     //Constants
     private static final String SCROLL_POSITION_BUNDLE_KEY = "scroll_position_bundle_key";
@@ -113,7 +114,8 @@ public class HomeActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if(mShows.size() > 0){
+        //Only saves the mShows ArrayList if the user hasn't just signed out (this will prevent the user from seeing the old user's Shows)
+        if(mShows.size() > 0 && !mSignedOut){
             outState.putParcelableArrayList(SHOWS_BUNDLE_KEY, mShows);
         }
 
@@ -229,6 +231,14 @@ public class HomeActivity
                     }
                 }
                 else{
+                    //Clears the Shows if the user had signed out immediately before signing in (to prevent the user from seeing the old user's Shows)
+                    if(mSignedOut){
+                        mShows.clear();
+
+                        //Resets the variable to indicate that the Activity will no longer contain the old user's Shows
+                        mSignedOut = false;
+                    }
+
                     //Saves the user's unique key
                     UserAccountUtilities.setUserKey(getApplicationContext(), firebaseUser.getUid());
 
@@ -258,6 +268,9 @@ public class HomeActivity
         if(mAdapter != null){
             mAdapter.notifyDataSetChanged();
         }
+
+        //Sets variable to true, signifying that the user has just signed out
+        mSignedOut = true;
     }
 
     /**
