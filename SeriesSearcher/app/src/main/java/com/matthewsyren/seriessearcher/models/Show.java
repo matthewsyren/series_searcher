@@ -13,6 +13,7 @@ import com.matthewsyren.seriessearcher.services.FirebaseService;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Class holds the details that are retrieved for the TV Shows
@@ -292,4 +293,18 @@ public class Show
             return new Show[size];
         }
     };
+
+    /**
+     * Used to sort a List of Shows alphabetically by Show Title
+     */
+    public static class ShowTitleComparator
+            implements Comparator<Show>{
+        /**
+         * Sorts by Show Title
+         */
+        @Override
+        public int compare(Show o1, Show o2) {
+            return o1.getShowTitle().compareToIgnoreCase(o2.getShowTitle());
+        }
+    }
 }
