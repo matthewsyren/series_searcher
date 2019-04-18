@@ -19,7 +19,7 @@
         android:contentDescription="@string/content_description_show_poster"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/colorImageBackground"/>
+        android:background="@color/colorPrimary"/>
 
     <FrameLayout
         android:layout_width="0dp"

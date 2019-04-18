@@ -32,7 +32,7 @@
                 android:scaleType="fitCenter"
                 android:transitionName="@string/transition_image"
                 android:contentDescription="@string/content_description_show_poster"
-                android:background="@color/colorImageBackground" />
+                android:background="@color/colorPrimary" />
 
             <View
                 android:layout_width="match_parent"

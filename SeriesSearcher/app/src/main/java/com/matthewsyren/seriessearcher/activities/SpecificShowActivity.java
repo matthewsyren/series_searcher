@@ -559,12 +559,9 @@ public class SpecificShowActivity
                                         swatch = palette.getMutedSwatch();
                                     }
 
-                                    //Sets the image background to the swatch (if it is not null), otherwise sets the background to a default colour
+                                    //Sets the image background to the swatch (if it is not null)
                                     if(swatch != null){
                                         mImageViewSpecificShow.setBackgroundColor((swatch.getRgb()));
-                                    }
-                                    else{
-                                        mImageViewSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorImageBackground));
                                     }
                                 }
                             });
@@ -572,8 +569,7 @@ public class SpecificShowActivity
 
                         @Override
                         public void onBitmapFailed(Drawable errorDrawable) {
-                            //Displays a default colour when the image could not be loaded
-                            mImageViewSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorImageBackground));
+
                         }
 
                         @Override
