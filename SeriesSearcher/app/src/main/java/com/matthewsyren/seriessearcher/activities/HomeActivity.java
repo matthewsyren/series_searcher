@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -276,15 +277,24 @@ public class HomeActivity
     }
 
     /**
-     * Sets up the Activity once the user signs in
+     * Sets up the Adapter
      */
-    private void setUpActivity(){
+    private void setUpAdapter(){
         //Sets a custom adapter for the RecyclerView to display the user's Shows
         mAdapter = new ShowAdapter(this, mShows, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        linearLayoutManager.scrollToPosition(mScrollPosition);
         mRecyclerViewMyShows.setLayoutManager(linearLayoutManager);
         mRecyclerViewMyShows.setAdapter(mAdapter);
-        mRecyclerViewMyShows.getLayoutManager().scrollToPosition(mScrollPosition);
+        mRecyclerViewMyShows.addItemDecoration(new DividerItemDecoration(this, linearLayoutManager.getOrientation()));
+    }
+
+    /**
+     * Sets up the Activity once the user signs in
+     */
+    private void setUpActivity(){
+        //Sets up the Adapter
+        setUpAdapter();
 
         //Displays the user's email address in the NavigationDrawer
         super.displayUserDetails();
