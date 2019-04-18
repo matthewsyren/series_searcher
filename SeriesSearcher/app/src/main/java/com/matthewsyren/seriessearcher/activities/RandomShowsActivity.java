@@ -31,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -231,6 +232,9 @@ public class RandomShowsActivity
                         break;
                     }
                 }
+
+                //Sorts the Shows alphabetically
+                Collections.sort(mShows, new Show.ShowTitleComparator());
 
                 //Determines which Shows have been added to My Series by the user
                 Show.markShowsInMySeries(this, mShows, new DataReceiver(new Handler()));

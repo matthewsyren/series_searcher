@@ -39,6 +39,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,6 +64,7 @@ public class HomeActivity
     private int mScrollPosition;
     private ApiConnection mApiConnection;
     private boolean mSignedOut;
+    private boolean mListSorted = false;
 
     //Constants
     private static final String SCROLL_POSITION_BUNDLE_KEY = "scroll_position_bundle_key";
@@ -422,6 +424,12 @@ public class HomeActivity
 
             //Hides ProgressBar
             mProgressBar.setVisibility(View.INVISIBLE);
+
+            //Sorts the mShows ArrayList alphabetically by Show Title
+            if(!mListSorted){
+                Collections.sort(mShows, new Show.ShowTitleComparator());
+                mListSorted = true;
+            }
         }
         catch(JSONException j){
             Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
