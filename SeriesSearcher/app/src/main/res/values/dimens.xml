@@ -50,4 +50,9 @@
     <dimen name="show_poster_title_padding">8dp</dimen>
     <dimen name="dialog_show_poster_height">300dp</dimen>
     <dimen name="show_poster_activity_padding">16dp</dimen>
+
+    <!-- Button -->
+    <dimen name="button_radius">32dp</dimen>
+    <dimen name="stroke_width">2dp</dimen>
+    <dimen name="button_horizontal_padding">16dp</dimen>
 </resources>

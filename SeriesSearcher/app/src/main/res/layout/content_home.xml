@@ -28,7 +28,7 @@
         android:layout_centerInParent="true"
         android:text="@string/button_add_shows"
         android:onClick="openSearchShows"
-        style="@style/ButtonStyle"
+        style="@style/RoundedButtonStyle"
         android:visibility="invisible"/>
 
     <android.support.v7.widget.RecyclerView

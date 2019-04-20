@@ -38,9 +38,11 @@
         <item name="android:textAlignment">center</item>
     </style>
 
-    <style name="ButtonStyle">
+    <style name="RoundedButtonStyle">
         <item name="android:textColor">@color/colorBlack</item>
-        <item name="android:background">@color/colorAccent</item>
+        <item name="android:background">@drawable/rounded_button</item>
+        <item name="android:paddingStart">@dimen/button_horizontal_padding</item>
+        <item name="android:paddingEnd">@dimen/button_horizontal_padding</item>
     </style>
 
     <style name="TextViewMessageStyle">

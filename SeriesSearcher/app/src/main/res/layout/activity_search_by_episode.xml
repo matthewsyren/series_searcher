@@ -61,7 +61,7 @@
             android:layout_below="@id/text_input_layout_episode"
             android:onClick="searchByEpisodeOnClick"
             android:layout_centerHorizontal="true"
-            style="@style/ButtonStyle"/>
+            style="@style/RoundedButtonStyle"/>
 
         <TextView
             android:id="@+id/text_no_internet_connection"
