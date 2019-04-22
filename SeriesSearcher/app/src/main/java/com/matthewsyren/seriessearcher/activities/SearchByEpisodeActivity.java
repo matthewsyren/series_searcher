@@ -1,13 +1,11 @@
 package com.matthewsyren.seriessearcher.activities;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -20,6 +18,7 @@ import com.matthewsyren.seriessearcher.models.ShowEpisode;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.ApiConnection.IApiConnectionResponse;
 import com.matthewsyren.seriessearcher.utilities.AsyncTaskUtilities;
+import com.matthewsyren.seriessearcher.utilities.DeviceUtilities;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
@@ -154,10 +153,7 @@ public class SearchByEpisodeActivity
                 mTextNoInternetConnection.setVisibility(View.GONE);
 
                 //Hides the user's keyboard
-                InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                if(inputMethodManager != null){
-                    inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                }
+                DeviceUtilities.hideKeyboard(this, getWindow());
 
                 //Fetches the show title from the Bundle and assigns input values to the variables
                 Bundle bundle = getIntent().getExtras();
