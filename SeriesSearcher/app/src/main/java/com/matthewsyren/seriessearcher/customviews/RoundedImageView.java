@@ -18,32 +18,42 @@ public class RoundedImageView extends AppCompatImageView {
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private int mBorderRadius = 0;
 
-    //Constructor
+    /**
+     * Constructor
+     */
     public RoundedImageView(Context context) {
         super(context);
         setUpView(context);
     }
 
-    //Constructor
+    /**
+     * Constructor
+     */
     public RoundedImageView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         setUpView(context);
     }
 
-    //Constructor
+    /**
+     * Constructor
+     */
     public RoundedImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setUpView(context);
     }
 
-    //Sets up the components needed to draw the View
+    /**
+     * Sets up the components needed to draw the View
+     */
     private void setUpView(Context context) {
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         mBorderRadius = (int) context.getResources().getDimension(R.dimen.list_row_image_border_radius);
     }
 
-    //Generates the rounded Path
+    /**
+     * Generates the rounded Path
+     */
     private void generateRoundedPath(int w, int h) {
         mRoundedPath = new Path();
         mRoundedPath.addRoundRect(new RectF(0,0, w, h), mBorderRadius, mBorderRadius, Path.Direction.CW);
@@ -64,7 +74,7 @@ public class RoundedImageView extends AppCompatImageView {
     protected void onDraw(Canvas canvas) {
         //Makes the Canvas transparent if it is not already
         if(canvas.isOpaque()) {
-            canvas.saveLayerAlpha(0, 0, canvas.getWidth(), canvas.getHeight(), 255, Canvas.ALL_SAVE_FLAG);
+            canvas.saveLayerAlpha(0, 0, getWidth(), getHeight(), 255, Canvas.ALL_SAVE_FLAG);
         }
 
         super.onDraw(canvas);
