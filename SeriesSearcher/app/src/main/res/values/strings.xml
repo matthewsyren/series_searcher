@@ -60,6 +60,10 @@
     <string name="error_no_episode_information_found">No information about that episode was found&#8230;</string>
     <string name="season_number">Season:</string>
     <string name="episode_number">Episode:</string>
+    <string name="error_enter_whole_number">Please only enter whole numbers</string>
+    <string name="error_missing_season_and_episode_number">Please enter a season and episode number</string>
+    <string name="error_missing_season_number">Please enter a season number</string>
+    <string name="error_missing_episode_number">Please enter an episode number</string>
 
     <!-- HelpActivity -->
     <string name="text_help">This app allows you to search for information about your favourite TV series. To search for a specific series, click on the \'Search\' item in the menu, and start typing. The app will automatically search for series that match your search while you type.
@@ -79,7 +83,6 @@
     <string name="error_fetching_data_no_internet_connection">Error fetching data, please check your internet connection</string>
     <string name="n_a">N/A</string>
     <string name="error_occurred">An error occurred, please try again</string>
-    <string name="error_enter_whole_number">Please only enter whole numbers, and don\'t leave any fields empty</string>
     <string name="yes">YES</string>
     <string name="no">NO</string>
     <string name="added_to_my_series">%s added to My Series</string>

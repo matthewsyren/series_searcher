@@ -176,8 +176,19 @@ public class SearchByEpisodeActivity
                 mApiConnection.execute(LinkUtilities.getShowEpisodeInformationLink(showNumber, season, episode));
             }
             catch(NumberFormatException nfe){
-                //Displays error message to the user
-                Toast.makeText(getApplicationContext(), R.string.error_enter_whole_number, Toast.LENGTH_LONG).show();
+                //Displays an error message to the user
+                if(mTextShowEpisode.getText().toString().length() == 0 && mTextShowSeason.getText().toString().length() == 0){
+                    Toast.makeText(getApplicationContext(), R.string.error_missing_season_and_episode_number, Toast.LENGTH_LONG).show();
+                }
+                else if(mTextShowSeason.getText().toString().length() == 0){
+                    Toast.makeText(getApplicationContext(), R.string.error_missing_season_number, Toast.LENGTH_LONG).show();
+                }
+                else if(mTextShowEpisode.getText().toString().length() == 0){
+                    Toast.makeText(getApplicationContext(), R.string.error_missing_episode_number, Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), R.string.error_enter_whole_number, Toast.LENGTH_LONG).show();
+                }
 
                 //Hides and displays the appropriate Views
                 mProgressBar.setVisibility(View.INVISIBLE);
