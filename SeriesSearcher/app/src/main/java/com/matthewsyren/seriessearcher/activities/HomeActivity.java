@@ -83,6 +83,9 @@ public class HomeActivity
         //Sets the NavigationDrawer for the Activity
         super.onCreateDrawer(this);
 
+        //Sets the title of the Activity
+        setTitle(getString(R.string.navigation_drawer_my_shows));
+
         //Restores data if possible
         if(savedInstanceState != null && FirebaseAuth.getInstance().getCurrentUser() != null){
             restoreData(savedInstanceState);
