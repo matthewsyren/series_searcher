@@ -20,6 +20,7 @@
     <dimen name="text_specific_show_activity_margin_bottom">8dp</dimen>
     <dimen name="progress_bar_margin_top">32dp</dimen>
     <dimen name="show_information_margin_top">16dp</dimen>
+    <dimen name="show_poster_image_gradient_height">150dp</dimen>
 
     <!-- SearchActivity -->
     <dimen name="tv_no_series_found_margin_top">32dp</dimen>

@@ -36,8 +36,9 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/show_poster_image_gradient"/>
+                android:layout_height="@dimen/show_poster_image_gradient_height"
+                android:background="@drawable/show_poster_image_gradient"
+                android:layout_gravity="bottom"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
