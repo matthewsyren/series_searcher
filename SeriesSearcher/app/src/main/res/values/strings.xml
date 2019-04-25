@@ -51,6 +51,7 @@
     <string name="title_activity_disclaimer">Disclaimer</string>
     <string name="title_activity_help">Help</string>
     <string name="title_activity_search_by_episode">Search for episode</string>
+    <string name="title_activity_home">My Series</string>
 
     <!-- SearchByEpisodeActivity -->
     <string name="button_search">Search</string>
