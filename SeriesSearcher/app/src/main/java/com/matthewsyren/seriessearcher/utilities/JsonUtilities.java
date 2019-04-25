@@ -28,14 +28,15 @@ public class JsonUtilities {
         String status = json.getString("status");
         String rating = json.getJSONObject("rating").getString("average");
         String runtime = json.getString("runtime");
-        String imageUrl;
+        String imageUrl = null;
 
-        //Gets the image URL for the current show if there is a URL provided, otherwise sets the URL to null
+        //Gets the image URL for the current show if there is a URL provided
         if(!json.getString("image").equals("null")){
-            imageUrl = json.getJSONObject("image").getString("medium");
-        }
-        else{
-            imageUrl = null;
+            JSONObject imageJson = json.getJSONObject("image");
+
+            if(!imageJson.getString("original").equals("null")){
+                imageUrl = imageJson.getString("original");
+            }
         }
 
         //Adds N/A if the data is not found
