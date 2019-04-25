@@ -75,7 +75,7 @@
         \n\nIf you choose to activate Data Saving Mode, images will not be downloaded.</string>
 
     <!-- DisclaimerActivity -->
-    <string name="text_disclaimer">This app gets all its information about series from the TVmaze website (available at www.tvmaze.com).</string>
+    <string name="text_disclaimer">This app gets all its information about series from the TVmaze website (available at <a href="www.tvmaze.com">www.tvmaze.com</a>).</string>
 
     <!-- ListViewRow -->
     <string name="text_add_show">+</string>
