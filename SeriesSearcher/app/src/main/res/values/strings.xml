@@ -39,6 +39,7 @@
     <string name="text_genres_sections">%s, %s</string>
     <string name="text_next_episode">&lt;b>Next Episode:&lt;/b> %s</string>
     <string name="toggle">Toggle</string>
+    <string name="error_show_poster_not_loaded">Show poster could not be loaded</string>
 
     <!-- SearchActivity -->
     <string name="label_search">Type to search&#8230;</string>

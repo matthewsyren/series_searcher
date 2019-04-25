@@ -1,18 +1,24 @@
 package com.matthewsyren.seriessearcher.activities;
 
+import android.animation.ValueAnimator;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +28,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -83,6 +92,7 @@ public class SpecificShowActivity
     private boolean mShadowIcon = false;
     private ApiConnection mApiConnection;
     private RemoveShowFromMySeriesFragment mRemoveShowFromMySeriesFragment;
+    private boolean mIsImageLoaded = false;
 
     //Constants
     public static final String SHOW_ID_KEY = "show_id_key";
@@ -464,7 +474,10 @@ public class SpecificShowActivity
      */
     private void displayShowInformation(Show show){
         if(show != null){
-            //Displays the information
+            //Displays the image for the Show
+            displayImage(show.getShowImageUrl());
+
+            //Displays the information for the Show
             mTextShowPremiered.setText(show.getShowPremieredDate());
             mTextShowLanguage.setText(show.getShowLanguages());
             mTextShowStatus.setText(show.getShowStatus());
@@ -497,9 +510,6 @@ public class SpecificShowActivity
                 mProgressBar.setVisibility(View.INVISIBLE);
             }
 
-            //Displays the image for the Show
-            displayImage(show.getShowImageUrl());
-
             //Displays the FloatingActionButton
             mButtonSearchByEpisode.setVisibility(View.VISIBLE);
         }
@@ -524,18 +534,22 @@ public class SpecificShowActivity
      */
     private void displayImage(String imageUrl){
         //Displays a default image if the show doesn't have a poster or the user has enabled data saving mode, otherwise displays a default image
-        if(UserAccountUtilities.getDataSavingPreference(this) || imageUrl == null){
+        if((UserAccountUtilities.getDataSavingPreference(this) || imageUrl == null) && !mIsImageLoaded){
             //Displays a default image
             mImageViewSpecificShow.setScaleType(ImageView.ScaleType.CENTER);
             mImageViewSpecificShow.setImageResource(R.mipmap.ic_launcher);
 
-            //Sets the maxWidth of the ImageView to a quarter of the user's screen
+            //Sets the maxWidth and maxHeight of the ImageView to a quarter of the user's screen
             Display display = getWindowManager().getDefaultDisplay();
             Point point = new Point();
             display.getSize(point);
             mImageViewSpecificShow.setMaxWidth(point.x / 4);
+            mImageViewSpecificShow.setMaxHeight(point.y / 4);
+
+            //Marks the image as loaded
+            mIsImageLoaded = true;
         }
-        else{
+        else if(!mIsImageLoaded){
             //Displays the show's poster
             Picasso.with(this)
                     .load(imageUrl)
@@ -543,25 +557,80 @@ public class SpecificShowActivity
                     .placeholder(R.color.colorGray)
                     .into(new Target() {
                         @Override
-                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
                             //Displays the image
                             mImageViewSpecificShow.setImageBitmap(bitmap);
 
-                            //Sets the image background to either the dominant or muted swatch (depending on what's available)
+                            //Marks the image as loaded
+                            mIsImageLoaded = true;
+
+                            //Sets the colours of certain Views to either the dark vibrant or dark muted swatch (depending on what's available)
                             Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                                 @Override
                                 public void onGenerated(@NonNull Palette palette) {
-                                    //Gets the dominant swatch
-                                    Palette.Swatch swatch = palette.getDominantSwatch();
+                                    //Gets the dark vibrant swatch
+                                    Palette.Swatch swatch = palette.getDarkVibrantSwatch();
 
-                                    //Gets the muted swatch if the dominant swatch is null
+                                    //Gets the dark muted swatch if the dark vibrant swatch is null
                                     if (swatch == null) {
-                                        swatch = palette.getMutedSwatch();
+                                        swatch = palette.getDarkMutedSwatch();
                                     }
 
-                                    //Sets the image background to the swatch (if it is not null)
+                                    //Sets the colour for the CollapsingToolbarLayout/ActionBar, status bar and ImageView to the swatch's color
                                     if(swatch != null){
-                                        mImageViewSpecificShow.setBackgroundColor((swatch.getRgb()));
+                                        //Gets the swatch colour
+                                        int swatchColour = swatch.getRgb();
+
+                                        //Sets the status bar colour to a slightly darker colour than the swatch (to make it distinguishable from the CollapsingToolbarLayout/ActionBar)
+                                        Window window = getWindow();
+                                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                                        int darkSwatchColour = ColorUtils.blendARGB(swatchColour, Color.BLACK, 0.2f);
+                                        window.setStatusBarColor(darkSwatchColour);
+
+                                        //Sets the ImageView's background colour
+                                        mImageViewSpecificShow.setBackgroundColor(swatchColour);
+
+                                        //Sets the CollapsingToolbarLayout/ActionBar's colour
+                                        if(mCollapsingToolbarLayout != null){
+                                            mCollapsingToolbarLayout.setContentScrimColor(swatchColour);
+                                        }
+                                        else if(getSupportActionBar() != null && getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                                            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(swatchColour));
+                                        }
+
+                                        //Displays the full Show poster for 500 milliseconds, then scrolls upwards (by half the ImageView's height) to make the image take up less space
+                                        if(mAppBar != null){
+                                            new Handler().postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    //Fetches the AppBarLayout's Behavior
+                                                    CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mAppBar.getLayoutParams();
+                                                    final AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) layoutParams.getBehavior();
+
+                                                    //Performs an animated scroll
+                                                    if (behavior != null) {
+                                                        //Sets up the animation
+                                                        ValueAnimator valueAnimator = ValueAnimator.ofInt();
+                                                        valueAnimator.setInterpolator(new DecelerateInterpolator());
+                                                        valueAnimator.setIntValues(0, -(mImageViewSpecificShow.getHeight() / 2));
+                                                        valueAnimator.setDuration(500);
+
+                                                        //Sets the AnimatorUpdateListener for the ValueAnimator
+                                                        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                                            @Override
+                                                            public void onAnimationUpdate(ValueAnimator animation) {
+                                                                //Sets the offset for the AppBar
+                                                                behavior.setTopAndBottomOffset((Integer) animation.getAnimatedValue());
+                                                                mAppBar.requestLayout();
+                                                            }
+                                                        });
+
+                                                        //Starts the scrolling animation
+                                                        valueAnimator.start();
+                                                    }
+                                                }
+                                            }, 500);
+                                        }
                                     }
                                 }
                             });
@@ -569,7 +638,7 @@ public class SpecificShowActivity
 
                         @Override
                         public void onBitmapFailed(Drawable errorDrawable) {
-
+                            Toast.makeText(getApplicationContext(), R.string.error_show_poster_not_loaded, Toast.LENGTH_LONG).show();
                         }
 
                         @Override
