@@ -15,7 +15,6 @@
         android:layout_height="match_parent"
         android:scaleType="fitXY"
         android:adjustViewBounds="true"
-        android:transitionName="@string/transition_image"
         android:contentDescription="@string/content_description_show_poster"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

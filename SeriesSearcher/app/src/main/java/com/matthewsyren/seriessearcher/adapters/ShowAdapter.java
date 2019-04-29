@@ -311,16 +311,10 @@ public class ShowAdapter
             intent.putExtra(SpecificShowActivity.SHOW_IS_ADDED_KEY, show.isShowAdded());
             intent.putExtra(SpecificShowActivity.SHOW_TITLE_KEY, show.getShowTitle());
 
-            //Animates image
-            Bundle bundle = ActivityOptions
-                    .makeSceneTransitionAnimation((Activity) mContext, ivShowPoster, ivShowPoster.getTransitionName())
-                    .toBundle();
-
             //Starts the SpecificShowActivity and requests that a result be sent to the current Activity
             ((Activity) mContext).startActivityForResult(
                     intent,
-                    SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_REQUEST_CODE ,
-                    bundle);
+                    SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_REQUEST_CODE);
         }
 
         /**
