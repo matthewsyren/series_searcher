@@ -25,15 +25,17 @@
                 android:id="@+id/image_view_specific_show"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="@dimen/specific_show_activity_image_view_min_height"
                 android:adjustViewBounds="true"
                 android:fitsSystemWindows="true"
                 android:layout_gravity="center"
                 app:layout_collapseMode="parallax"
                 android:scaleType="centerCrop"
                 android:contentDescription="@string/content_description_show_poster"
-                android:background="@color/colorPrimary" />
+                android:background="@color/colorGray" />
 
             <View
+                android:id="@+id/show_poster_image_gradient"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/show_poster_image_gradient_height"
                 android:background="@drawable/show_poster_image_gradient"

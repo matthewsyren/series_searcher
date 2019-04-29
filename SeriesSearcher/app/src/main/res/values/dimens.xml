@@ -21,6 +21,8 @@
     <dimen name="progress_bar_margin_top">32dp</dimen>
     <dimen name="show_information_margin_top">16dp</dimen>
     <dimen name="show_poster_image_gradient_height">150dp</dimen>
+    <dimen name="specific_show_activity_image_view_land_width">200dp</dimen>
+    <dimen name="specific_show_activity_image_view_min_height">500dp</dimen>
 
     <!-- SearchActivity -->
     <dimen name="tv_no_series_found_margin_top">32dp</dimen>

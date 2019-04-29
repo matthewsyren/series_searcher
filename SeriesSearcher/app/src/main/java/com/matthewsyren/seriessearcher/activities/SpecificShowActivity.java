@@ -7,8 +7,8 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -44,12 +44,13 @@ import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.ApiConnection.IApiConnectionResponse;
 import com.matthewsyren.seriessearcher.utilities.AsyncTaskUtilities;
+import com.matthewsyren.seriessearcher.utilities.DeviceUtilities;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -219,8 +220,6 @@ public class SpecificShowActivity
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-
         //Sets the result for the Activity if the user toggled the showAdded value of the Show (by using the menu)
         if(mChanged != null && mChanged){
             setResult(SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED);
@@ -231,6 +230,8 @@ public class SpecificShowActivity
 
         //Hides the FloatingActionButton
         mButtonSearchByEpisode.setVisibility(View.GONE);
+
+        super.onBackPressed();
     }
 
     @Override
@@ -539,6 +540,9 @@ public class SpecificShowActivity
             mImageViewSpecificShow.setScaleType(ImageView.ScaleType.CENTER);
             mImageViewSpecificShow.setImageResource(R.mipmap.ic_launcher);
 
+            //Sets the ImageView's background to the colorPrimary colour
+            mImageViewSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
             //Sets the maxWidth and maxHeight of the ImageView to a quarter of the user's screen
             Display display = getWindowManager().getDefaultDisplay();
             Point point = new Point();
@@ -555,14 +559,12 @@ public class SpecificShowActivity
                     .load(imageUrl)
                     .error(R.color.colorGray)
                     .placeholder(R.color.colorGray)
-                    .into(new Target() {
+                    .into(mImageViewSpecificShow, new Callback() {
                         @Override
-                        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-                            //Displays the image
-                            mImageViewSpecificShow.setImageBitmap(bitmap);
-
+                        public void onSuccess() {
                             //Marks the image as loaded
                             mIsImageLoaded = true;
+                            Bitmap bitmap = ((BitmapDrawable) mImageViewSpecificShow.getDrawable()).getBitmap();
 
                             //Sets the colours of certain Views to either the dark vibrant or dark muted swatch (depending on what's available)
                             Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
@@ -598,38 +600,44 @@ public class SpecificShowActivity
                                             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(swatchColour));
                                         }
 
-                                        //Displays the full Show poster for 500 milliseconds, then scrolls upwards (by half the ImageView's height) to make the image take up less space
+                                        //Displays the full Show poster for 500 milliseconds, then scrolls upwards by half the ImageView's height (if the image is larger than half the device height) to make the image take up less space
                                         if(mAppBar != null){
-                                            new Handler().postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    //Fetches the AppBarLayout's Behavior
-                                                    CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mAppBar.getLayoutParams();
-                                                    final AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) layoutParams.getBehavior();
+                                            //Fetches the device's height
+                                            int deviceHeight = DeviceUtilities.getDeviceHeight(getWindowManager());
 
-                                                    //Performs an animated scroll
-                                                    if (behavior != null) {
-                                                        //Sets up the animation
-                                                        ValueAnimator valueAnimator = ValueAnimator.ofInt();
-                                                        valueAnimator.setInterpolator(new DecelerateInterpolator());
-                                                        valueAnimator.setIntValues(0, -(mImageViewSpecificShow.getHeight() / 2));
-                                                        valueAnimator.setDuration(500);
+                                            //Scrolls upwards if the ImageView takes up more than half the device's height
+                                            if(mImageViewSpecificShow.getHeight() > (deviceHeight / 2)){
+                                                new Handler().postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        //Fetches the AppBarLayout's Behavior
+                                                        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mAppBar.getLayoutParams();
+                                                        final AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) layoutParams.getBehavior();
 
-                                                        //Sets the AnimatorUpdateListener for the ValueAnimator
-                                                        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                                                            @Override
-                                                            public void onAnimationUpdate(ValueAnimator animation) {
-                                                                //Sets the offset for the AppBar
-                                                                behavior.setTopAndBottomOffset((Integer) animation.getAnimatedValue());
-                                                                mAppBar.requestLayout();
-                                                            }
-                                                        });
+                                                        //Performs an animated scroll
+                                                        if (behavior != null) {
+                                                            //Sets up the animation
+                                                            ValueAnimator valueAnimator = ValueAnimator.ofInt();
+                                                            valueAnimator.setInterpolator(new DecelerateInterpolator());
+                                                            valueAnimator.setIntValues(0, -(mImageViewSpecificShow.getHeight() / 2));
+                                                            valueAnimator.setDuration(400);
 
-                                                        //Starts the scrolling animation
-                                                        valueAnimator.start();
+                                                            //Sets the AnimatorUpdateListener for the ValueAnimator
+                                                            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                                                @Override
+                                                                public void onAnimationUpdate(ValueAnimator animation) {
+                                                                    //Sets the offset for the AppBar
+                                                                    behavior.setTopAndBottomOffset((Integer) animation.getAnimatedValue());
+                                                                    mAppBar.requestLayout();
+                                                                }
+                                                            });
+
+                                                            //Starts the scrolling animation
+                                                            valueAnimator.start();
+                                                        }
                                                     }
-                                                }
-                                            }, 500);
+                                                }, 500);
+                                            }
                                         }
                                     }
                                 }
@@ -637,13 +645,8 @@ public class SpecificShowActivity
                         }
 
                         @Override
-                        public void onBitmapFailed(Drawable errorDrawable) {
+                        public void onError() {
                             Toast.makeText(getApplicationContext(), R.string.error_show_poster_not_loaded, Toast.LENGTH_LONG).show();
-                        }
-
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {
-
                         }
                     });
         }

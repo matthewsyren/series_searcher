@@ -12,13 +12,15 @@
     <ImageView
         android:id="@+id/image_view_specific_show"
         android:layout_width="0dp"
+        android:minWidth="@dimen/specific_show_activity_image_view_land_width"
+        android:maxWidth="@dimen/specific_show_activity_image_view_land_width"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         android:adjustViewBounds="true"
         android:contentDescription="@string/content_description_show_poster"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/colorPrimary"/>
+        android:background="@color/colorGray"/>
 
     <FrameLayout
         android:layout_width="0dp"
