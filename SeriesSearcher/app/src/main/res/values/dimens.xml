@@ -51,8 +51,15 @@
     <!-- ShowPosterActivity -->
     <dimen name="show_poster_title_text_size">24dp</dimen>
     <dimen name="show_poster_title_padding">8dp</dimen>
-    <dimen name="dialog_show_poster_height">300dp</dimen>
     <dimen name="show_poster_activity_padding">16dp</dimen>
+    <dimen name="show_poster_landscape_guideline_1_percentage">0.1</dimen>
+    <dimen name="show_poster_landscape_guideline_2_percentage">0.9</dimen>
+    <dimen name="show_poster_landscape_guideline_3_percentage">0.3</dimen>
+    <dimen name="show_poster_landscape_guideline_4_percentage">0.1</dimen>
+    <dimen name="show_poster_landscape_guideline_5_percentage">0.9</dimen>
+    <dimen name="show_poster_guideline_1_percentage">0.1</dimen>
+    <dimen name="show_poster_guideline_2_percentage">0.9</dimen>
+    <dimen name="show_poster_constraint_layout_min_width">0dp</dimen>
 
     <!-- Button -->
     <dimen name="button_radius">32dp</dimen>

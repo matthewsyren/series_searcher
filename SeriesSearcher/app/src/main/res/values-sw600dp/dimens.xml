@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- SpecificShowActivity -->
+    <dimen name="specific_show_activity_image_view_land_width">400dp</dimen>
+
+    <!-- ShowPosterActivity -->
+    <dimen name="show_poster_landscape_guideline_1_percentage">0.25</dimen>
+    <dimen name="show_poster_landscape_guideline_2_percentage">0.75</dimen>
+    <dimen name="show_poster_landscape_guideline_4_percentage">0.2</dimen>
+    <dimen name="show_poster_landscape_guideline_5_percentage">0.8</dimen>
+    <dimen name="show_poster_guideline_1_percentage">0.3</dimen>
+    <dimen name="show_poster_guideline_2_percentage">0.7</dimen>
+    <dimen name="show_poster_constraint_layout_min_width">400dp</dimen>
+
+</resources>
