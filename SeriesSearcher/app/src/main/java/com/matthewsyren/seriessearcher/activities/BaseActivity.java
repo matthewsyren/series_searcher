@@ -55,7 +55,7 @@ public class BaseActivity
     /**
      * Registers listeners for the appropriate Views
      */
-    private void registerListeners(){
+    protected void registerListeners(){
         //Sets up the OnItemSelectedListener
         mNavigationView.setNavigationItemSelectedListener(this);
 
@@ -106,7 +106,7 @@ public class BaseActivity
     /**
      * Displays the user's details in the NavigationDrawer
      */
-    public void displayUserDetails(){
+    protected void displayUserDetails(){
         View view = mNavigationView.getHeaderView(0);
         TextView textView = view.findViewById(R.id.textView);
         String emailAddress = UserAccountUtilities.getUserEmailAddress();
@@ -119,7 +119,7 @@ public class BaseActivity
     /**
      * Sets the selected item in the Navigation Drawer
      */
-    public void setSelectedNavItem(int id){
+    protected void setSelectedNavItem(int id){
         mNavigationView.setCheckedItem(id);
     }
 
@@ -187,7 +187,7 @@ public class BaseActivity
     /**
      * Interface is used to tell the appropriate Activities when the data saving preferences are changed
      */
-    public interface IOnDataSavingPreferenceChangedListener {
+    protected interface IOnDataSavingPreferenceChangedListener {
         /**
          * Executed when the user changes their data saving preference
          */

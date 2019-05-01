@@ -139,7 +139,7 @@ public class FirebaseService
     /**
      * Loops through all Shows that the user has added to My Series, and sets showAdded to true for each Show in shows that have been added to My Series
      */
-    public void markShowsInMySeries(String userKey, final ArrayList<Show> shows, final ResultReceiver resultReceiver){
+    private void markShowsInMySeries(String userKey, final ArrayList<Show> shows, final ResultReceiver resultReceiver){
         //Sets the previous values for showAdded in shows to false
         for(int i = 0; i < shows.size(); i++){
             shows.get(i).setShowAdded(false);
@@ -193,7 +193,7 @@ public class FirebaseService
     /**
      * Updates the Show that the user has added to or removed from My Series in the Firebase Database
      */
-    public void updateShowInDatabase(String userKey, boolean showAdded, int showId){
+    private void updateShowInDatabase(String userKey, boolean showAdded, int showId){
         //Saves the updated data to the Firebase database
         getFirebaseDatabaseReference(userKey).child("" + showId)
                 .setValue(showAdded);
