@@ -69,15 +69,16 @@
 
     <!-- HelpActivity -->
     <string name="text_help">This app allows you to search for information about your favourite TV series. To search for a specific series, click on the \'Search\' item in the menu, and start typing. The app will automatically search for series that match your search while you type.
-        \n\nTo view a list of randomised series, click on the \'Random Series\' item in the menu. If you would like to see a new list of randomised series while on this page, click on the refresh button at the top right of your screen.
-        \n\nIf you see a series that you would like to add to your favourite series, click on the \'+\' button that appears next to the series\' name. All of the series that you have added to your favourite series are accessible via the \'My Series\' item in the menu. To remove an item from your favourite series, click on the delete button that appears next to the series\' name.
+        \n\nIf you are looking for a new series to watch, click on the \'Random Series\' item in the menu. This will display a list of random series to you, which can give you ideas for a new series to watch. If you would like to see a new list of random series while on this page, click on the refresh button at the top right of your screen.
+        \n\nIf you see a series that you would like to add to \'My Series\', click on the \'+\' button that appears next to the series\' name. All of the series that you have added to \'My Series\' are accessible via the \'My Series\' item in the menu. If a series has been added to \'My Series\', a delete button will appear next to the series\' name. This button can be used to remove a series from \'My Series\'.
+        \n\nWhen viewing a list of series, click on a series\' poster to view an enlarged version of the series\' poster.
         \n\nIf you click on a series, a page with more information on the series will be displayed. In addition to seeing more information about the series on this page, you will also be able to search for a specific episode from the series by clicking on the search button and typing in the season and episode number. The app will then display any information it has about that specific episode.
-        \n\nIf you choose to activate Data Saving Mode, images will not be downloaded.</string>
+        \n\nTo activate Data Saving Mode, click on the \'Data Saving Mode\' item in the menu. When Data Saving Mode is active, images will not be downloaded.</string>
 
     <!-- DisclaimerActivity -->
     <string name="text_disclaimer">This app gets all its information about series from the TVmaze website (available at <a href="www.tvmaze.com">www.tvmaze.com</a>).</string>
 
-    <!-- ListViewRow -->
+    <!-- RecyclerViewRow -->
     <string name="text_add_show">+</string>
 
     <!-- Shared -->
