@@ -31,4 +31,14 @@ public class DeviceUtilities {
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.heightPixels;
     }
+
+    /**
+     * Returns the device's width in pixels
+     * @param windowManager The WindowManager of the calling Activity (retrieved using the getWindowManager() method)
+     */
+    public static int getDeviceWidth(WindowManager windowManager){
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.widthPixels;
+    }
 }
