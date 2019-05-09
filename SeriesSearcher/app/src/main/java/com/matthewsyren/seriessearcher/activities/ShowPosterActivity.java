@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.Show;
+import com.matthewsyren.seriessearcher.models.ShowImage;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 import com.squareup.picasso.Picasso;
 
@@ -61,9 +62,14 @@ public class ShowPosterActivity
                 mIvShowPoster.setImageResource(R.mipmap.ic_launcher);
             }
             else{
+                //Initialises ShowImage
+                ShowImage showImage = new ShowImage(getWindowManager(), this);
+
                 //Loads the poster
                 Picasso.with(this)
                         .load(show.getShowImageUrl())
+                        .resize(showImage.getWidth(), showImage.getHeight())
+                        .onlyScaleDown()
                         .into(mIvShowPoster);
             }
 

@@ -27,6 +27,7 @@ import com.matthewsyren.seriessearcher.customviews.RoundedImageView;
 import com.matthewsyren.seriessearcher.fragments.RemoveShowFromMySeriesFragment;
 import com.matthewsyren.seriessearcher.fragments.RemoveShowFromMySeriesFragment.IRemoveShowFromMySeriesFragmentOnClickListener;
 import com.matthewsyren.seriessearcher.models.Show;
+import com.matthewsyren.seriessearcher.models.ShowImage;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 import com.squareup.picasso.Picasso;
@@ -158,10 +159,15 @@ public class ShowAdapter
             viewHolder.ivShowPoster.setImageResource(R.mipmap.ic_launcher);
         }
         else{
+            //Initialises ShowImage
+            ShowImage showImage = new ShowImage(((Activity)mContext).getWindowManager(), mContext);
+
             //Displays the image for the show if the show has a poster and data saving mode hasn't been activated
             Picasso.with(mContext)
                     .load(sShows.get(position)
                             .getShowImageUrl())
+                    .resize(showImage.getWidth(), showImage.getHeight())
+                    .onlyScaleDown()
                     .error(R.color.colorGray)
                     .placeholder(R.color.colorGray)
                     .into(viewHolder.ivShowPoster);

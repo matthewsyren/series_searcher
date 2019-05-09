@@ -41,6 +41,7 @@ import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.fragments.RemoveShowFromMySeriesFragment;
 import com.matthewsyren.seriessearcher.fragments.RemoveShowFromMySeriesFragment.IRemoveShowFromMySeriesFragmentOnClickListener;
 import com.matthewsyren.seriessearcher.models.Show;
+import com.matthewsyren.seriessearcher.models.ShowImage;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.ApiConnection.IApiConnectionResponse;
 import com.matthewsyren.seriessearcher.utilities.AsyncTaskUtilities;
@@ -417,6 +418,9 @@ public class SpecificShowActivity
             mClNoInternetConnection.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
             mButtonSearchByEpisode.setVisibility(View.GONE);
+
+            //Scrolls up to make the Views more visible
+            scrollUp(false);
         }
     }
 
@@ -554,101 +558,140 @@ public class SpecificShowActivity
             mIsImageLoaded = true;
         }
         else if(!mIsImageLoaded){
-            //Displays the show's poster
-            Picasso.with(this)
-                    .load(imageUrl)
-                    .error(R.color.colorGray)
-                    .placeholder(R.color.colorGray)
-                    .into(mImageViewSpecificShow, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            //Marks the image as loaded
-                            mIsImageLoaded = true;
-                            Bitmap bitmap = ((BitmapDrawable) mImageViewSpecificShow.getDrawable()).getBitmap();
+            //Sets the scroll offset to 0
+            scrollToOffset(0, 0);
 
-                            //Sets the colours of certain Views to either the dark vibrant or dark muted swatch (depending on what's available)
-                            Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-                                @Override
-                                public void onGenerated(@NonNull Palette palette) {
-                                    //Gets the dark vibrant swatch
-                                    Palette.Swatch swatch = palette.getDarkVibrantSwatch();
+            try{
+                //Initialises ShowImage
+                ShowImage showImage = new ShowImage(getWindowManager(), this);
 
-                                    //Gets the dark muted swatch if the dark vibrant swatch is null
-                                    if (swatch == null) {
-                                        swatch = palette.getDarkMutedSwatch();
-                                    }
+                //Displays the show's poster
+                Picasso.with(this)
+                        .load(imageUrl)
+                        .resize(showImage.getWidth(), showImage.getHeight())
+                        .onlyScaleDown()
+                        .error(R.color.colorGray)
+                        .placeholder(R.color.colorGray)
+                        .into(mImageViewSpecificShow, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                //Marks the image as loaded
+                                mIsImageLoaded = true;
+                                Bitmap bitmap = ((BitmapDrawable) mImageViewSpecificShow.getDrawable()).getBitmap();
 
-                                    //Sets the colour for the CollapsingToolbarLayout/ActionBar, status bar and ImageView to the swatch's color
-                                    if(swatch != null){
-                                        //Gets the swatch colour
-                                        int swatchColour = swatch.getRgb();
+                                //Applies the Show poster's swatch
+                                applyShowPosterSwatch(bitmap);
 
-                                        //Sets the status bar colour to a slightly darker colour than the swatch (to make it distinguishable from the CollapsingToolbarLayout/ActionBar)
-                                        Window window = getWindow();
-                                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                                        int darkSwatchColour = ColorUtils.blendARGB(swatchColour, Color.BLACK, 0.2f);
-                                        window.setStatusBarColor(darkSwatchColour);
+                                //Scrolls up
+                                scrollUp(true);
+                            }
 
-                                        //Sets the ImageView's background colour
-                                        mImageViewSpecificShow.setBackgroundColor(swatchColour);
+                            @Override
+                            public void onError() {
+                                Toast.makeText(getApplicationContext(), R.string.error_show_poster_not_loaded, Toast.LENGTH_LONG).show();
+                            }
+                        });
+            }
+            catch(Exception exc){
+                Toast.makeText(this, R.string.error_show_poster_not_loaded, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
-                                        //Sets the CollapsingToolbarLayout/ActionBar's colour
-                                        if(mCollapsingToolbarLayout != null){
-                                            mCollapsingToolbarLayout.setContentScrimColor(swatchColour);
-                                        }
-                                        else if(getSupportActionBar() != null && getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                                            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(swatchColour));
-                                        }
+    /**
+     * Used to set the colour of various Views based on the swatch from the Show's poster
+     * @param bitmap The Show's poster as a Bitmap
+     */
+    private void applyShowPosterSwatch(Bitmap bitmap){
+        //Sets the colours of certain Views to either the dark vibrant or dark muted swatch (depending on what's available)
+        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(@NonNull Palette palette) {
+                //Gets the dark vibrant swatch
+                Palette.Swatch swatch = palette.getDarkVibrantSwatch();
 
-                                        //Displays the full Show poster for 500 milliseconds, then scrolls upwards by half the ImageView's height (if the image is larger than half the device height) to make the image take up less space
-                                        if(mAppBar != null){
-                                            //Fetches the device's height
-                                            int deviceHeight = DeviceUtilities.getDeviceHeight(getWindowManager());
+                //Gets the dark muted swatch if the dark vibrant swatch is null
+                if (swatch == null) {
+                    swatch = palette.getDarkMutedSwatch();
+                }
 
-                                            //Scrolls upwards if the ImageView takes up more than half the device's height
-                                            if(mImageViewSpecificShow.getHeight() > (deviceHeight / 2)){
-                                                new Handler().postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        //Fetches the AppBarLayout's Behavior
-                                                        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mAppBar.getLayoutParams();
-                                                        final AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) layoutParams.getBehavior();
+                //Sets the colour for the CollapsingToolbarLayout/ActionBar, status bar and ImageView to the swatch's color
+                if(swatch != null){
+                    //Gets the swatch colour
+                    int swatchColour = swatch.getRgb();
 
-                                                        //Performs an animated scroll
-                                                        if (behavior != null) {
-                                                            //Sets up the animation
-                                                            ValueAnimator valueAnimator = ValueAnimator.ofInt();
-                                                            valueAnimator.setInterpolator(new DecelerateInterpolator());
-                                                            valueAnimator.setIntValues(0, -(mImageViewSpecificShow.getHeight() / 2));
-                                                            valueAnimator.setDuration(400);
+                    //Sets the status bar colour to a slightly darker colour than the swatch (to make it distinguishable from the CollapsingToolbarLayout/ActionBar)
+                    Window window = getWindow();
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    int darkSwatchColour = ColorUtils.blendARGB(swatchColour, Color.BLACK, 0.2f);
+                    window.setStatusBarColor(darkSwatchColour);
 
-                                                            //Sets the AnimatorUpdateListener for the ValueAnimator
-                                                            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                                                                @Override
-                                                                public void onAnimationUpdate(ValueAnimator animation) {
-                                                                    //Sets the offset for the AppBar
-                                                                    behavior.setTopAndBottomOffset((Integer) animation.getAnimatedValue());
-                                                                    mAppBar.requestLayout();
-                                                                }
-                                                            });
+                    //Sets the ImageView's background colour
+                    mImageViewSpecificShow.setBackgroundColor(swatchColour);
 
-                                                            //Starts the scrolling animation
-                                                            valueAnimator.start();
-                                                        }
-                                                    }
-                                                }, 500);
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-                        }
+                    //Sets the CollapsingToolbarLayout/ActionBar's colour
+                    if(mCollapsingToolbarLayout != null){
+                        mCollapsingToolbarLayout.setContentScrimColor(swatchColour);
+                    }
+                    else if(getSupportActionBar() != null && getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(swatchColour));
+                    }
+                }
+            }
+        });
+    }
 
-                        @Override
-                        public void onError() {
-                            Toast.makeText(getApplicationContext(), R.string.error_show_poster_not_loaded, Toast.LENGTH_LONG).show();
-                        }
-                    });
+    /**
+     * Scrolls up by half the ImageView's height
+     * @param considerDeviceHeight Set to true if the device height must be considered when deciding to scroll, otherwise set to false
+     */
+    private void scrollUp(boolean considerDeviceHeight){
+        //Fetches the device's height
+        int deviceHeight = DeviceUtilities.getDeviceHeight(getWindowManager());
+
+        //Scrolls up if the ImageView takes up more than half the device's height, or if considerDeviceHeight is false
+        if(!considerDeviceHeight || (mImageViewSpecificShow.getHeight() > (deviceHeight / 2))){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    scrollToOffset(-(mImageViewSpecificShow.getHeight() / 2), 400);
+                }
+            }, 500);
+        }
+    }
+
+    /**
+     * Scrolls to the specified offset
+     * @param offset The offset to scroll to
+     * @param duration The duration in milliseconds of the scroll
+     */
+    private void scrollToOffset(int offset, int duration){
+        if(mAppBar != null) {
+            //Fetches the AppBarLayout's Behavior
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mAppBar.getLayoutParams();
+            final AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) layoutParams.getBehavior();
+
+            //Performs an animated scroll
+            if (behavior != null) {
+                //Sets up the animation
+                ValueAnimator valueAnimator = ValueAnimator.ofInt();
+                valueAnimator.setInterpolator(new DecelerateInterpolator());
+                valueAnimator.setIntValues(0, offset);
+                valueAnimator.setDuration(duration);
+
+                //Sets the AnimatorUpdateListener for the ValueAnimator
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        //Sets the offset for the AppBar
+                        behavior.setTopAndBottomOffset((Integer) animation.getAnimatedValue());
+                        mAppBar.requestLayout();
+                    }
+                });
+
+                //Starts the scrolling animation
+                valueAnimator.start();
+            }
         }
     }
 
