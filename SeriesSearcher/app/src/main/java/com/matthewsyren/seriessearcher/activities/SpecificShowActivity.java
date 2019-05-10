@@ -646,15 +646,16 @@ public class SpecificShowActivity
      * @param considerDeviceHeight Set to true if the device height must be considered when deciding to scroll, otherwise set to false
      */
     private void scrollUp(boolean considerDeviceHeight){
-        //Fetches the device's height
+        //Fetches the heights of the device and image
         int deviceHeight = DeviceUtilities.getDeviceHeight(getWindowManager());
+        final int imageHeight = mImageViewSpecificShow.getDrawable().getIntrinsicHeight();
 
-        //Scrolls up if the ImageView takes up more than half the device's height, or if considerDeviceHeight is false
-        if(!considerDeviceHeight || (mImageViewSpecificShow.getHeight() > (deviceHeight / 2))){
+        //Scrolls up if the ImageView's image takes up more than half the device's height, or if considerDeviceHeight is false
+        if(!considerDeviceHeight || (imageHeight > (deviceHeight / 2))){
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    scrollToOffset(-(mImageViewSpecificShow.getHeight() / 2), 400);
+                    scrollToOffset(-(imageHeight / 2), 400);
                 }
             }, 500);
         }
