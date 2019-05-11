@@ -17,6 +17,10 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Activity displays the poster for a Show
+ */
+
 public class ShowPosterActivity
         extends AppCompatActivity {
     //View bindings

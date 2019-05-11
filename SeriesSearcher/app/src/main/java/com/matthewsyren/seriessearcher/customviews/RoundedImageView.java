@@ -12,6 +12,10 @@ import android.util.AttributeSet;
 
 import com.matthewsyren.seriessearcher.R;
 
+/**
+ * Generates an ImageView with rounded corners
+ */
+
 public class RoundedImageView extends AppCompatImageView {
     //Declarations
     private Path mRoundedPath;
@@ -44,6 +48,7 @@ public class RoundedImageView extends AppCompatImageView {
 
     /**
      * Sets up the components needed to draw the View
+     * @param context The Context of the Activity
      */
     private void setUpView(Context context) {
         setLayerType(LAYER_TYPE_SOFTWARE, null);
@@ -53,10 +58,12 @@ public class RoundedImageView extends AppCompatImageView {
 
     /**
      * Generates the rounded Path
+     * @param width The width of the Path
+     * @param height The height of the Path
      */
-    private void generateRoundedPath(int w, int h) {
+    private void generateRoundedPath(int width, int height) {
         mRoundedPath = new Path();
-        mRoundedPath.addRoundRect(new RectF(0,0, w, h), mBorderRadius, mBorderRadius, Path.Direction.CW);
+        mRoundedPath.addRoundRect(new RectF(0,0, width, height), mBorderRadius, mBorderRadius, Path.Direction.CW);
         mRoundedPath.setFillType(Path.FillType.INVERSE_WINDING);
     }
 

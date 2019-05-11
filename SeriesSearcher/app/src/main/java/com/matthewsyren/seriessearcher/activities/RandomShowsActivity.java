@@ -37,6 +37,10 @@ import java.util.Collections;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Activity displays a list of random Shows to the user
+ */
+
 public class RandomShowsActivity
         extends BaseActivity
         implements IApiConnectionResponse,
@@ -54,7 +58,6 @@ public class RandomShowsActivity
     //Constants
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
     private static final String API_PAGE_BUNDLE_KEY = "api_age";
-    private static final String API_STARTING_SHOW_BUNDLE_KEY = "api_starting_show";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,13 +131,13 @@ public class RandomShowsActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        switch (id){
-            case R.id.mi_refresh:
-                getRandomShows();
-                return true;
-             default:
-                 return super.onOptionsItemSelected(item);
+        //Refreshes the Shows if the user clicks on the Refresh MenuItem
+        if(id == R.id.mi_refresh){
+            getRandomShows();
+            return true;
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -150,7 +153,7 @@ public class RandomShowsActivity
     }
 
     /**
-     * Fetches 20 random Shows
+     * Fetches up to 20 random Shows
      */
     private void getRandomShows(){
         //Displays/hides Views based on Internet connection status
@@ -183,6 +186,7 @@ public class RandomShowsActivity
 
     /**
      * Restores any saved data
+     * @param savedInstanceState The Bundle containing the Activity's data
      */
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
@@ -202,6 +206,7 @@ public class RandomShowsActivity
 
     /**
      * Fetches the JSON from the ApiConnection class, and parses it
+     * @param response The JSON response retrieved from the API
      */
     @Override
     public void parseJsonResponse(String response) {
@@ -210,15 +215,8 @@ public class RandomShowsActivity
                 //JSONArray stores the JSON returned from the TVMaze API
                 JSONArray jsonArray = new JSONArray(response);
 
-                //Fetches previous list of Shows from the Bundle if a starting show has already been determined, otherwise Math.random() is used to choose a random starting point to fetch data from the API. This allows the app to fetch different shows each time it runs
-                Bundle bundle = getIntent().getExtras();
-                int startingShow;
-                if(bundle != null && bundle.getInt(API_STARTING_SHOW_BUNDLE_KEY) != -1){
-                    startingShow = bundle.getInt(API_STARTING_SHOW_BUNDLE_KEY);
-                }
-                else{
-                    startingShow = (int) (Math.random() * 230 + 1);
-                }
+                //Math.random() is used to choose a random starting point to fetch data from the API. This allows the app to fetch different shows each time it runs
+                int startingShow = (int) (Math.random() * 230 + 1);
 
                 //Loops through the 20 randomly chosen shows returned from the TVMaze API
                 for(int i = 0; i < 20 && (startingShow + i) < jsonArray.length() - 1; i++){
@@ -253,6 +251,7 @@ public class RandomShowsActivity
 
     /**
      * Toggles the visibility of a no Internet connection message
+     * @param online A boolean indicating whether there is an Internet connection or not
      */
     private void toggleNoInternetMessageVisibility(boolean online){
         if(online || mShows.size() > 0){

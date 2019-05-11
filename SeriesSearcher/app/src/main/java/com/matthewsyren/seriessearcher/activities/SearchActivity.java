@@ -37,6 +37,10 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Activity allows the user to search for Shows
+ */
+
 public class SearchActivity
         extends BaseActivity
         implements IApiConnectionResponse,
@@ -48,7 +52,7 @@ public class SearchActivity
     @BindView(R.id.tv_no_series_found) TextView mTvNoSeriesFound;
     @BindView(R.id.text_no_internet_connection) TextView mTextNoInternetConnection;
 
-    //Declarations
+    //Variables
     private ApiConnection mApiConnection = new ApiConnection();
     private ArrayList<Show> mShows =  new ArrayList<>();
     private ShowAdapter mAdapter;
@@ -118,6 +122,7 @@ public class SearchActivity
 
     /**
      * Restores any saved data
+     * @param savedInstanceState The Bundle containing the Activity's data
      */
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
@@ -168,7 +173,7 @@ public class SearchActivity
     }
 
     /**
-     * Retrieves the text that the user searches for in text_search, and then searches for that text using the API
+     * Retrieves the text that the user searches for, and then searches for that text using the API
      */
     private void searchShows(){
         //Fetches user's input
@@ -198,7 +203,8 @@ public class SearchActivity
     }
 
     /**
-     * Parses the JSON returned from the API, and populates the recycler_view_search_results RecyclerView with the data
+     * Parses the JSON returned from the API, and populates the RecyclerView with the data
+     * @param response The JSON response retrieved from the API
      */
     @Override
     public void parseJsonResponse(String response) {
@@ -219,6 +225,7 @@ public class SearchActivity
                         mShows.add(JsonUtilities.parseShowJson(json, this, this, false, null));
                     }
                 }
+
                 //Determines which Shows have been added to My Series by the user
                 Show.markShowsInMySeries(this, mShows, new DataReceiver(new Handler()));
             }

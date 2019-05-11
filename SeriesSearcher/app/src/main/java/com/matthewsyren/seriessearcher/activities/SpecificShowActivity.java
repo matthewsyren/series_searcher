@@ -59,6 +59,10 @@ import org.json.JSONObject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Activity displays information about a specific Show
+ */
+
 public class SpecificShowActivity
         extends AppCompatActivity
         implements IApiConnectionResponse,
@@ -278,6 +282,7 @@ public class SpecificShowActivity
 
     /**
      * Restores the Activity's data
+     * @param savedInstanceState The Bundle containing the Activity's data
      */
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(SHOW_BUNDLE_KEY)){
@@ -407,6 +412,7 @@ public class SpecificShowActivity
 
     /**
      * Toggles the visibility of a no Internet connection message
+     * @param online A boolean indicating whether there is an Internet connection or not
      */
     private void toggleNoInternetMessageVisibility(boolean online){
         if(online){
@@ -433,6 +439,7 @@ public class SpecificShowActivity
 
     /**
      * Parses the JSON returned from the API and displays the data
+     * @param response The JSON response retrieved from the API
      */
     @Override
     public void parseJsonResponse(String response) {
@@ -476,6 +483,7 @@ public class SpecificShowActivity
 
     /**
      * Displays the Show's information
+     * @param show A Show object with information about the Show that is to be displayed
      */
     private void displayShowInformation(Show show){
         if(show != null){
@@ -536,6 +544,7 @@ public class SpecificShowActivity
 
     /**
      * Displays the image for the Show
+     * @param imageUrl The URL of the image to be displayed for the Show
      */
     private void displayImage(String imageUrl){
         //Displays a default image if the show doesn't have a poster or the user has enabled data saving mode, otherwise displays a default image
@@ -663,7 +672,7 @@ public class SpecificShowActivity
 
     /**
      * Scrolls to the specified offset
-     * @param offset The offset to scroll to
+     * @param offset The offset in pixels to scroll to
      * @param duration The duration in milliseconds of the scroll
      */
     private void scrollToOffset(int offset, int duration){

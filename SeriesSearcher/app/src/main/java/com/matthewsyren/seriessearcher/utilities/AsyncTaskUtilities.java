@@ -2,6 +2,10 @@ package com.matthewsyren.seriessearcher.utilities;
 
 import android.os.AsyncTask;
 
+/**
+ * Performs tasks related to AsyncTasks
+ */
+
 public class AsyncTaskUtilities {
     /**
      * Cancels the AsyncTask

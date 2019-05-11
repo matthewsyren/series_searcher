@@ -11,6 +11,10 @@ import android.widget.TextView;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.Show;
 
+/**
+ * Generates a Dialog that allows the user to remove a Show from 'My Series'
+ */
+
 public class RemoveShowFromMySeriesFragment
         extends DialogFragment {
     //Constants
@@ -73,6 +77,8 @@ public class RemoveShowFromMySeriesFragment
 
     /**
      * Sends the decision back to the appropriate Activity (if the Activity has been set)
+     * @param removed A boolean indicating whether the Show was removed or not
+     * @param show The Show that was either added or removed
      */
     private void returnResult(boolean removed, Show show){
         if(mRemoveShowFromMySeriesFragmentOnClickListener != null){
@@ -82,6 +88,7 @@ public class RemoveShowFromMySeriesFragment
 
     /**
      * Setter method (used to set the Activity/class to which data must be sent once a decision has been made by the user)
+     * @param iRemoveShowFromMySeriesFragmentOnClickListener The instance of the IRemoveShowFromMySeriesFragmentOnClickListener class to notify when there is a click
      */
     public void setRemoveShowFromMySeriesFragmentOnClickListener(IRemoveShowFromMySeriesFragmentOnClickListener iRemoveShowFromMySeriesFragmentOnClickListener){
         mRemoveShowFromMySeriesFragmentOnClickListener = iRemoveShowFromMySeriesFragmentOnClickListener;

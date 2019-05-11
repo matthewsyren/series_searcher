@@ -16,6 +16,10 @@ import com.matthewsyren.seriessearcher.models.Show;
 
 import java.util.ArrayList;
 
+/**
+ * Used to update/retrieve data from the Firebase Database
+ */
+
 public class FirebaseService
         extends IntentService {
     //ResultReceiver
@@ -42,7 +46,9 @@ public class FirebaseService
         super("FirebaseService");
     }
 
-    //Calls the appropriate method based on the action passed in the Intent
+    /**
+     * Calls the appropriate method based on the action passed in the Intent
+     */
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         if(intent != null){
@@ -83,6 +89,7 @@ public class FirebaseService
 
     /**
      * Returns a DatabaseReference to the user's data in the Firebase Database
+     * @param userKey The unique key for the user
      */
     private DatabaseReference getFirebaseDatabaseReference(String userKey){
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -92,6 +99,8 @@ public class FirebaseService
 
     /**
      * Fetches all Show IDs associated with the user's key, and adds them to an ArrayList
+     * @param userKey The unique key for the user
+     * @param resultReceiver The ResultReceiver to send a result to
      */
     private void getShowIds(String userKey, final ResultReceiver resultReceiver){
         //Adds a Listener to fetch the data from the Firebase Database
@@ -127,6 +136,8 @@ public class FirebaseService
 
     /**
      * Returns the user's Show IDs to the appropriate Activity
+     * @param showIds An ArrayList of Show IDs
+     * @param resultReceiver The ResultReceiver to send a result to
      */
     private void returnShowIds(ArrayList<String> showIds, ResultReceiver resultReceiver){
         if(resultReceiver != null){
@@ -138,6 +149,9 @@ public class FirebaseService
 
     /**
      * Loops through all Shows that the user has added to My Series, and sets showAdded to true for each Show in shows that have been added to My Series
+     * @param userKey The unique key for the user
+     * @param shows The ArrayList of Shows to be marked
+     * @param resultReceiver The ResultReceiver to send a result to
      */
     private void markShowsInMySeries(String userKey, final ArrayList<Show> shows, final ResultReceiver resultReceiver){
         //Sets the previous values for showAdded in shows to false
@@ -181,6 +195,8 @@ public class FirebaseService
 
     /**
      * Sends the shows ArrayList to the appropriate Activity
+     * @param shows The ArrayList of Shows to be sent back
+     * @param resultReceiver The ResultReceiver to send a result back to
      */
     private void returnMarkedShows(ArrayList<Show> shows, ResultReceiver resultReceiver){
         if(resultReceiver != null && shows != null){
@@ -192,6 +208,9 @@ public class FirebaseService
 
     /**
      * Updates the Show that the user has added to or removed from My Series in the Firebase Database
+     * @param userKey The unique key for the user
+     * @param showAdded A boolean to indicate whether the Show has been added or removed from 'My Series'
+     * @param showId The ID of the Show
      */
     private void updateShowInDatabase(String userKey, boolean showAdded, int showId){
         //Saves the updated data to the Firebase database

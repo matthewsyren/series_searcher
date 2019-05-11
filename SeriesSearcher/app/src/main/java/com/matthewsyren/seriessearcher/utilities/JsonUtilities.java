@@ -12,6 +12,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Used to parse JSON retrieved from the API
+ */
+
 public class JsonUtilities {
     /**
      * Returns a Show object parsed from the JSONObject passed in

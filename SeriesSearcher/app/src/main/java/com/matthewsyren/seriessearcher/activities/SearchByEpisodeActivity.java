@@ -29,6 +29,10 @@ import org.json.JSONObject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Activity allows the user to search for a specific episode of a Show
+ */
+
 public class SearchByEpisodeActivity
         extends AppCompatActivity
         implements IApiConnectionResponse {
@@ -62,6 +66,7 @@ public class SearchByEpisodeActivity
         setContentView(R.layout.activity_search_by_episode);
         ButterKnife.bind(this);
 
+        //Restores data
         if (savedInstanceState != null) {
             restoreData(savedInstanceState);
         }
@@ -75,6 +80,7 @@ public class SearchByEpisodeActivity
         //Hides ProgressBar
         mProgressBar.setVisibility(View.INVISIBLE);
 
+        //Displays the Show's title
         displayShowTitle();
     }
 
@@ -97,6 +103,7 @@ public class SearchByEpisodeActivity
 
     /**
      * Restores any saved data
+     * @param savedInstanceState The Bundle containing the Activity's data
      */
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(SHOW_EPISODE_BUNDLE_KEY)){
@@ -204,6 +211,7 @@ public class SearchByEpisodeActivity
 
     /**
      * Parses the JSON returned from the TVMaze API and displays it
+     * @param response The JSON response retrieved from the API
      */
     @Override
     public void parseJsonResponse(String response) {
@@ -251,6 +259,7 @@ public class SearchByEpisodeActivity
 
     /**
      * Displays the data for the episode
+     * @param showEpisode The ShowEpisode object containing data about the episode that the user searched for
      */
     private void displayEpisodeInformation(ShowEpisode showEpisode){
         //Displays values in TextViews

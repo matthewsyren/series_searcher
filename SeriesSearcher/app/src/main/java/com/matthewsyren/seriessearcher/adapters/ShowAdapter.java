@@ -106,6 +106,8 @@ public class ShowAdapter
 
     /**
      * Adds an OnClickListener for the toggle show ImageButton
+     * @param viewHolder The ViewHolder for the RecyclerView
+     * @param position The position of the item in the RecyclerView
      */
     private void addListenerForToggleShowButton(final ViewHolder viewHolder, final int position){
         //Sets onCLickListener for the buttons contained in each row of the RecyclerView
@@ -152,6 +154,8 @@ public class ShowAdapter
 
     /**
      * Displays the images for each row
+     * @param viewHolder The ViewHolder for the RecyclerView
+     * @param position The position of the item in the RecyclerView
      */
     private void displayImagesForRow(final ViewHolder viewHolder, int position){
         //Displays the app's launcher icon if the show has no poster or if data saving mode has been activated
@@ -198,6 +202,8 @@ public class ShowAdapter
 
     /**
      * Displays the text for TextViews that are shared between the layout files
+     * @param viewHolder The ViewHolder for the RecyclerView
+     * @param position The position of the item in the RecyclerView
      */
     private void displayTextInSharedTextViews(ViewHolder viewHolder, int position){
         //Displays the data in the appropriate Views
@@ -217,6 +223,8 @@ public class ShowAdapter
 
     /**
      * Displays text for the TextViews that aren't shared between the layout files
+     * @param viewHolder The ViewHolder for the RecyclerView
+     * @param position The position of the item in the RecyclerView
      */
     private void displayTextInNonSharedTextViews(ViewHolder viewHolder, int position){
         //Initialises a Resources object
@@ -294,6 +302,9 @@ public class ShowAdapter
         //Variables
         private final Context mContext;
 
+        /**
+         * Constructor
+         */
         public ViewHolder(View itemView, final Context context) {
             super(itemView);
             ButterKnife.bind(this, itemView);

@@ -4,6 +4,10 @@ import android.os.Bundle;
 
 import com.matthewsyren.seriessearcher.R;
 
+/**
+ * Activity displays help to the user
+ */
+
 public class HelpActivity
         extends BaseActivity {
     @Override

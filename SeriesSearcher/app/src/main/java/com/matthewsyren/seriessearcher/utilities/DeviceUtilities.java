@@ -6,6 +6,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
+/**
+ * Performs tasks related to the user's device
+ */
+
 public class DeviceUtilities {
     /**
      * Hides the device's keyboard
@@ -25,6 +29,7 @@ public class DeviceUtilities {
     /**
      * Returns the device's height in pixels
      * @param windowManager The WindowManager of the calling Activity (retrieved using the getWindowManager() method)
+     * @return The device height in pixels
      */
     public static int getDeviceHeight(WindowManager windowManager){
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -35,6 +40,7 @@ public class DeviceUtilities {
     /**
      * Returns the device's width in pixels
      * @param windowManager The WindowManager of the calling Activity (retrieved using the getWindowManager() method)
+     * @return The device width in pixels
      */
     public static int getDeviceWidth(WindowManager windowManager){
         DisplayMetrics displayMetrics = new DisplayMetrics();

@@ -45,6 +45,10 @@ import java.util.Collections;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Activity allows the user to see the Shows that they have added to 'My Series'
+ */
+
 public class HomeActivity
         extends BaseActivity
         implements IApiConnectionResponse,
@@ -171,24 +175,27 @@ public class HomeActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         final int id = item.getItemId();
 
-        switch (id){
-            case R.id.nav_sign_out:
-                //Signs the user out
-                AuthUI.getInstance()
-                        .signOut(this);
+        //Performs the appropriate actions if the user signs out
+        if(id == R.id.nav_sign_out){
+            //Signs the user out
+            AuthUI.getInstance()
+                    .signOut(this);
 
-                //Closes the NavigationDrawer
-                super.closeNavigationDrawer();
-                return true;
+            //Closes the NavigationDrawer
+            super.closeNavigationDrawer();
+            return true;
         }
+
         return super.onNavigationItemSelected(item);
     }
 
     /**
      * Restores any saved data
+     * @param savedInstanceState The Bundle containing the Activity's data
      */
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
+            //Restores mShows
             mShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
 
             //Hides ProgressBar
@@ -207,11 +214,14 @@ public class HomeActivity
      * Checks if the user is signed in, and signs them in if they aren't signed in already
      */
     private void setUpAuthListener(){
+        //Initialises mFirebaseAuth
         mFirebaseAuth = FirebaseAuth.getInstance();
 
+        //Initialises mAuthStateListener
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                //Initialises firebaseUser
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
                 if(firebaseUser == null){
@@ -271,6 +281,7 @@ public class HomeActivity
         //Clears the user's series
         mShows.clear();
 
+        //Refreshes the Adapter
         if(mAdapter != null){
             mAdapter.notifyDataSetChanged();
         }
@@ -330,6 +341,7 @@ public class HomeActivity
 
     /**
      * Toggles the visibility of a no Internet connection message
+     * @param online A boolean indicating whether there is an Internet connection or not
      */
     private void toggleNoInternetMessageVisibility(boolean online){
         if(online){
@@ -359,10 +371,11 @@ public class HomeActivity
 
     /**
      * Fetches the shows the user has added to 'My Series' using the keys passed in with the ArrayList
+     * @param shows An ArrayList of links to the user's Shows
      */
     private void getUserShowData(ArrayList<String> shows){
         if(shows.size() > 0){
-            //Transfers the data from shows to an array containing the necessary links to the API (an array can be passed in to the ApiConnection class to fetch data from the API)
+            //Transfers the data from shows to an array containing the necessary links to the API (an array of links can be passed in to the ApiConnection class to fetch data from the API)
             String[] arrShows = new String[shows.size()];
             for(int i = 0; i < shows.size(); i++){
                 arrShows[i] = LinkUtilities.getShowInformationLink(shows.get(i));
@@ -389,7 +402,8 @@ public class HomeActivity
     }
 
     /**
-     * Parses the JSON returned from the API and displays the information in the recycler_view_my_shows RecyclerView
+     * Parses the JSON returned from the API and displays the information in the RecyclerView
+     * @param response The JSON response retrieved from the API
      */
     @Override
     public void parseJsonResponse(String response) {
@@ -408,7 +422,10 @@ public class HomeActivity
                     //Assigns values to the JSONObject if the JSON returned from the API is not null
                     if(json != null){
                         String url = json.getString("url");
+
+                        //Performs the appropriate action based on the start of the URL (which determines if the information is about a Show or the Show's next episode)
                         if(url.startsWith(LinkUtilities.SHOW_LINK)){
+                            //Adds the Show to the mShows ArrayList
                             mShows.add(JsonUtilities.parseShowJson(json, this, this, true, true));
                             mAdapter.notifyDataSetChanged();
                         }
@@ -418,9 +435,12 @@ public class HomeActivity
 
                             //Sets the next episode date for the appropriate series
                             for(int s = 0; s < mShows.size(); s++){
+                                //Fetches the series name and replaces non-letter characters
                                 String seriesName = mShows.get(s).getShowTitle().toLowerCase();
                                 seriesName = seriesName.replaceAll("[^a-z A-Z]", "");
                                 seriesName = seriesName.replaceAll(" ", "-");
+
+                                //Adds the next episode date to the series if the URL contains the series name
                                 if(url.toLowerCase().contains(seriesName)){
                                     mShows.get(s).setShowNextEpisode(displayText);
                                     mAdapter.notifyDataSetChanged();

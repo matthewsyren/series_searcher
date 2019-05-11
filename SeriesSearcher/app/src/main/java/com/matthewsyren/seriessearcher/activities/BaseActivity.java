@@ -23,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Class provides a base for the NavigationDrawer that is shared amongst the activities
+ * Class provides a base for the NavigationDrawer that is shared amongst the Activities
  */
 
 public class BaseActivity
@@ -39,6 +39,7 @@ public class BaseActivity
 
     /**
      * Sets up the Activity
+     * @param iOnDataSavingPreferenceChangedListener The instance of the IOnDataSavingPreferenceChangedListener class which is to be notified when data saving preferences are changed
      */
     protected void onCreateDrawer(IOnDataSavingPreferenceChangedListener iOnDataSavingPreferenceChangedListener) {
         ButterKnife.bind(this);
@@ -70,14 +71,16 @@ public class BaseActivity
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        //Registers an OnCheckedChangedListener for the Data Saving Mode Switch, and displays the appropriate
+        //Initialises variables
         final Menu menu = mNavigationView.getMenu();
         final MenuItem menuItem = menu.findItem(R.id.nav_data_saving_mode);
 
+        //Displays the appropriate value for the Data Saving Mode Switch (checked or not checked)
         View actionView = menuItem.getActionView();
         final Switch navSwitch = actionView.findViewById(R.id.switch_data_saving_mode);
         navSwitch.setChecked(UserAccountUtilities.getDataSavingPreference(this));
 
+        //Registers an OnCheckedChangedListener for the Data Saving Mode Switch
         navSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -118,6 +121,7 @@ public class BaseActivity
 
     /**
      * Sets the selected item in the Navigation Drawer
+     * @param id The ID of the item in the Navigation Drawer that is selected
      */
     protected void setSelectedNavItem(int id){
         mNavigationView.setCheckedItem(id);
@@ -125,6 +129,7 @@ public class BaseActivity
 
     @Override
     public void onBackPressed() {
+        //Either closes the Navigation Drawer (if it is open), or calls super.onBackPressed()
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             closeNavigationDrawer();
         }
@@ -135,10 +140,11 @@ public class BaseActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
+        //Gets the ID of the selected item and initialises an Intent variable
         int id = item.getItemId();
         Intent intent = null;
 
+        //Assigns the appropriate value to the intent variable based on which item was clicked
         switch (id) {
             case R.id.nav_home:
                 intent = new Intent(getApplicationContext(), HomeActivity.class);
@@ -162,6 +168,7 @@ public class BaseActivity
                 AuthUI.getInstance()
                         .signOut(this);
 
+                //Sets the intent variable
                 intent = new Intent(getApplicationContext(), HomeActivity.class);
                 break;
         }

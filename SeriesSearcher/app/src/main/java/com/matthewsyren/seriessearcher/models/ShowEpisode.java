@@ -3,8 +3,13 @@ package com.matthewsyren.seriessearcher.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Class holds the details for a Show's episode
+ */
+
 public class ShowEpisode
         implements Parcelable {
+    //Declarations
     private String episodeName;
     private String episodeAirDate;
     private String episodeRuntime;
@@ -79,7 +84,7 @@ public class ShowEpisode
         dest.writeString(episodeSummary);
     }
 
-    protected ShowEpisode(Parcel in) {
+    private ShowEpisode(Parcel in) {
         episodeName = in.readString();
         episodeAirDate = in.readString();
         episodeRuntime = in.readString();

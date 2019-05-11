@@ -19,7 +19,6 @@ import java.util.Comparator;
  * Class holds the details that are retrieved for the TV Shows
  */
 
-@SuppressWarnings("WeakerAccess")
 public class Show
         implements Parcelable {
     //Declarations
