@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/rl_no_series_added_to_my_series"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/text_no_shows"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_home_message"
+        style="@style/TextViewMessageStyle"
+        android:visibility="invisible"
+        android:layout_above="@+id/button_add_shows"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+    <Button
+        android:id="@+id/button_add_shows"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/button_add_shows"
+        android:onClick="openSearchShows"
+        style="@style/RoundedButtonStyle"
+        android:visibility="invisible"/>
+</RelativeLayout>
