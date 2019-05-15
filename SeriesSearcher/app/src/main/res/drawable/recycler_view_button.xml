@@ -6,7 +6,7 @@
                 android:width="@dimen/stroke_width"
                 android:color="@color/colorPrimary"/>
             <corners
-                android:radius="@dimen/button_radius" />
+                android:radius="@dimen/rounded_button_corner_radius" />
         </shape>
     </item>
 </selector>

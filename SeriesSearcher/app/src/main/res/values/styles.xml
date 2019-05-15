@@ -45,6 +45,16 @@
         <item name="android:paddingEnd">@dimen/button_horizontal_padding</item>
     </style>
 
+    <style name="ContainedButtonStyle">
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:background">@drawable/contained_button</item>
+    </style>
+
+    <style name="TextButtonStyle">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:background">@drawable/text_button</item>
+    </style>
+
     <style name="TextViewMessageStyle">
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:textAlignment">center</item>

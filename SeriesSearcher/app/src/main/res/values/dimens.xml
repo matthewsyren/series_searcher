@@ -62,7 +62,9 @@
     <dimen name="show_poster_constraint_layout_min_width">0dp</dimen>
 
     <!-- Button -->
-    <dimen name="button_radius">32dp</dimen>
+    <dimen name="rounded_button_corner_radius">32dp</dimen>
     <dimen name="stroke_width">2dp</dimen>
     <dimen name="button_horizontal_padding">16dp</dimen>
+    <dimen name="text_button_margin_end">8dp</dimen>
+    <dimen name="other_button_corner_radius">4dp</dimen>
 </resources>

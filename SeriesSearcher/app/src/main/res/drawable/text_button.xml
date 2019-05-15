@@ -5,10 +5,6 @@
     <item>
         <shape
             android:shape="rectangle">
-            <solid
-                android:color="@color/colorAccent" />
-            <corners
-                android:radius="@dimen/rounded_button_corner_radius" />
         </shape>
     </item>
     <item
@@ -19,7 +15,7 @@
                 android:color="@color/colorBlack" />
 
             <corners
-                android:radius="@dimen/rounded_button_corner_radius"/>
+                android:radius="@dimen/other_button_corner_radius"/>
         </shape>
     </item>
 </ripple>
