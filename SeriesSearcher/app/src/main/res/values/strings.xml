@@ -81,6 +81,12 @@
     <!-- RecyclerViewRow -->
     <string name="text_add_show">+</string>
 
+    <!-- EnterPasswordFragment -->
+    <string name="enter_password">Please enter your password</string>
+    <string name="error_incorrect_password">Incorrect password</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+
     <!-- Shared -->
     <string name="error_no_internet_connection">Your device is not connected to the Internet, please connect to the Internet and try again</string>
     <string name="error_fetching_data_no_internet_connection">Error fetching data, please check your internet connection</string>
