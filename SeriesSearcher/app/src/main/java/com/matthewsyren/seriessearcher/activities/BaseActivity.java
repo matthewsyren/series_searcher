@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.matthewsyren.seriessearcher.R;
@@ -71,39 +72,42 @@ public class BaseActivity
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        //Initialises variables
-        final Menu menu = mNavigationView.getMenu();
-        final MenuItem menuItem = menu.findItem(R.id.nav_data_saving_mode);
+        //Registers a Listener if the user has signed in and verified their email address
+        if(UserAccountUtilities.getUserKey(getApplicationContext()) != null){
+            //Initialises variables
+            final Menu menu = mNavigationView.getMenu();
+            final MenuItem menuItem = menu.findItem(R.id.nav_data_saving_mode);
 
-        //Displays the appropriate value for the Data Saving Mode Switch (checked or not checked)
-        View actionView = menuItem.getActionView();
-        final Switch navSwitch = actionView.findViewById(R.id.switch_data_saving_mode);
-        navSwitch.setChecked(UserAccountUtilities.getDataSavingPreference(this));
+            //Displays the appropriate value for the Data Saving Mode Switch (checked or not checked)
+            View actionView = menuItem.getActionView();
+            final Switch navSwitch = actionView.findViewById(R.id.switch_data_saving_mode);
+            navSwitch.setChecked(UserAccountUtilities.getDataSavingPreference(this));
 
-        //Registers an OnCheckedChangedListener for the Data Saving Mode Switch
-        navSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //Toggles the user's data saving preference
-                UserAccountUtilities.toggleDataSavingPreference(buttonView.getContext());
+            //Registers an OnCheckedChangedListener for the Data Saving Mode Switch
+            navSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    //Toggles the user's data saving preference
+                    UserAccountUtilities.toggleDataSavingPreference(buttonView.getContext());
 
-                //Updates the images that are currently being displayed
-                if(mOnDataSavingPreferenceChangedListener != null){
-                    mOnDataSavingPreferenceChangedListener.onDataSavingPreferenceChanged();
+                    //Updates the images that are currently being displayed
+                    if(mOnDataSavingPreferenceChangedListener != null){
+                        mOnDataSavingPreferenceChangedListener.onDataSavingPreferenceChanged();
+                    }
+
+                    //Closes the NavigationDrawer
+                    closeNavigationDrawer();
                 }
+            });
 
-                //Closes the NavigationDrawer
-                closeNavigationDrawer();
-            }
-        });
-
-        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                navSwitch.performClick();
-                return false;
-            }
-        });
+            menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    navSwitch.performClick();
+                    return false;
+                }
+            });
+        }
     }
 
     /**
@@ -144,33 +148,43 @@ public class BaseActivity
         int id = item.getItemId();
         Intent intent = null;
 
-        //Assigns the appropriate value to the intent variable based on which item was clicked
-        switch (id) {
-            case R.id.nav_home:
-                intent = new Intent(getApplicationContext(), HomeActivity.class);
-                break;
-            case R.id.nav_random_shows:
-                intent = new Intent(getApplicationContext(), RandomShowsActivity.class);
-                break;
-            case R.id.nav_search:
-                intent = new Intent(getApplicationContext(), SearchActivity.class);
-                break;
-            case R.id.nav_disclaimer:
-                intent = new Intent(getApplicationContext(), DisclaimerActivity.class);
-                break;
-            case R.id.nav_help:
-                intent = new Intent(getApplicationContext(), HelpActivity.class);
-                break;
-            case R.id.nav_data_saving_mode:
-                return false;
-            case R.id.nav_sign_out:
-                //Signs the user out
-                AuthUI.getInstance()
-                        .signOut(this);
+        if(UserAccountUtilities.getUserKey(getApplicationContext()) != null || id == R.id.nav_sign_out){
+            //Assigns the appropriate value to the intent variable based on which item was clicked
+            switch (id) {
+                case R.id.nav_home:
+                    intent = new Intent(getApplicationContext(), HomeActivity.class);
+                    break;
+                case R.id.nav_random_shows:
+                    intent = new Intent(getApplicationContext(), RandomShowsActivity.class);
+                    break;
+                case R.id.nav_search:
+                    intent = new Intent(getApplicationContext(), SearchActivity.class);
+                    break;
+                case R.id.nav_disclaimer:
+                    intent = new Intent(getApplicationContext(), DisclaimerActivity.class);
+                    break;
+                case R.id.nav_help:
+                    intent = new Intent(getApplicationContext(), HelpActivity.class);
+                    break;
+                case R.id.nav_data_saving_mode:
+                    return false;
+                case R.id.nav_sign_out:
+                    //Signs the user out
+                    AuthUI.getInstance()
+                            .signOut(this);
 
-                //Sets the intent variable
-                intent = new Intent(getApplicationContext(), HomeActivity.class);
-                break;
+                    //Sets the intent variable
+                    intent = new Intent(getApplicationContext(), HomeActivity.class);
+                    break;
+            }
+        }
+        else{
+            //Displays a message to the user telling them to verify their email address
+            Toast.makeText(getApplicationContext(), R.string.error_email_not_verified, Toast.LENGTH_LONG).show();
+
+            //Closes NavigationDrawer
+            closeNavigationDrawer();
+            return false;
         }
 
         //Takes the user to the appropriate Activity

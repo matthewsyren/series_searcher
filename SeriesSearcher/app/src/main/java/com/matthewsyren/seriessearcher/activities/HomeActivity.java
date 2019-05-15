@@ -1,10 +1,14 @@
 package com.matthewsyren.seriessearcher.activities;
 
+import android.app.FragmentManager;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.activities.BaseActivity.IOnDataSavingPreferenceChangedListener;
 import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
+import com.matthewsyren.seriessearcher.fragments.EnterPasswordFragment;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.network.ApiConnection;
 import com.matthewsyren.seriessearcher.network.ApiConnection.IApiConnectionResponse;
@@ -33,6 +39,7 @@ import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
+import com.matthewsyren.seriessearcher.viewmodels.EmailVerificationViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,13 +59,16 @@ import butterknife.ButterKnife;
 public class HomeActivity
         extends BaseActivity
         implements IApiConnectionResponse,
-        IOnDataSavingPreferenceChangedListener {
+        IOnDataSavingPreferenceChangedListener,
+        EnterPasswordFragment.IEnterPasswordFragmentOnClickListener {
     //View bindings
     @BindView(R.id.recycler_view_my_shows) RecyclerView mRecyclerViewMyShows;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.text_no_shows) TextView mTextNoShows;
     @BindView(R.id.button_add_shows) Button mButtonAddShows;
     @BindView(R.id.cl_no_internet_connection) ConstraintLayout mClNoInternetConnection;
+    @BindView(R.id.cl_email_not_verified) ConstraintLayout mClEmailNotVerified;
+    @BindView(R.id.rl_no_series_added_to_my_series) RelativeLayout mRlNoSeriesAddedToMySeries;
 
     //Variables
     private ArrayList<Show> mShows = new ArrayList<>();
@@ -70,6 +80,11 @@ public class HomeActivity
     private ApiConnection mApiConnection;
     private boolean mSignedOut;
     private boolean mListSorted = false;
+    private FirebaseUser mFirebaseUser;
+    private boolean mAttemptedVerification = false;
+    private EnterPasswordFragment mEnterPasswordFragment;
+    private boolean mOngoingOperation = false;
+    private EmailVerificationViewModel mEmailVerificationViewModel;
 
     //Constants
     private static final String SCROLL_POSITION_BUNDLE_KEY = "scroll_position_bundle_key";
@@ -84,6 +99,9 @@ public class HomeActivity
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
+        //Registers Observers for LiveData within the ViewModel
+        registerViewModelObservers();
+
         //Sets the NavigationDrawer for the Activity
         super.onCreateDrawer(this);
 
@@ -91,7 +109,7 @@ public class HomeActivity
         setTitle(getString(R.string.title_activity_home));
 
         //Restores data if possible
-        if(savedInstanceState != null && FirebaseAuth.getInstance().getCurrentUser() != null){
+        if(savedInstanceState != null && UserAccountUtilities.getUserKey(this) != null){
             restoreData(savedInstanceState);
         }
 
@@ -208,6 +226,103 @@ public class HomeActivity
         if(savedInstanceState.containsKey(SCROLL_POSITION_BUNDLE_KEY)){
             mScrollPosition = savedInstanceState.getInt(SCROLL_POSITION_BUNDLE_KEY);
         }
+
+        //Fetches the EnterPasswordFragment
+        mEnterPasswordFragment = (EnterPasswordFragment) getFragmentManager()
+                .findFragmentByTag(EnterPasswordFragment.ENTER_PASSWORD_FRAGMENT_TAG);
+
+        //Ensures updates from EnterPasswordFragment are sent to this Activity
+        if(mEnterPasswordFragment != null){
+            mEnterPasswordFragment.setEnterPasswordFragmentOnClickListener(this);
+        }
+    }
+
+    /**
+     * Registers ViewModel Observers
+     */
+    private void registerViewModelObservers() {
+        //Initialises the EmailVerificationViewModel
+        mEmailVerificationViewModel = ViewModelProviders.of(this).get(EmailVerificationViewModel.class);
+
+        //Sets an Observer for ongoing operations
+        mEmailVerificationViewModel.getObservableOngoingOperation().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean ongoingOperation) {
+                //Performs the appropriate task based on the value of ongoingOperation
+                if(ongoingOperation != null){
+                    if(ongoingOperation){
+                        //Hides the verify email message and displays a ProgressBar
+                        mClEmailNotVerified.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        //Hides the ProgressBar and displays the verify email message
+                        mClEmailNotVerified.setVisibility(View.VISIBLE);
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+
+                    //Updates the mOngoingOperation variable
+                    mOngoingOperation = ongoingOperation;
+                }
+            }
+        });
+
+        //Sets an Observer for sending a verification email to the user
+        mEmailVerificationViewModel.getObservableVerificationEmailSent().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer resultCode) {
+                //Performs the appropriate action based on the value of resultCode
+                if(resultCode != null){
+                    if(resultCode == EmailVerificationViewModel.VERIFICATION_EMAIL_SENT){
+                        //Displays a message saying the verification email has been sent
+                        Toast.makeText(getApplicationContext(), R.string.verification_email_sent, Toast.LENGTH_LONG).show();
+                    }
+                    else if(resultCode == EmailVerificationViewModel.VERIFICATION_EMAIL_NOT_SENT){
+                        //Displays an error message (either a generic error message, or a no Internet connection message if there is no Internet connection)
+                        if(NetworkUtilities.isOnline(getApplicationContext())){
+                            Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), R.string.error_no_internet_connection, Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    //Resets the observable variable
+                    mEmailVerificationViewModel.getObservableVerificationEmailSent().setValue(null);
+                }
+            }
+        });
+
+        //Sets an Observer for reauthentication
+        mEmailVerificationViewModel.getObservableReauthenticationSuccessful().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer resultCode) {
+                //Performs the appropriate action based on the value of resultCode
+                if(resultCode != null){
+                    if(resultCode == EmailVerificationViewModel.REAUTHENTICATION_SUCCESSFUL){
+                        //Refreshes the AuthListener, as the user has successfully reauthenticated
+                        mAttemptedVerification = true;
+                        setUpAuthListener();
+                    }
+                    else if(resultCode == EmailVerificationViewModel.REAUTHENTICATION_WRONG_PASSWORD){
+                        //Displays an error message saying the user has entered the incorrect password
+                        Toast.makeText(getApplicationContext(), R.string.error_incorrect_password, Toast.LENGTH_LONG).show();
+                    }
+                    else if(resultCode == EmailVerificationViewModel.REAUTHENTICATION_ERROR){
+                        //Displays an error message (either a generic error message, or a no Internet connection message if there is no Internet connection)
+                        if(NetworkUtilities.isOnline(getApplicationContext())){
+                            Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), R.string.error_no_internet_connection, Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    //Resets the observable variable
+                    mEmailVerificationViewModel.getObservableReauthenticationSuccessful().setValue(null);
+                }
+            }
+        });
     }
 
     /**
@@ -221,10 +336,10 @@ public class HomeActivity
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                //Initialises firebaseUser
-                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                //Initialises mFirebaseUser
+                mFirebaseUser = firebaseAuth.getCurrentUser();
 
-                if(firebaseUser == null){
+                if(mFirebaseUser == null){
                     //Performs sign out tasks
                     signOut();
 
@@ -255,17 +370,74 @@ public class HomeActivity
                         mSignedOut = false;
                     }
 
-                    //Saves the user's unique key
-                    UserAccountUtilities.setUserKey(getApplicationContext(), firebaseUser.getUid());
+                    //Hides the no Internet connection message
+                    mClNoInternetConnection.setVisibility(View.GONE);
 
-                    //Sets up the Activity
-                    setUpActivity();
+                    //Fetches the user's Shows if the user's email address has been verified, otherwise instructs the user to verify their email address
+                    if(mFirebaseUser.isEmailVerified()){
+                        //Informs the user that their email has successfully been verified
+                        if(mAttemptedVerification){
+                            Toast.makeText(getApplicationContext(), R.string.email_verified, Toast.LENGTH_LONG).show();
+
+                            //Resets variable to prevent the message from being displayed again
+                            mAttemptedVerification = false;
+                        }
+
+                        //Hides the verify email message and displays other Views
+                        mClEmailNotVerified.setVisibility(View.GONE);
+                        mRlNoSeriesAddedToMySeries.setVisibility(View.VISIBLE);
+
+                        //Saves the user's unique key
+                        UserAccountUtilities.setUserKey(getApplicationContext(), mFirebaseUser.getUid());
+
+                        //Sets up the Activity
+                        setUpActivity();
+                    }
+                    else{
+                        //Displays an error message if the user tries to confirm their verification but their email address is still not verified
+                        if(mAttemptedVerification){
+                            Toast.makeText(getApplicationContext(), R.string.error_email_still_not_verified, Toast.LENGTH_LONG).show();
+
+                            //Resets variable to prevent the message from being displayed again
+                            mAttemptedVerification = false;
+                        }
+
+                        //Displays a help message to the user if there is not an ongoing operation
+                        if(!mOngoingOperation){
+                            //Displays a message that explains how to verify the user's email address, and hides other Views
+                            mClEmailNotVerified.setVisibility(View.VISIBLE);
+                            mRlNoSeriesAddedToMySeries.setVisibility(View.GONE);
+                            mProgressBar.setVisibility(View.GONE);
+                        }
+                    }
                 }
             }
         };
 
         //Adds the AuthStateListener
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    /**
+     * Sends an email to the user to verify their email address
+     */
+    public void sendVerificationEmail(View view){
+        mEmailVerificationViewModel.sendVerificationEmail(mFirebaseUser);
+    }
+
+    /**
+     * Confirms the user's verification by making them enter their password
+     */
+    public void confirmVerification(View view){
+        //Initialises a DialogFragment that allows the user to enter their password
+        FragmentManager fragmentManager = getFragmentManager();
+        mEnterPasswordFragment = new EnterPasswordFragment();
+
+        //Sends data to the DialogFragment
+        mEnterPasswordFragment.setEnterPasswordFragmentOnClickListener(this);
+
+        //Displays the DialogFragment
+        mEnterPasswordFragment.show(fragmentManager, EnterPasswordFragment.ENTER_PASSWORD_FRAGMENT_TAG);
     }
 
     /**
@@ -393,12 +565,14 @@ public class HomeActivity
     }
 
     /**
-     * Sets the visibility of the views based on the parameters passed in
+     * Sets the visibility of the Views based on the parameters passed in
+     * @param recyclerViewVisibility The intended visibility of the RecyclerView
+     * @param otherViewVisibility The intended visibility of other Views
      */
-    private void toggleViewVisibility(int RecyclerViewVisibility, int otherViewVisibility){
+    private void toggleViewVisibility(int recyclerViewVisibility, int otherViewVisibility){
         mTextNoShows.setVisibility(otherViewVisibility);
         mButtonAddShows.setVisibility(otherViewVisibility);
-        mRecyclerViewMyShows.setVisibility(RecyclerViewVisibility);
+        mRecyclerViewMyShows.setVisibility(recyclerViewVisibility);
     }
 
     /**
@@ -472,7 +646,22 @@ public class HomeActivity
     @Override
     public void onDataSavingPreferenceChanged() {
         //Updates the images in the RecyclerView
-        mAdapter.notifyDataSetChanged();
+        if(mAdapter != null){
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onEnterPasswordFragmentClick(String password) {
+        //Attempts to reauthenticate the user if they have entered their password
+        if(password != null && password.length() > 0 && mFirebaseUser != null && mFirebaseUser.getEmail() != null){
+            mEmailVerificationViewModel.reauthenticateUser(mFirebaseUser, password);
+        }
+        else{
+            //Hides the ProgressBar and displays the verify email message
+            mClEmailNotVerified.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+        }
     }
 
     /**

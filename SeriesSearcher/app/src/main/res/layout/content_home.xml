@@ -30,4 +30,7 @@
 
     <include
         layout="@layout/no_internet_connection"/>
+
+    <include
+        layout="@layout/email_not_verified"/>
 </RelativeLayout>

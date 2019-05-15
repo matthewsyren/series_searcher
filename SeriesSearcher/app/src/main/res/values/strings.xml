@@ -16,11 +16,17 @@
     <!-- BaseActivity -->
     <string name="data_saving_mode_activated">Data Saving Mode activated - Images will not be downloaded while in Data Saving Mode</string>
     <string name="data_saving_mode_deactivated">Data Saving Mode deactivated</string>
+    <string name="error_email_not_verified">Please verify your email address before continuing to use the app</string>
+    <string name="error_email_still_not_verified">Your email address is still not verified, please request a verification email</string>
+    <string name="email_verified">Your email address has been verified</string>
 
     <!-- HomeActivity -->
     <string name="button_add_shows">Add Series</string>
     <string name="label_home_message">You currently have no shows added to \'My Series\'</string>
     <string name="sign_in_cancelled">Sign in cancelled</string>
+    <string name="email_not_verified">Your email address has not been verified yet, please click on the \'Send email\' button below to be sent an email to verify your email address. The email will contain a link to verify your email address. Once you have verified your email address, please click on the \'Confirm\' button below and enter your password for this app to confirm your verification.</string>
+    <string name="send_email">Send email</string>
+    <string name="verification_email_sent">Verification email sent</string>
 
     <!-- SpecificShowActivity -->
     <string name="text_premiered_title">Premiered:</string>
