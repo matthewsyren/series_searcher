@@ -26,6 +26,7 @@
 
     <!-- SearchActivity -->
     <dimen name="tv_no_series_found_margin_top">32dp</dimen>
+    <dimen name="search_progress_bar_margin_top">32dp</dimen>
 
     <!-- SearchByEpisodeActivity -->
     <dimen name="search_by_episode_text_margin">10dp</dimen>
