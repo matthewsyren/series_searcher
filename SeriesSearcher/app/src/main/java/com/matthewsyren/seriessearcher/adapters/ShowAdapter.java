@@ -127,7 +127,7 @@ public class ShowAdapter
                         show.updateShowInDatabase(true, mContext);
 
                         //Updates the RecyclerView's data
-                        notifyDataSetChanged();
+                        notifyItemChanged(position);
                     }
                     else{
                         //Initialises a DialogFragment that makes the user confirm their decision
