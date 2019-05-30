@@ -77,7 +77,7 @@ public class ApiConnection
      */
     protected void onPostExecute(String response) {
         if(mApiConnectionResponse != null){
-            mApiConnectionResponse.parseJsonResponse(response);
+            mApiConnectionResponse.onJsonResponseRetrieved(response);
         }
     }
 
@@ -94,8 +94,8 @@ public class ApiConnection
      */
     public interface IApiConnectionResponse {
         /**
-         * Used to parse JSON data that was retrieved from an API. The class that needs the data will implement this interface, and the ApiConnection class sends the data to the method once it has fetched the data
+         * Used to fetch JSON data that was retrieved from an API. The class that needs the data will implement this interface, and the ApiConnection class sends the data to the method once it has fetched the data
          */
-        void parseJsonResponse(String response);
+        void onJsonResponseRetrieved(String response);
     }
 }

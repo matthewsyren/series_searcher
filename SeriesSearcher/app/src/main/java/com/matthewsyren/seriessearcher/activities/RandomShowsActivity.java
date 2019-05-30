@@ -1,9 +1,10 @@
 package com.matthewsyren.seriessearcher.activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.ResultReceiver;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,14 +19,11 @@ import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.activities.BaseActivity.IOnDataSavingPreferenceChangedListener;
 import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
-import com.matthewsyren.seriessearcher.network.ApiConnection;
-import com.matthewsyren.seriessearcher.network.ApiConnection.IApiConnectionResponse;
-import com.matthewsyren.seriessearcher.services.FirebaseService;
-import com.matthewsyren.seriessearcher.utilities.AsyncTaskUtilities;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
+import com.matthewsyren.seriessearcher.viewmodels.ShowViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,8 +41,7 @@ import butterknife.ButterKnife;
 
 public class RandomShowsActivity
         extends BaseActivity
-        implements IApiConnectionResponse,
-        IOnDataSavingPreferenceChangedListener{
+        implements IOnDataSavingPreferenceChangedListener{
     //View bindings
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.recycler_view_random_shows) RecyclerView mRecyclerViewRandomShows;
@@ -53,11 +50,10 @@ public class RandomShowsActivity
     //Variables
     private ArrayList<Show> mShows = new ArrayList<>();
     private ShowAdapter mAdapter;
-    private ApiConnection mApiConnection;
+    private ShowViewModel mShowViewModel;
 
     //Constants
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
-    private static final String API_PAGE_BUNDLE_KEY = "api_age";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +64,13 @@ public class RandomShowsActivity
         //Sets the NavigationDrawer for the Activity
         super.onCreateDrawer(this);
 
+        //Registers Observers for the ShowViewModel
+        registerShowViewModelObservers();
+
         //Ensures that the user's key has been fetched
         UserAccountUtilities.checkUserKey(this);
 
+        //Restores data if possible
         if(savedInstanceState != null){
             restoreData(savedInstanceState);
         }
@@ -93,21 +93,14 @@ public class RandomShowsActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        //Cancels the AsyncTask if it is still running
-        AsyncTaskUtilities.cancelAsyncTask(mApiConnection);
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_REQUEST_CODE){
             //Updates the RecyclerView if the user added/removed a Show from My Series on the SpecificShowActivity
             if(resultCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED){
-                Show.markShowsInMySeries(this, mShows, new DataReceiver(new Handler()));
+                //Determines which Shows have been added to My Series by the user
+                mShowViewModel.markShowsInMySeries(mShows);
             }
         }
     }
@@ -141,6 +134,73 @@ public class RandomShowsActivity
     }
 
     /**
+     * Registers Observers for the ShowViewModel
+     */
+    private void registerShowViewModelObservers(){
+        //Initialises the ShowViewModel
+        mShowViewModel = ViewModelProviders.of(this).get(ShowViewModel.class);
+
+        //Registers an Observer to keep track of whether an operation is ongoing or not
+        mShowViewModel.getObservableOngoingOperation().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean ongoingOperation) {
+                if(ongoingOperation != null){
+                    if(ongoingOperation){
+                        //Hides the RecyclerView and displays the ProgressBar
+                        mRecyclerViewRandomShows.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        //Hides the ProgressBar and displays the RecyclerView
+                        mRecyclerViewRandomShows.setVisibility(View.VISIBLE);
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+
+        //Registers an Observer to retrieve responses from the TVMaze API
+        mShowViewModel.getObservableResponse().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String response) {
+                if(response != null && response.length() > 0){
+                    //Parses the JSON response retrieved from the API
+                    parseJsonResponse(response);
+
+                    //Marks Shows that have been added to My Series
+                    mShowViewModel.markShowsInMySeries(mShows);
+
+                    //Displays the Shows
+                    if(mShows.size() > 0){
+                        mAdapter.setShows(mShows);
+                        mAdapter.notifyDataSetChanged();
+                    }
+
+                    //Resets the observable variable
+                    mShowViewModel.getObservableResponse().setValue(null);
+                }
+            }
+        });
+
+        //Registers an Observer to keep track of changes to the shows ArrayList
+        mShowViewModel.getObservableShows().observe(this, new Observer<ArrayList<Show>>() {
+            @Override
+            public void onChanged(@Nullable ArrayList<Show> shows) {
+                if(shows != null && shows.size() > 0){
+                    //Updates the mShows variable
+                    mShows = shows;
+
+                    //Refreshes the RecyclerView's data
+                    if(mAdapter != null){
+                        mAdapter.setShows(mShows);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+    }
+
+    /**
      * Sets up the Adapter
      */
     private void setUpAdapter(){
@@ -156,31 +216,21 @@ public class RandomShowsActivity
      * Fetches up to 20 random Shows
      */
     private void getRandomShows(){
+        //Clears the previous Shows
+        mShows.clear();
+        mShowViewModel.getObservableShows().setValue(new ArrayList<Show>());
+        mAdapter.notifyDataSetChanged();
+        mRecyclerViewRandomShows.getLayoutManager().scrollToPosition(0);
+
         //Displays/hides Views based on Internet connection status
         boolean online = NetworkUtilities.isOnline(this);
         toggleNoInternetMessageVisibility(online);
 
-        //Clears the previous Shows
-        mShows.clear();
-        mAdapter.notifyDataSetChanged();
-
         //Fetches the Shows if there is an Internet connection
         if(online){
-            //Displays the ProgressBar
-            mProgressBar.setVisibility(View.VISIBLE);
-
-            //Fetches JSON from API (If a page on the API has already been determined, then it is fetched from the Bundle, otherwise the Math.random() method chooses a random page from the API to fetch)
-            Bundle bundle = getIntent().getExtras();
-            int page;
-            if(bundle != null && bundle.getInt(API_PAGE_BUNDLE_KEY) != -1){
-                page = bundle.getInt(API_PAGE_BUNDLE_KEY);
-            }
-            else{
-                page = (int) (Math.random() * 100);
-            }
-            mApiConnection = new ApiConnection();
-            mApiConnection.setApiConnectionResponse(this);
-            mApiConnection.execute(LinkUtilities.getMultipleShowPageLink(page));
+            //Fetches JSON from API (the Math.random() method chooses a random page from the API to fetch)
+            int page = (int) (Math.random() * 100);
+            mShowViewModel.requestJsonResponse(LinkUtilities.getMultipleShowPageLink(page));
         }
     }
 
@@ -198,18 +248,17 @@ public class RandomShowsActivity
     }
 
     /**
-     * Fetches 20 random Shows
+     * Fetches random Shows
      */
     public void refreshActivity(View view){
         getRandomShows();
     }
 
     /**
-     * Fetches the JSON from the ApiConnection class, and parses it
+     * Parses the JSON from the API
      * @param response The JSON response retrieved from the API
      */
-    @Override
-    public void parseJsonResponse(String response) {
+    private void parseJsonResponse(String response) {
         try{
             if(response != null){
                 //JSONArray stores the JSON returned from the TVMaze API
@@ -225,7 +274,7 @@ public class RandomShowsActivity
 
                     //Assigns values to the JSONObject if the JSON returned from the API is not null
                     if(json != null){
-                        mShows.add(JsonUtilities.parseShowJson(json, this, this, false, null));
+                        mShows.add(JsonUtilities.parseShowJson(json, this, false, null, mShowViewModel));
                     }
                     else{
                         //Exits the loop if the JSON returned is null
@@ -237,7 +286,7 @@ public class RandomShowsActivity
                 Collections.sort(mShows, new Show.ShowTitleComparator());
 
                 //Determines which Shows have been added to My Series by the user
-                Show.markShowsInMySeries(this, mShows, new DataReceiver(new Handler()));
+                mShowViewModel.markShowsInMySeries(mShows);
             }
             else{
                 //Displays a no Internet connection message
@@ -266,39 +315,8 @@ public class RandomShowsActivity
     @Override
     public void onDataSavingPreferenceChanged() {
         //Updates the images in the RecyclerView
-        mAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * Used to receive data from Services
-     */
-    private class DataReceiver
-            extends ResultReceiver {
-
-        /**
-         * Constructor
-         */
-        private DataReceiver(Handler handler) {
-            super(handler);
-        }
-
-        @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-            super.onReceiveResult(resultCode, resultData);
-
-            if(resultCode == FirebaseService.ACTION_MARK_SHOWS_IN_MY_SERIES_RESULT_CODE){
-                //Updates the mShows ArrayList with the new data
-                if(resultData != null && resultData.containsKey(FirebaseService.EXTRA_SHOWS)){
-                    mShows = resultData.getParcelableArrayList(FirebaseService.EXTRA_SHOWS);
-
-                    //Refreshes the RecyclerView's data
-                    mAdapter.setShows(mShows);
-                    mAdapter.notifyDataSetChanged();
-                }
-
-                //Hides ProgressBar
-                mProgressBar.setVisibility(View.INVISIBLE);
-            }
+        if(mAdapter != null){
+            mAdapter.notifyDataSetChanged();
         }
     }
 }

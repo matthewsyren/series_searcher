@@ -2,6 +2,8 @@ package com.matthewsyren.seriessearcher.activities;
 
 import android.animation.ValueAnimator;
 import android.app.FragmentManager;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -42,14 +44,12 @@ import com.matthewsyren.seriessearcher.fragments.RemoveShowFromMySeriesFragment;
 import com.matthewsyren.seriessearcher.fragments.RemoveShowFromMySeriesFragment.IRemoveShowFromMySeriesFragmentOnClickListener;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.models.ShowImage;
-import com.matthewsyren.seriessearcher.network.ApiConnection;
-import com.matthewsyren.seriessearcher.network.ApiConnection.IApiConnectionResponse;
-import com.matthewsyren.seriessearcher.utilities.AsyncTaskUtilities;
 import com.matthewsyren.seriessearcher.utilities.DeviceUtilities;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
+import com.matthewsyren.seriessearcher.viewmodels.ShowViewModel;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -65,8 +65,7 @@ import butterknife.ButterKnife;
 
 public class SpecificShowActivity
         extends AppCompatActivity
-        implements IApiConnectionResponse,
-        IRemoveShowFromMySeriesFragmentOnClickListener {
+        implements IRemoveShowFromMySeriesFragmentOnClickListener {
     //View bindings
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.text_show_next_episode) TextView mTextShowNextEpisode;
@@ -96,9 +95,9 @@ public class SpecificShowActivity
     private boolean mIsShowAdded;
     private Boolean mChanged;
     private boolean mShadowIcon = false;
-    private ApiConnection mApiConnection;
     private RemoveShowFromMySeriesFragment mRemoveShowFromMySeriesFragment;
     private boolean mIsImageLoaded = false;
+    private ShowViewModel mShowViewModel;
 
     //Constants
     public static final String SHOW_ID_KEY = "show_id_key";
@@ -128,7 +127,10 @@ public class SpecificShowActivity
         //Displays the back arrow icon
         setUpBackArrowIcon();
 
-        //Fetches the Show's information if it hasn't been fetched already, otherwise restores it
+        //Registers Observers for the ShowViewModel
+        registerShowViewModelObservers();
+
+        //Restores data if possible, otherwise fetches the Show's information
         if(savedInstanceState != null){
             restoreData(savedInstanceState);
         }
@@ -145,20 +147,12 @@ public class SpecificShowActivity
         super.onResume();
 
         //Displays the ProgressBar if the show's information hasn't been fetched yet
-        if(mShow == null && NetworkUtilities.isOnline(this) && AsyncTaskUtilities.isAsyncTaskRunning(mApiConnection)){
+        if(mShow == null && NetworkUtilities.isOnline(this)){
             mProgressBar.setVisibility(View.VISIBLE);
         }
         else{
             mProgressBar.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        //Cancels the AsyncTask if it is still running
-        AsyncTaskUtilities.cancelAsyncTask(mApiConnection);
     }
 
     @Override
@@ -269,6 +263,45 @@ public class SpecificShowActivity
         }
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * Registers Observers for the ShowViewModel
+     */
+    private void registerShowViewModelObservers(){
+        //Initialises the ShowViewModel
+        mShowViewModel = ViewModelProviders.of(this).get(ShowViewModel.class);
+
+        //Registers an Observer to keep track of whether an operation is ongoing or not
+        mShowViewModel.getObservableOngoingOperation().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean ongoingOperation) {
+                if(ongoingOperation != null){
+                    if(ongoingOperation){
+                        //Displays the ProgressBar
+                        mProgressBar.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        //Hides the ProgressBar
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+
+        //Registers an Observer to retrieve responses from the TVMaze API
+        mShowViewModel.getObservableResponse().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String response) {
+                if(response != null){
+                    //Parses the JSON response
+                    parseJsonResponse(response);
+
+                    //Resets the observable variable
+                    mShowViewModel.getObservableResponse().setValue(null);
+                }
+            }
+        });
     }
 
     /**
@@ -394,18 +427,13 @@ public class SpecificShowActivity
             mShowTitle = bundle.getString(SHOW_TITLE_KEY);
             String showLink = LinkUtilities.getShowInformationLink(mShowId);
 
-            //Displays ProgressBar
-            mProgressBar.setVisibility(View.VISIBLE);
-
             //Displays/hides Views based on Internet connection status
             boolean online = NetworkUtilities.isOnline(this);
             toggleNoInternetMessageVisibility(online);
 
             if(online){
                 //Fetches data from the TVMaze API using the link
-                mApiConnection = new ApiConnection();
-                mApiConnection.setApiConnectionResponse(this);
-                mApiConnection.execute(showLink);
+                mShowViewModel.requestJsonResponse(showLink);
             }
         }
     }
@@ -441,8 +469,7 @@ public class SpecificShowActivity
      * Parses the JSON returned from the API and displays the data
      * @param response The JSON response retrieved from the API
      */
-    @Override
-    public void parseJsonResponse(String response) {
+    private void parseJsonResponse(String response) {
         try{
             //Assigns JSON data to variables if there is a valid JSON response
             if(response != null){
@@ -452,7 +479,7 @@ public class SpecificShowActivity
                 //Parses the JSON based on the URL of the response
                 if(url.startsWith(LinkUtilities.SHOW_LINK)){
                     //Parses the Show's main information and displays it
-                    mShow = JsonUtilities.parseFullShowJson(json, this, this, mIsShowAdded);
+                    mShow = JsonUtilities.parseFullShowJson(json, this, mIsShowAdded, mShowViewModel);
                     displayShowInformation(mShow);
                 }
                 else if(url.startsWith(LinkUtilities.EPISODE_LINK)){
@@ -487,9 +514,6 @@ public class SpecificShowActivity
      */
     private void displayShowInformation(Show show){
         if(show != null){
-            //Displays the image for the Show
-            displayImage(show.getShowImageUrl());
-
             //Displays the information for the Show
             mTextShowPremiered.setText(show.getShowPremieredDate());
             mTextShowLanguage.setText(show.getShowLanguages());
@@ -520,8 +544,10 @@ public class SpecificShowActivity
             if(show.getShowPreviousEpisode() != null && show.getShowNextEpisode() != null && show.getShowTitle() != null){
                 //Hides ProgressBar and displays data
                 mLlSpecificShow.setVisibility(View.VISIBLE);
-                mProgressBar.setVisibility(View.INVISIBLE);
             }
+
+            //Displays the image for the Show
+            displayImage(show.getShowImageUrl());
 
             //Displays the FloatingActionButton
             mButtonSearchByEpisode.setVisibility(View.VISIBLE);

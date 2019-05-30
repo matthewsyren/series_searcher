@@ -1,6 +1,9 @@
 package com.matthewsyren.seriessearcher.activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -15,13 +18,11 @@ import android.widget.Toast;
 
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.ShowEpisode;
-import com.matthewsyren.seriessearcher.network.ApiConnection;
-import com.matthewsyren.seriessearcher.network.ApiConnection.IApiConnectionResponse;
-import com.matthewsyren.seriessearcher.utilities.AsyncTaskUtilities;
 import com.matthewsyren.seriessearcher.utilities.DeviceUtilities;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
+import com.matthewsyren.seriessearcher.viewmodels.ShowViewModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,8 +35,7 @@ import butterknife.ButterKnife;
  */
 
 public class SearchByEpisodeActivity
-        extends AppCompatActivity
-        implements IApiConnectionResponse {
+        extends AppCompatActivity {
     //View bindings
     @BindView(R.id.text_show_title) TextView mTextShowTitle;
     @BindView(R.id.text_show_episode_name) TextView mTextShowEpisodeName;
@@ -53,7 +53,7 @@ public class SearchByEpisodeActivity
 
     //Variables
     private ShowEpisode mShowEpisode;
-    private ApiConnection mApiConnection;
+    private ShowViewModel mShowViewModel;
 
     //Constants
     private static final String SHOW_EPISODE_BUNDLE_KEY = "show_episode_bundle_key";
@@ -66,7 +66,10 @@ public class SearchByEpisodeActivity
         setContentView(R.layout.activity_search_by_episode);
         ButterKnife.bind(this);
 
-        //Restores data
+        //Registers Observers for the ShowViewModel
+        registerShowViewModelObservers();
+
+        //Restores data if possible
         if (savedInstanceState != null) {
             restoreData(savedInstanceState);
         }
@@ -93,12 +96,52 @@ public class SearchByEpisodeActivity
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    /**
+     * Registers Observers for the ShowViewModel
+     */
+    private void registerShowViewModelObservers(){
+        //Initialises the ShowViewModel
+        mShowViewModel = ViewModelProviders.of(this).get(ShowViewModel.class);
 
-        //Cancels the AsyncTask if it is still running
-        AsyncTaskUtilities.cancelAsyncTask(mApiConnection);
+        //Registers an Observer to keep track of whether an operation is ongoing or not
+        mShowViewModel.getObservableOngoingOperation().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean ongoingOperation) {
+                if(ongoingOperation != null){
+                    if(ongoingOperation){
+                        //Displays the ProgressBar and hides other Views that display information
+                        mLlSearchByEpisodeInformation.setVisibility(View.INVISIBLE);
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        mButtonSearch.setVisibility(View.INVISIBLE);
+                        mTextNoInternetConnection.setVisibility(View.GONE);
+                    }
+                    else{
+                        //Hides the ProgressBar and displays the Show's information
+                        if(mShowEpisode != null){
+                            mLlSearchByEpisodeInformation.setVisibility(View.VISIBLE);
+                            mProgressBar.setVisibility(View.GONE);
+                        }
+
+                        //Displays the search Button
+                        mButtonSearch.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
+
+        //Registers an Observer to retrieve responses from the TVMaze API
+        mShowViewModel.getObservableResponse().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String response) {
+                if(response != null){
+                    //Parses the JSON response
+                    parseJsonResponse(response);
+
+                    //Resets the observable variable
+                    mShowViewModel.getObservableResponse().setValue(null);
+                }
+            }
+        });
     }
 
     /**
@@ -174,9 +217,7 @@ public class SearchByEpisodeActivity
                 int episode = Integer.parseInt(mTextShowEpisode.getText().toString());
 
                 //Fetches information from the TVMaze API
-                mApiConnection = new ApiConnection();
-                mApiConnection.setApiConnectionResponse(this);
-                mApiConnection.execute(LinkUtilities.getShowEpisodeInformationLink(showNumber, season, episode));
+                mShowViewModel.requestJsonResponse(LinkUtilities.getShowEpisodeInformationLink(showNumber, season, episode));
             }
             catch(NumberFormatException nfe){
                 //Displays an error message to the user
@@ -213,10 +254,9 @@ public class SearchByEpisodeActivity
      * Parses the JSON returned from the TVMaze API and displays it
      * @param response The JSON response retrieved from the API
      */
-    @Override
-    public void parseJsonResponse(String response) {
+    private void parseJsonResponse(String response) {
         try{
-            if(response != null){
+            if(response != null && response.length() > 0){
                 //Creates a JSONObject
                 JSONObject jsonObject = new JSONObject(response);
 
@@ -227,6 +267,7 @@ public class SearchByEpisodeActivity
                 displayEpisodeInformation(mShowEpisode);
             }
             else{
+                //Displays a message saying no information was found about the episode
                 Toast.makeText(getApplicationContext(), R.string.error_no_episode_information_found, Toast.LENGTH_LONG).show();
 
                 //Resets the search results

@@ -1,9 +1,10 @@
 package com.matthewsyren.seriessearcher.activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.ResultReceiver;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,14 +20,11 @@ import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.activities.BaseActivity.IOnDataSavingPreferenceChangedListener;
 import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
 import com.matthewsyren.seriessearcher.models.Show;
-import com.matthewsyren.seriessearcher.network.ApiConnection;
-import com.matthewsyren.seriessearcher.network.ApiConnection.IApiConnectionResponse;
-import com.matthewsyren.seriessearcher.services.FirebaseService;
-import com.matthewsyren.seriessearcher.utilities.AsyncTaskUtilities;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
+import com.matthewsyren.seriessearcher.viewmodels.ShowViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,8 +41,7 @@ import butterknife.ButterKnife;
 
 public class SearchActivity
         extends BaseActivity
-        implements IApiConnectionResponse,
-        IOnDataSavingPreferenceChangedListener{
+        implements IOnDataSavingPreferenceChangedListener{
     //View bindings
     @BindView(R.id.recycler_view_search_results) RecyclerView mRecyclerViewSearchResults;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
@@ -53,11 +50,11 @@ public class SearchActivity
     @BindView(R.id.text_no_internet_connection) TextView mTextNoInternetConnection;
 
     //Variables
-    private ApiConnection mApiConnection = new ApiConnection();
     private ArrayList<Show> mShows =  new ArrayList<>();
     private ShowAdapter mAdapter;
     private static final String SHOWS_BUNDLE_KEY = "shows_bundle_key";
     private boolean mRestored = false;
+    private ShowViewModel mShowViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,15 +68,18 @@ public class SearchActivity
         //Ensures that the user's key has been fetched
         UserAccountUtilities.checkUserKey(this);
 
-        //Hides ProgressBar
-        mProgressBar.setVisibility(View.INVISIBLE);
+        //Registers the Observers for ShowViewModel
+        registerShowViewModelObservers();
 
+        //Restores data if possible
         if(savedInstanceState != null){
             restoreData(savedInstanceState);
         }
 
-        //Sets up the Adapter and typing listener
+        //Sets up the Adapter
         setUpAdapter();
+
+        //Sets up the typing listener
         setUpTypingListener();
     }
 
@@ -92,21 +92,14 @@ public class SearchActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        //Cancels the AsyncTask if it is still running
-        AsyncTaskUtilities.cancelAsyncTask(mApiConnection);
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_REQUEST_CODE){
             //Updates the RecyclerView if the user added/removed a Show from My Series on the SpecificShowActivity
             if(resultCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED){
-                Show.markShowsInMySeries(this, mShows, new DataReceiver(new Handler()));
+                //Marks which Shows have been added to My Series
+                mShowViewModel.markShowsInMySeries(mShows);
             }
         }
     }
@@ -121,13 +114,80 @@ public class SearchActivity
     }
 
     /**
+     * Registers Observers for the ShowViewModel
+     */
+    private void registerShowViewModelObservers(){
+        //Initialises the ShowViewModel
+        mShowViewModel = ViewModelProviders.of(this).get(ShowViewModel.class);
+
+        //Registers an Observer to keep track of changes to the shows ArrayList
+        mShowViewModel.getObservableShows().observe(this, new Observer<ArrayList<Show>>() {
+            @Override
+            public void onChanged(@Nullable ArrayList<Show> shows) {
+                if(shows != null && shows.size() > 0){
+                    //Updates the mShows variable
+                    mShows = shows;
+
+                    //Displays the data
+                    if(mAdapter != null){
+                        mAdapter.setShows(mShows);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+
+        //Registers an Observer to keep track of whether an operation is ongoing or not
+        mShowViewModel.getObservableOngoingOperation().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean ongoingOperation) {
+                if(ongoingOperation != null){
+                    if(ongoingOperation){
+                        //Hides the RecyclerView and displays the ProgressBar
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        mRecyclerViewSearchResults.setVisibility(View.GONE);
+                    }
+                    else{
+                        //Hides the ProgressBar and displays the RecyclerView
+                        mProgressBar.setVisibility(View.GONE);
+                        mRecyclerViewSearchResults.setVisibility(View.VISIBLE);
+
+                        //Displays a message if no series are found
+                        if(mShows.size() == 0){
+                            mTvNoSeriesFound.setVisibility(View.VISIBLE);
+                        }
+                        else{
+                            mTvNoSeriesFound.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                }
+            }
+        });
+
+        //Registers an Observer to retrieve responses from the TVMaze API
+        mShowViewModel.getObservableResponse().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String response) {
+                if(response != null){
+                    //Parses the JSON response
+                    parseJsonResponse(response);
+
+                    //Resets the observable variable
+                    mShowViewModel.getObservableResponse().setValue(null);
+                }
+            }
+        });
+    }
+
+    /**
      * Restores any saved data
      * @param savedInstanceState The Bundle containing the Activity's data
      */
     private void restoreData(Bundle savedInstanceState){
+        mRestored = true;
+
         if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
             mShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
-            mRestored = true;
 
             //Hides ProgressBar
             mProgressBar.setVisibility(View.GONE);
@@ -162,6 +222,8 @@ public class SearchActivity
                     //Performs a search using the text the user has entered
                     searchShows();
                 }
+
+                //Resets variable
                 mRestored = false;
             }
 
@@ -185,15 +247,13 @@ public class SearchActivity
         mTextNoInternetConnection.setVisibility(View.GONE);
 
         //Cancels any previous requests and clears the previous results
-        mApiConnection.cancel(true);
+        mShowViewModel.cancelAsyncTasks();
         mShows.clear();
         mAdapter.notifyDataSetChanged();
 
         if(NetworkUtilities.isOnline(this)){
             //Connects to the TVMaze API using the specific URL for the selected show
-            mApiConnection = new ApiConnection();
-            mApiConnection.setApiConnectionResponse(this);
-            mApiConnection.execute(LinkUtilities.getSearchLink(searchText));
+            mShowViewModel.requestJsonResponse(LinkUtilities.getSearchLink(searchText));
         }
         else{
             //Displays no Internet connection message and hides the ProgressBar
@@ -206,8 +266,7 @@ public class SearchActivity
      * Parses the JSON returned from the API, and populates the RecyclerView with the data
      * @param response The JSON response retrieved from the API
      */
-    @Override
-    public void parseJsonResponse(String response) {
+    private void parseJsonResponse(String response) {
         try{
             //JSONArray stores the JSON returned from the TVMaze API
             if(response != null){
@@ -220,14 +279,14 @@ public class SearchActivity
                     JSONObject json = jsonArray.getJSONObject(i);
                     json = json.getJSONObject("show");
 
-                    //Assigns values to the JSONObject if the JSON returned from the API is not null
+                    //Parses the JSON and creates a Show object to add to the mShows ArrayList
                     if(json != null){
-                        mShows.add(JsonUtilities.parseShowJson(json, this, this, false, null));
+                        mShows.add(JsonUtilities.parseShowJson(json, this, false, null, mShowViewModel));
                     }
                 }
 
                 //Determines which Shows have been added to My Series by the user
-                Show.markShowsInMySeries(this, mShows, new DataReceiver(new Handler()));
+                mShowViewModel.markShowsInMySeries(mShows);
             }
             else{
                 Toast.makeText(getApplicationContext(), R.string.error_fetching_data_no_internet_connection, Toast.LENGTH_LONG).show();
@@ -241,47 +300,8 @@ public class SearchActivity
     @Override
     public void onDataSavingPreferenceChanged() {
         //Updates the images in the RecyclerView
-        mAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * Used to receive data from Services
-     */
-    private class DataReceiver
-            extends ResultReceiver {
-
-        /**
-         * Constructor
-         */
-        private DataReceiver(Handler handler) {
-            super(handler);
-        }
-
-        @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-            super.onReceiveResult(resultCode, resultData);
-
-            if(resultCode == FirebaseService.ACTION_MARK_SHOWS_IN_MY_SERIES_RESULT_CODE){
-                //Updates the mShows ArrayList with the new data
-                if(resultData != null && resultData.containsKey(FirebaseService.EXTRA_SHOWS)){
-                    mShows = resultData.getParcelableArrayList(FirebaseService.EXTRA_SHOWS);
-
-                    //Refreshes the RecyclerView's data
-                    mAdapter.setShows(mShows);
-                    mAdapter.notifyDataSetChanged();
-                }
-
-                //Displays a message if no series are found
-                if(mShows.size() == 0){
-                    mTvNoSeriesFound.setVisibility(View.VISIBLE);
-                }
-                else{
-                    mTvNoSeriesFound.setVisibility(View.INVISIBLE);
-                }
-
-                //Hides ProgressBar
-                mProgressBar.setVisibility(View.INVISIBLE);
-            }
+        if(mAdapter != null){
+            mAdapter.notifyDataSetChanged();
         }
     }
 }

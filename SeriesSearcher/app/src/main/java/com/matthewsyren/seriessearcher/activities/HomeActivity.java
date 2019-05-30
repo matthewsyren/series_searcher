@@ -5,8 +5,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -31,15 +29,12 @@ import com.matthewsyren.seriessearcher.activities.BaseActivity.IOnDataSavingPref
 import com.matthewsyren.seriessearcher.adapters.ShowAdapter;
 import com.matthewsyren.seriessearcher.fragments.EnterPasswordFragment;
 import com.matthewsyren.seriessearcher.models.Show;
-import com.matthewsyren.seriessearcher.network.ApiConnection;
-import com.matthewsyren.seriessearcher.network.ApiConnection.IApiConnectionResponse;
-import com.matthewsyren.seriessearcher.services.FirebaseService;
-import com.matthewsyren.seriessearcher.utilities.AsyncTaskUtilities;
 import com.matthewsyren.seriessearcher.utilities.JsonUtilities;
 import com.matthewsyren.seriessearcher.utilities.LinkUtilities;
 import com.matthewsyren.seriessearcher.utilities.NetworkUtilities;
 import com.matthewsyren.seriessearcher.utilities.UserAccountUtilities;
 import com.matthewsyren.seriessearcher.viewmodels.EmailVerificationViewModel;
+import com.matthewsyren.seriessearcher.viewmodels.ShowViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,13 +48,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Activity allows the user to see the Shows that they have added to 'My Series'
+ * Activity allows the user to see the Shows that they have added to My Series
  */
 
 public class HomeActivity
         extends BaseActivity
-        implements IApiConnectionResponse,
-        IOnDataSavingPreferenceChangedListener,
+        implements IOnDataSavingPreferenceChangedListener,
         EnterPasswordFragment.IEnterPasswordFragmentOnClickListener {
     //View bindings
     @BindView(R.id.recycler_view_my_shows) RecyclerView mRecyclerViewMyShows;
@@ -77,14 +71,14 @@ public class HomeActivity
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private boolean mIsSignInRequestSent = false;
     private int mScrollPosition;
-    private ApiConnection mApiConnection;
     private boolean mSignedOut;
     private boolean mListSorted = false;
     private FirebaseUser mFirebaseUser;
     private boolean mAttemptedVerification = false;
     private EnterPasswordFragment mEnterPasswordFragment;
-    private boolean mOngoingOperation = false;
+    private boolean mOngoingOperation;
     private EmailVerificationViewModel mEmailVerificationViewModel;
+    private ShowViewModel mShowViewModel;
 
     //Constants
     private static final String SCROLL_POSITION_BUNDLE_KEY = "scroll_position_bundle_key";
@@ -99,11 +93,11 @@ public class HomeActivity
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        //Registers Observers for LiveData within the ViewModel
-        registerViewModelObservers();
-
         //Sets the NavigationDrawer for the Activity
         super.onCreateDrawer(this);
+
+        //Registers Observers for the EmailVerificationViewModel
+        registerEmailVerificationViewModelObservers();
 
         //Sets the title of the Activity
         setTitle(getString(R.string.title_activity_home));
@@ -133,9 +127,6 @@ public class HomeActivity
         if(mAuthStateListener != null){
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
-
-        //Cancels the AsyncTask
-        AsyncTaskUtilities.cancelAsyncTask(mApiConnection);
     }
 
     @Override
@@ -182,9 +173,9 @@ public class HomeActivity
         }
         else if(requestCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_REQUEST_CODE){
             //Refreshes the Activity if the user added/removed a Show from My Series on the SpecificShowActivity
-            if(resultCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED){
-                //Determines which Shows have been added to My Series by the user
-                Show.markShowsInMySeries(this, mShows, new DataReceiver(new Handler()));
+            if(resultCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED && !mOngoingOperation){
+                //Marks which Shows have been added to My Series by the user
+                mShowViewModel.markShowsInMySeries(mShows);
             }
         }
     }
@@ -216,11 +207,8 @@ public class HomeActivity
             //Restores mShows
             mShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
 
-            //Hides ProgressBar
-            mProgressBar.setVisibility(View.GONE);
-
             //Displays the RecyclerView and hides other unnecessary Views
-            toggleViewVisibility(View.VISIBLE,View.INVISIBLE);
+            toggleViewVisibility(View.VISIBLE,View.GONE);
         }
 
         if(savedInstanceState.containsKey(SCROLL_POSITION_BUNDLE_KEY)){
@@ -238,13 +226,13 @@ public class HomeActivity
     }
 
     /**
-     * Registers ViewModel Observers
+     * Registers the EmailVerificationViewModel Observers
      */
-    private void registerViewModelObservers() {
+    private void registerEmailVerificationViewModelObservers() {
         //Initialises the EmailVerificationViewModel
         mEmailVerificationViewModel = ViewModelProviders.of(this).get(EmailVerificationViewModel.class);
 
-        //Sets an Observer for ongoing operations
+        //Registers an Observer for ongoing operations
         mEmailVerificationViewModel.getObservableOngoingOperation().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean ongoingOperation) {
@@ -267,7 +255,7 @@ public class HomeActivity
             }
         });
 
-        //Sets an Observer for sending a verification email to the user
+        //Registers an Observer for sending a verification email to the user
         mEmailVerificationViewModel.getObservableVerificationEmailSent().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer resultCode) {
@@ -293,7 +281,7 @@ public class HomeActivity
             }
         });
 
-        //Sets an Observer for reauthentication
+        //Registers an Observer for reauthentication
         mEmailVerificationViewModel.getObservableReauthenticationSuccessful().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer resultCode) {
@@ -320,6 +308,93 @@ public class HomeActivity
 
                     //Resets the observable variable
                     mEmailVerificationViewModel.getObservableReauthenticationSuccessful().setValue(null);
+                }
+            }
+        });
+    }
+
+    /**
+     * Registers the ShowViewModel Observers
+     */
+    private void registerShowViewModelObservers(){
+        //Initialises the ShowViewModel
+        mShowViewModel = ViewModelProviders.of(this).get(ShowViewModel.class);
+
+        //Registers an Observer to keep track of changes to the shows ArrayList
+        mShowViewModel.getObservableShows().observe(this, new Observer<ArrayList<Show>>() {
+            @Override
+            public void onChanged(@Nullable ArrayList<Show> shows) {
+                if(shows != null && (mShows.size() - shows.size() <= 1)){
+                    //Updates the mShows variable
+                    mShows = shows;
+
+                    //Removes Shows that have not been added to My Series
+                    for(int i = 0; i < shows.size(); i++){
+                        if(!shows.get(i).isShowAdded()){
+                            //Removes the Show and decrements the i variable to cater for the removed object
+                            shows.remove(i);
+                            i--;
+                        }
+                    }
+
+                    //Displays a message telling the user to add Shows if mShows is empty
+                    if(mShows.size() == 0){
+                        toggleViewVisibility(View.GONE, View.VISIBLE);
+                    }
+
+                    //Refreshes the RecyclerView's data
+                    if(mAdapter != null){
+                        mAdapter.setShows(mShows);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+
+        //Registers an Observer to retrieve responses from the TVMaze API
+        mShowViewModel.getObservableResponse().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String response) {
+                if(response != null && response.length() > 0){
+                    //Parses the response retrieved from the API
+                    parseJsonResponse(response);
+
+                    //Displays the Shows if there are any, otherwise displays a message telling the user to add Shows to My Series
+                    if(mShows.size() > 0){
+                        mAdapter.setShows(mShows);
+                        mAdapter.notifyDataSetChanged();
+                        toggleViewVisibility(View.VISIBLE, View.GONE);
+                    }
+                    else{
+                        toggleViewVisibility(View.GONE, View.VISIBLE);
+                    }
+
+                    //Resets the observable variable
+                    mShowViewModel.getObservableResponse().setValue(null);
+                }
+            }
+        });
+
+        //Registers an Observer to keep track of whether an operation is ongoing or not
+        mShowViewModel.getObservableOngoingOperation().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean ongoingOperation) {
+                if(ongoingOperation != null){
+                    //Updates the mOngoingOperation variable
+                    mOngoingOperation = ongoingOperation;
+
+                    if(ongoingOperation){
+                        //Hides the RecyclerView and displays the ProgressBar
+                        mRlNoSeriesAddedToMySeries.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        mRecyclerViewMyShows.setVisibility(View.GONE);
+                    }
+                    else{
+                        //Hides the ProgressBar and displays the RecyclerView
+                        mRlNoSeriesAddedToMySeries.setVisibility(View.VISIBLE);
+                        mProgressBar.setVisibility(View.GONE);
+                        mRecyclerViewMyShows.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         });
@@ -447,8 +522,22 @@ public class HomeActivity
         //Clears the user's key from SharedPreferences
         UserAccountUtilities.setUserKey(this, null);
 
-        //Cancels the AsyncTask
-        AsyncTaskUtilities.cancelAsyncTask(mApiConnection);
+        //Resets the ShowViewModel
+        if(mShowViewModel != null){
+            //Cancels any ongoing AsyncTasks
+            mShowViewModel.cancelAsyncTasks();
+
+            //Removes Observers for the ShowViewModel
+            mShowViewModel.getObservableOngoingOperation().removeObservers(this);
+            mShowViewModel.getObservableShows().removeObservers(this);
+            mShowViewModel.getObservableResponse().removeObservers(this);
+
+            //Marks any ongoing operations as cancelled
+            mShowViewModel.getObservableOngoingOperation().setValue(false);
+        }
+
+        //Marks any ongoing operations as cancelled
+        mOngoingOperation = false;
 
         //Clears the user's series
         mShows.clear();
@@ -482,6 +571,9 @@ public class HomeActivity
         //Sets up the Adapter
         setUpAdapter();
 
+        //Registers Observers for the ShowViewModel
+        registerShowViewModelObservers();
+
         //Displays the user's email address in the NavigationDrawer
         super.displayUserDetails();
 
@@ -495,19 +587,17 @@ public class HomeActivity
      * Fetches the user's Shows
      */
     public void fetchUsersShows(){
-        //Displays ProgressBar
-        mProgressBar.setVisibility(View.VISIBLE);
-
         //Displays the RecyclerView and hides other unnecessary Views
-        toggleViewVisibility(View.VISIBLE, View.INVISIBLE);
+        toggleViewVisibility(View.VISIBLE, View.GONE);
 
         //Displays/hides Views based on Internet connection status
         boolean online = NetworkUtilities.isOnline(this);
         toggleNoInternetMessageVisibility(online);
 
         //Fetches Shows if there is an Internet connection
-        if(online){
-            Show.getShowIdsInMySeries(this, new DataReceiver(new Handler()));
+        if(online && !mOngoingOperation){
+            //Requests a list of Shows that the user has added to My Series
+            mShowViewModel.requestShowsInMySeriesJson();
         }
     }
 
@@ -542,29 +632,6 @@ public class HomeActivity
     }
 
     /**
-     * Fetches the shows the user has added to 'My Series' using the keys passed in with the ArrayList
-     * @param shows An ArrayList of links to the user's Shows
-     */
-    private void getUserShowData(ArrayList<String> shows){
-        if(shows.size() > 0){
-            //Transfers the data from shows to an array containing the necessary links to the API (an array of links can be passed in to the ApiConnection class to fetch data from the API)
-            String[] arrShows = new String[shows.size()];
-            for(int i = 0; i < shows.size(); i++){
-                arrShows[i] = LinkUtilities.getShowInformationLink(shows.get(i));
-            }
-
-            //Fetches the data from the TVMaze API
-            mApiConnection = new ApiConnection();
-            mApiConnection.setApiConnectionResponse(this);
-            mApiConnection.execute(arrShows);
-        }
-        else{
-            toggleViewVisibility(View.INVISIBLE,View.VISIBLE);
-            mProgressBar.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    /**
      * Sets the visibility of the Views based on the parameters passed in
      * @param recyclerViewVisibility The intended visibility of the RecyclerView
      * @param otherViewVisibility The intended visibility of other Views
@@ -576,11 +643,10 @@ public class HomeActivity
     }
 
     /**
-     * Parses the JSON returned from the API and displays the information in the RecyclerView
+     * Parses the JSON from the API
      * @param response The JSON response retrieved from the API
      */
-    @Override
-    public void parseJsonResponse(String response) {
+    private void parseJsonResponse(String response) {
         try{
             //JSONArray stores the JSON returned from the TVMaze API
             if(response != null && mFirebaseAuth.getCurrentUser() != null){
@@ -600,8 +666,7 @@ public class HomeActivity
                         //Performs the appropriate action based on the start of the URL (which determines if the information is about a Show or the Show's next episode)
                         if(url.startsWith(LinkUtilities.SHOW_LINK)){
                             //Adds the Show to the mShows ArrayList
-                            mShows.add(JsonUtilities.parseShowJson(json, this, this, true, true));
-                            mAdapter.notifyDataSetChanged();
+                            mShows.add(JsonUtilities.parseShowJson(json, this, true, true, mShowViewModel));
                         }
                         else if(url.startsWith(LinkUtilities.EPISODE_LINK)){
                             //Gets the next episode information
@@ -617,7 +682,6 @@ public class HomeActivity
                                 //Adds the next episode date to the series if the URL contains the series name
                                 if(url.toLowerCase().contains(seriesName)){
                                     mShows.get(s).setShowNextEpisode(displayText);
-                                    mAdapter.notifyDataSetChanged();
                                 }
                             }
                         }
@@ -628,9 +692,6 @@ public class HomeActivity
                 //Displays a no Internet connection message
                 toggleNoInternetMessageVisibility(false);
             }
-
-            //Hides ProgressBar
-            mProgressBar.setVisibility(View.INVISIBLE);
 
             //Sorts the mShows ArrayList alphabetically by Show Title
             if(!mListSorted){
@@ -661,61 +722,6 @@ public class HomeActivity
             //Hides the ProgressBar and displays the verify email message
             mClEmailNotVerified.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * Used to receive data from Services
-     */
-    private class DataReceiver
-            extends ResultReceiver{
-
-        /**
-         * Constructor
-         */
-        private DataReceiver(Handler handler) {
-            super(handler);
-        }
-
-        @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-            super.onReceiveResult(resultCode, resultData);
-
-            if(resultCode == FirebaseService.ACTION_GET_SHOW_IDS_RESULT_CODE){
-                //Fetches the user's Show data from the Service
-                ArrayList<String> showIds = resultData.getStringArrayList(FirebaseService.EXTRA_SHOW_IDS);
-
-                //Fetches the Show IDs from the Service. The ArrayList is then passed to the getUserShowData method, which fetches the JSON data for each Show from the TVMAze API
-                if(showIds != null){
-                    getUserShowData(showIds);
-                }
-            }
-            else if(resultCode == FirebaseService.ACTION_MARK_SHOWS_IN_MY_SERIES_RESULT_CODE){
-                //Updates the mShows ArrayList with the new data
-                if(resultData != null && resultData.containsKey(FirebaseService.EXTRA_SHOWS)){
-                    mShows = resultData.getParcelableArrayList(FirebaseService.EXTRA_SHOWS);
-
-                    //Refreshes the RecyclerView's data
-                    mAdapter.setShows(mShows);
-                }
-
-                //Removes a Show if it has not been added to My Series
-                for(int i = 0; i < mShows.size(); i++){
-                    if(!mShows.get(i).isShowAdded()){
-                        //Removes the Show and decrements the i variable to cater for the removed object
-                        mShows.remove(i);
-                        i--;
-                    }
-                }
-
-                //Displays a message telling the user to add Shows if mShows is empty
-                if(mShows.size() == 0){
-                    toggleViewVisibility(View.GONE, View.VISIBLE);
-                }
-
-                //Refreshes the RecyclerView's data
-                mAdapter.notifyDataSetChanged();
-            }
         }
     }
 }

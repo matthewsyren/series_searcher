@@ -5,8 +5,7 @@ import android.content.Context;
 import com.matthewsyren.seriessearcher.R;
 import com.matthewsyren.seriessearcher.models.Show;
 import com.matthewsyren.seriessearcher.models.ShowEpisode;
-import com.matthewsyren.seriessearcher.network.ApiConnection;
-import com.matthewsyren.seriessearcher.network.ApiConnection.IApiConnectionResponse;
+import com.matthewsyren.seriessearcher.viewmodels.ShowViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,11 +20,12 @@ public class JsonUtilities {
      * Returns a Show object parsed from the JSONObject passed in
      * @param json The JSON to be parsed
      * @param context The Context of the calling Activity
-     * @param iApiConnectionResponse The class that implements IApiConnectionResponse
      * @param fetchNextEpisode Set as true to fetch information about the Show's next episode
+     * @param showAdded Set to true if the Show has been added to My Series by the user, otherwise set to false
+     * @param showViewModel The instance of ShowViewModel to send JSON responses to
      * @return A Show object with the parsed JSON as values
      */
-    public static Show parseShowJson(JSONObject json, Context context, IApiConnectionResponse iApiConnectionResponse, boolean fetchNextEpisode, Boolean showAdded) throws JSONException{
+    public static Show parseShowJson(JSONObject json, Context context, boolean fetchNextEpisode, Boolean showAdded, ShowViewModel showViewModel) throws JSONException{
         //Fetches values
         int id = json.getInt("id");
         String name = json.getString("name");
@@ -59,9 +59,7 @@ public class JsonUtilities {
             String nextEpisodeLink = links.getJSONObject("nextepisode").getString("href");
 
             //Fetches data from the TVMaze API using the link
-            ApiConnection api = new ApiConnection();
-            api.setApiConnectionResponse(iApiConnectionResponse);
-            api.execute(nextEpisodeLink);
+            showViewModel.requestJsonResponse(nextEpisodeLink);
         }
 
         //Instantiates a Show object and returns it
@@ -80,12 +78,13 @@ public class JsonUtilities {
      * Returns a Show object parsed from the JSONObject passed in
      * @param json The JSON to be parsed
      * @param context The Context of the calling Activity
-     * @param iApiConnectionResponse The class that implements IApiConnectionResponse
+     * @param showAdded Set to true if the Show has been added to My Series by the user, otherwise set to false
+     * @param showViewModel The instance of ShowViewModel to send JSON responses to
      * @return A Show object with the parsed JSON as values
      */
-    public static Show parseFullShowJson(JSONObject json, Context context, IApiConnectionResponse iApiConnectionResponse, Boolean showAdded) throws JSONException{
+    public static Show parseFullShowJson(JSONObject json, Context context, Boolean showAdded, ShowViewModel showViewModel) throws JSONException{
         //Parses the small version of the Show
-        Show show = parseShowJson(json, context, iApiConnectionResponse, false, showAdded);
+        Show show = parseShowJson(json, context, false, showAdded, showViewModel);
 
         //Parses the rest of the Show
         String premiered = json.getString("premiered");
@@ -135,9 +134,7 @@ public class JsonUtilities {
             String previousEpisodeLink = links.getJSONObject("previousepisode").getString("href");
 
             //Fetches data from the TVMaze API using the link
-            ApiConnection api = new ApiConnection();
-            api.setApiConnectionResponse(iApiConnectionResponse);
-            api.execute(previousEpisodeLink);
+            showViewModel.requestJsonResponse(previousEpisodeLink);
         }
         else{
             previousEpisode = context.getString(R.string.n_a);
@@ -147,9 +144,7 @@ public class JsonUtilities {
             String nextEpisodeLink = links.getJSONObject("nextepisode").getString("href");
 
             //Fetches data from the TVMaze API using the link
-            ApiConnection api = new ApiConnection();
-            api.setApiConnectionResponse(iApiConnectionResponse);
-            api.execute(nextEpisodeLink);
+            showViewModel.requestJsonResponse(nextEpisodeLink);
         }
         else{
             nextEpisode = context.getString(R.string.n_a);
@@ -175,6 +170,8 @@ public class JsonUtilities {
     /**
      * Parses information about an episode of the Show
      * @param json The JSON to be parsed
+     * @param context The Context of the calling Activity
+     * @param addDateOnNextLine Set to true if the date information for an episode must be on the next line, otherwise set to false
      * @return The episode date
      */
     public static String parseShowEpisodeDate(JSONObject json, Context context, boolean addDateOnNextLine) throws JSONException{
