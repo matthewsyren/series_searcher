@@ -103,7 +103,7 @@ public class HomeActivity
         setTitle(getString(R.string.title_activity_home));
 
         //Restores data if possible
-        if(savedInstanceState != null && UserAccountUtilities.getUserKey(this) != null){
+        if(savedInstanceState != null){
             restoreData(savedInstanceState);
         }
 
