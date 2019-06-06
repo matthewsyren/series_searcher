@@ -482,7 +482,6 @@ public class HomeActivity
                             //Displays a message that explains how to verify the user's email address, and hides other Views
                             mClEmailNotVerified.setVisibility(View.VISIBLE);
                             mRlNoSeriesAddedToMySeries.setVisibility(View.GONE);
-                            mProgressBar.setVisibility(View.GONE);
                         }
                     }
                 }
@@ -717,11 +716,6 @@ public class HomeActivity
         //Attempts to reauthenticate the user if they have entered their password
         if(password != null && password.length() > 0 && mFirebaseUser != null && mFirebaseUser.getEmail() != null){
             mEmailVerificationViewModel.reauthenticateUser(mFirebaseUser, password);
-        }
-        else{
-            //Hides the ProgressBar and displays the verify email message
-            mClEmailNotVerified.setVisibility(View.VISIBLE);
-            mProgressBar.setVisibility(View.GONE);
         }
     }
 }

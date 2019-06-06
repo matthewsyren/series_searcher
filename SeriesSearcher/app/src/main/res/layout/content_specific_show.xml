@@ -218,5 +218,6 @@
         android:layout_marginTop="@dimen/progress_bar_margin_top"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"/>
 </android.support.constraint.ConstraintLayout>

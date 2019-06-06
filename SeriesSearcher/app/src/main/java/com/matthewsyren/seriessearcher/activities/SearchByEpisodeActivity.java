@@ -80,9 +80,6 @@ public class SearchByEpisodeActivity
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        //Hides ProgressBar
-        mProgressBar.setVisibility(View.INVISIBLE);
-
         //Displays the Show's title
         displayShowTitle();
     }
@@ -119,11 +116,11 @@ public class SearchByEpisodeActivity
                         //Hides the ProgressBar and displays the Show's information
                         if(mShowEpisode != null){
                             mLlSearchByEpisodeInformation.setVisibility(View.VISIBLE);
-                            mProgressBar.setVisibility(View.GONE);
                         }
 
-                        //Displays the search Button
+                        //Displays the search Button and hides the ProgressBar
                         mButtonSearch.setVisibility(View.VISIBLE);
+                        mProgressBar.setVisibility(View.GONE);
                     }
                 }
             }
@@ -196,9 +193,8 @@ public class SearchByEpisodeActivity
     public void searchByEpisodeOnClick(View view){
         if(NetworkUtilities.isOnline(this)){
             try{
-                //Displays ProgressBar and hides the search Button, episode information and no Internet connection message
+                //Hides the search Button, episode information and no Internet connection message
                 mLlSearchByEpisodeInformation.setVisibility(View.INVISIBLE);
-                mProgressBar.setVisibility(View.VISIBLE);
                 mButtonSearch.setVisibility(View.INVISIBLE);
                 mTextNoInternetConnection.setVisibility(View.GONE);
 
@@ -234,8 +230,7 @@ public class SearchByEpisodeActivity
                     Toast.makeText(getApplicationContext(), R.string.error_enter_whole_number, Toast.LENGTH_LONG).show();
                 }
 
-                //Hides and displays the appropriate Views
-                mProgressBar.setVisibility(View.INVISIBLE);
+                //Displays the search Button
                 mButtonSearch.setVisibility(View.VISIBLE);
 
                 //Resets the search results
@@ -274,8 +269,7 @@ public class SearchByEpisodeActivity
                 resetSearchResults();
             }
 
-            //Hides ProgressBar and displays the search Button and episode information
-            mProgressBar.setVisibility(View.INVISIBLE);
+            //Displays the search Button
             mButtonSearch.setVisibility(View.VISIBLE);
         }
         catch(JSONException j){

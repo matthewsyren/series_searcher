@@ -188,9 +188,6 @@ public class SearchActivity
 
         if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
             mShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
-
-            //Hides ProgressBar
-            mProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -241,9 +238,8 @@ public class SearchActivity
         //Fetches user's input
         String searchText = mTextSearchSeries.getText().toString();
 
-        //Displays ProgressBar and hides the TextViews
+        //Hides the TextViews
         mTvNoSeriesFound.setVisibility(View.INVISIBLE);
-        mProgressBar.setVisibility(View.VISIBLE);
         mTextNoInternetConnection.setVisibility(View.GONE);
 
         //Cancels any previous requests and clears the previous results
@@ -256,9 +252,8 @@ public class SearchActivity
             mShowViewModel.requestJsonResponse(LinkUtilities.getSearchLink(searchText));
         }
         else{
-            //Displays no Internet connection message and hides the ProgressBar
+            //Displays no Internet connection message
             mTextNoInternetConnection.setVisibility(View.VISIBLE);
-            mProgressBar.setVisibility(View.GONE);
         }
     }
 

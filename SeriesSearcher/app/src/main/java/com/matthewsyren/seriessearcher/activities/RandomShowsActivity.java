@@ -241,9 +241,6 @@ public class RandomShowsActivity
     private void restoreData(Bundle savedInstanceState){
         if(savedInstanceState.containsKey(SHOWS_BUNDLE_KEY)){
             mShows = savedInstanceState.getParcelableArrayList(SHOWS_BUNDLE_KEY);
-
-            //Hides the ProgressBar
-            mProgressBar.setVisibility(View.GONE);
         }
     }
 

@@ -143,19 +143,6 @@ public class SpecificShowActivity
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        //Displays the ProgressBar if the show's information hasn't been fetched yet
-        if(mShow == null && NetworkUtilities.isOnline(this)){
-            mProgressBar.setVisibility(View.VISIBLE);
-        }
-        else{
-            mProgressBar.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -445,12 +432,10 @@ public class SpecificShowActivity
     private void toggleNoInternetMessageVisibility(boolean online){
         if(online){
             mClNoInternetConnection.setVisibility(View.GONE);
-            mProgressBar.setVisibility(View.VISIBLE);
             mButtonSearchByEpisode.setVisibility(View.VISIBLE);
         }
         else{
             mClNoInternetConnection.setVisibility(View.VISIBLE);
-            mProgressBar.setVisibility(View.GONE);
             mButtonSearchByEpisode.setVisibility(View.GONE);
 
             //Scrolls up to make the Views more visible
@@ -542,7 +527,7 @@ public class SpecificShowActivity
             }
 
             if(show.getShowPreviousEpisode() != null && show.getShowNextEpisode() != null && show.getShowTitle() != null){
-                //Hides ProgressBar and displays data
+                //Displays data
                 mLlSpecificShow.setVisibility(View.VISIBLE);
             }
 
