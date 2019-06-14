@@ -173,7 +173,6 @@ public class RandomShowsActivity
                     //Displays the Shows
                     if(mShows.size() > 0){
                         mAdapter.setShows(mShows);
-                        mAdapter.notifyDataSetChanged();
                     }
 
                     //Resets the observable variable
@@ -193,7 +192,6 @@ public class RandomShowsActivity
                     //Refreshes the RecyclerView's data
                     if(mAdapter != null){
                         mAdapter.setShows(mShows);
-                        mAdapter.notifyDataSetChanged();
                     }
                 }
             }

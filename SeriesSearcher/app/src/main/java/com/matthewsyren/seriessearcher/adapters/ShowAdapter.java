@@ -66,6 +66,7 @@ public class ShowAdapter
      */
     public void setShows(ArrayList<Show> shows){
         sShows = shows;
+        notifyDataSetChanged();
     }
 
     @NonNull

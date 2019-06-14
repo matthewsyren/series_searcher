@@ -79,6 +79,7 @@ public class HomeActivity
     private boolean mOngoingOperation;
     private EmailVerificationViewModel mEmailVerificationViewModel;
     private ShowViewModel mShowViewModel;
+    private boolean mShowsLoaded = false;
 
     //Constants
     private static final String SCROLL_POSITION_BUNDLE_KEY = "scroll_position_bundle_key";
@@ -345,7 +346,6 @@ public class HomeActivity
                     //Refreshes the RecyclerView's data
                     if(mAdapter != null){
                         mAdapter.setShows(mShows);
-                        mAdapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -359,14 +359,19 @@ public class HomeActivity
                     //Parses the response retrieved from the API
                     parseJsonResponse(response);
 
-                    //Displays the Shows if there are any, otherwise displays a message telling the user to add Shows to My Series
-                    if(mShows.size() > 0){
-                        mAdapter.setShows(mShows);
-                        mAdapter.notifyDataSetChanged();
-                        toggleViewVisibility(View.VISIBLE, View.GONE);
-                    }
-                    else{
-                        toggleViewVisibility(View.GONE, View.VISIBLE);
+                    //Updates the visibility of Views once the Shows have been loaded
+                    if(!mShowsLoaded){
+                        //Updates flag variable
+                        mShowsLoaded = true;
+
+                        //Displays the Shows if there are any, otherwise displays a message telling the user to add Shows to My Series
+                        if(mShows.size() > 0){
+                            mAdapter.setShows(mShows);
+                            toggleViewVisibility(View.VISIBLE, View.GONE);
+                        }
+                        else{
+                            toggleViewVisibility(View.GONE, View.VISIBLE);
+                        }
                     }
 
                     //Resets the observable variable

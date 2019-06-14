@@ -131,7 +131,6 @@ public class SearchActivity
                     //Displays the data
                     if(mAdapter != null){
                         mAdapter.setShows(mShows);
-                        mAdapter.notifyDataSetChanged();
                     }
                 }
             }
