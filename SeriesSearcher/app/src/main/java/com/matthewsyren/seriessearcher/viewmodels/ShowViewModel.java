@@ -31,7 +31,6 @@ public class ShowViewModel
      */
     public ShowViewModel(@NonNull Application application) {
         super(application);
-        mShows.setValue(new ArrayList<Show>());
         mOngoingOperation.setValue(false);
     }
 
