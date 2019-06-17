@@ -479,8 +479,9 @@ public class HomeActivity
 
                         //Displays a help message to the user if there is not an ongoing operation
                         if(!mOngoingOperation){
-                            //Displays a message that explains how to verify the user's email address
+                            //Displays a message that explains how to verify the user's email address and hides the ProgressBar
                             mClEmailNotVerified.setVisibility(View.VISIBLE);
+                            mProgressBar.setVisibility(View.GONE);
                         }
                     }
                 }
