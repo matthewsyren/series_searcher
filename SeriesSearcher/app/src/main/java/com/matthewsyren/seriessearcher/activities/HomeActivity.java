@@ -13,10 +13,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -58,8 +56,6 @@ public class HomeActivity
     //View bindings
     @BindView(R.id.recycler_view_my_shows) RecyclerView mRecyclerViewMyShows;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
-    @BindView(R.id.text_no_shows) TextView mTextNoShows;
-    @BindView(R.id.button_add_shows) Button mButtonAddShows;
     @BindView(R.id.cl_no_internet_connection) ConstraintLayout mClNoInternetConnection;
     @BindView(R.id.cl_email_not_verified) ConstraintLayout mClEmailNotVerified;
     @BindView(R.id.rl_no_series_added_to_my_series) RelativeLayout mRlNoSeriesAddedToMySeries;
@@ -396,7 +392,6 @@ public class HomeActivity
                     }
                     else{
                         //Hides the ProgressBar and displays the RecyclerView
-                        mRlNoSeriesAddedToMySeries.setVisibility(View.VISIBLE);
                         mProgressBar.setVisibility(View.GONE);
                         mRecyclerViewMyShows.setVisibility(View.VISIBLE);
                     }
@@ -463,9 +458,9 @@ public class HomeActivity
                             mAttemptedVerification = false;
                         }
 
-                        //Hides the verify email message and displays other Views
+                        //Hides the verify email and no series added to My Series messages
                         mClEmailNotVerified.setVisibility(View.GONE);
-                        mRlNoSeriesAddedToMySeries.setVisibility(View.VISIBLE);
+                        mRlNoSeriesAddedToMySeries.setVisibility(View.GONE);
 
                         //Saves the user's unique key
                         UserAccountUtilities.setUserKey(getApplicationContext(), mFirebaseUser.getUid());
@@ -484,9 +479,8 @@ public class HomeActivity
 
                         //Displays a help message to the user if there is not an ongoing operation
                         if(!mOngoingOperation){
-                            //Displays a message that explains how to verify the user's email address, and hides other Views
+                            //Displays a message that explains how to verify the user's email address
                             mClEmailNotVerified.setVisibility(View.VISIBLE);
-                            mRlNoSeriesAddedToMySeries.setVisibility(View.GONE);
                         }
                     }
                 }
@@ -641,8 +635,7 @@ public class HomeActivity
      * @param otherViewVisibility The intended visibility of other Views
      */
     private void toggleViewVisibility(int recyclerViewVisibility, int otherViewVisibility){
-        mTextNoShows.setVisibility(otherViewVisibility);
-        mButtonAddShows.setVisibility(otherViewVisibility);
+        mRlNoSeriesAddedToMySeries.setVisibility(otherViewVisibility);
         mRecyclerViewMyShows.setVisibility(recyclerViewVisibility);
     }
 

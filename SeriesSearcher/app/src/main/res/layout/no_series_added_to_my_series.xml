@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:text="@string/label_home_message"
         style="@style/TextViewMessageStyle"
-        android:visibility="invisible"
         android:layout_above="@+id/button_add_shows"
         android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
@@ -21,6 +20,5 @@
         android:layout_centerInParent="true"
         android:text="@string/button_add_shows"
         android:onClick="openSearchShows"
-        style="@style/RoundedButtonStyle"
-        android:visibility="invisible"/>
+        style="@style/RoundedButtonStyle" />
 </RelativeLayout>
