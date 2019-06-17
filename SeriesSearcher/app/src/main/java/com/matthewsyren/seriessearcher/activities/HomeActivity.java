@@ -437,6 +437,9 @@ public class HomeActivity
                     }
                 }
                 else{
+                    //Displays the user's details in the NavigationDrawer
+                    displayUserDetailsInNavigationDrawer();
+
                     //Clears the Shows if the user had signed out immediately before signing in (to prevent the user from seeing the old user's Shows)
                     if(mSignedOut){
                         mShows.clear();
@@ -490,6 +493,13 @@ public class HomeActivity
 
         //Adds the AuthStateListener
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    /**
+     * Displays the user's details in the NavigationDrawer
+     */
+    private void displayUserDetailsInNavigationDrawer(){
+        super.displayUserDetails();
     }
 
     /**
@@ -572,9 +582,6 @@ public class HomeActivity
 
         //Registers Observers for the ShowViewModel
         registerShowViewModelObservers();
-
-        //Displays the user's email address in the NavigationDrawer
-        super.displayUserDetails();
 
         if(mShows.size() == 0){
             //Fetches the Shows the user has added to My Series
