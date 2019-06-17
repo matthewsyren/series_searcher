@@ -362,10 +362,18 @@ public class HomeActivity
 
                         //Displays the Shows if there are any, otherwise displays a message telling the user to add Shows to My Series
                         if(mShows.size() > 0){
+                            //Sorts the mShows ArrayList alphabetically by Show Title
+                            if(!mListSorted){
+                                Collections.sort(mShows, new Show.ShowTitleComparator());
+                                mListSorted = true;
+                            }
+
+                            //Displays the Shows
                             mAdapter.setShows(mShows);
                             toggleViewVisibility(View.VISIBLE, View.GONE);
                         }
                         else{
+                            //Displays a message telling the user to add Shows to My Series
                             toggleViewVisibility(View.GONE, View.VISIBLE);
                         }
                     }
@@ -545,8 +553,11 @@ public class HomeActivity
             mShowViewModel.getObservableOngoingOperation().setValue(false);
         }
 
-        //Marks any ongoing operations as cancelled
+        //Resets flag variables
         mOngoingOperation = false;
+        mListSorted = false;
+        mShowsLoaded = false;
+        mSignedOut = true;
 
         //Clears the user's series
         mShows.clear();
@@ -555,9 +566,6 @@ public class HomeActivity
         if(mAdapter != null){
             mAdapter.notifyDataSetChanged();
         }
-
-        //Sets variable to true, signifying that the user has just signed out
-        mSignedOut = true;
     }
 
     /**
@@ -696,12 +704,6 @@ public class HomeActivity
             else{
                 //Displays a no Internet connection message
                 toggleNoInternetMessageVisibility(false);
-            }
-
-            //Sorts the mShows ArrayList alphabetically by Show Title
-            if(!mListSorted){
-                Collections.sort(mShows, new Show.ShowTitleComparator());
-                mListSorted = true;
             }
         }
         catch(JSONException j){
