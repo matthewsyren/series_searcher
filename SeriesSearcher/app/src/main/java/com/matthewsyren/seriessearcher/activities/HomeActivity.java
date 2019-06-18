@@ -456,8 +456,9 @@ public class HomeActivity
                         mSignedOut = false;
                     }
 
-                    //Hides the no Internet connection message
+                    //Hides the no Internet connection and no series added to My Series messages
                     mClNoInternetConnection.setVisibility(View.GONE);
+                    mRlNoSeriesAddedToMySeries.setVisibility(View.GONE);
 
                     //Fetches the user's Shows if the user's email address has been verified, otherwise instructs the user to verify their email address
                     if(mFirebaseUser.isEmailVerified()){
@@ -469,9 +470,8 @@ public class HomeActivity
                             mAttemptedVerification = false;
                         }
 
-                        //Hides the verify email and no series added to My Series messages
+                        //Hides the verify email message
                         mClEmailNotVerified.setVisibility(View.GONE);
-                        mRlNoSeriesAddedToMySeries.setVisibility(View.GONE);
 
                         //Saves the user's unique key
                         UserAccountUtilities.setUserKey(getApplicationContext(), mFirebaseUser.getUid());
