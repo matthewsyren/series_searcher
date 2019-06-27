@@ -625,6 +625,9 @@ public class HomeActivity
         }
         else{
             mClNoInternetConnection.setVisibility(View.VISIBLE);
+            mRlNoSeriesAddedToMySeries.setVisibility(View.GONE);
+            mClEmailNotVerified.setVisibility(View.GONE);
+            mRecyclerViewMyShows.setVisibility(View.GONE);
         }
     }
 
