@@ -11,9 +11,6 @@
     tools:context="com.matthewsyren.seriessearcher.activities.HomeActivity"
     tools:showIn="@layout/app_bar_home">
 
-    <include
-        layout="@layout/no_series_added_to_my_series"/>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_my_shows"
         android:layout_width="match_parent"
@@ -33,4 +30,7 @@
 
     <include
         layout="@layout/email_not_verified"/>
+
+    <include
+        layout="@layout/no_series_added_to_my_series" />
 </RelativeLayout>
