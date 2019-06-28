@@ -294,9 +294,6 @@ public class RandomShowsActivity
 
                 //Sorts the Shows alphabetically
                 Collections.sort(mShows, new Show.ShowTitleComparator());
-
-                //Determines which Shows have been added to My Series by the user
-                mShowViewModel.markShowsInMySeries(mShows);
             }
             else{
                 //Displays a no Internet connection message
