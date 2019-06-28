@@ -208,7 +208,13 @@ public class SpecificShowActivity
     public void onBackPressed() {
         //Sets the result for the Activity if the user toggled the showAdded value of the Show (by using the menu)
         if(mChanged != null && mChanged){
-            setResult(SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED);
+            //Adds data to the Intent
+            Intent intent = new Intent();
+            intent.putExtra(SHOW_ID_KEY, mShowId);
+            intent.putExtra(SHOW_IS_ADDED_KEY, mShow.isShowAdded());
+
+            //Sends the result back to the previous Activity
+            setResult(SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED, intent);
         }
 
         //Resets mChanged

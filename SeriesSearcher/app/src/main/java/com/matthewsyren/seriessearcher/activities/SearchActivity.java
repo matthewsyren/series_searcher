@@ -98,8 +98,23 @@ public class SearchActivity
         if(requestCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_REQUEST_CODE){
             //Updates the RecyclerView if the user added/removed a Show from My Series on the SpecificShowActivity
             if(resultCode == SpecificShowActivity.SPECIFIC_SHOW_ACTIVITY_RESULT_CHANGED){
-                //Marks which Shows have been added to My Series
-                mShowViewModel.markShowsInMySeries(mShows);
+                //Updates the showAdded attribute of the Show that has been changed
+                if(data != null){
+                    //Fetches data from the Intent
+                    String showId = data.getStringExtra(SpecificShowActivity.SHOW_ID_KEY);
+                    boolean isShowAdded = data.getBooleanExtra(SpecificShowActivity.SHOW_IS_ADDED_KEY, false);
+
+                    //Updates the appropriate Show's showAdded attribute
+                    if(showId != null){
+                        for(int i = 0; i < mShows.size(); i++){
+                            if((String.valueOf(mShows.get(i).getShowId())).equals(showId)){
+                                mShows.get(i).setShowAdded(isShowAdded);
+                                mAdapter.notifyItemChanged(i);
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
