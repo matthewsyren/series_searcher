@@ -656,6 +656,7 @@ public class HomeActivity
     public void openSearchShows(View view) {
         Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
+        finish();
     }
 
     /**
