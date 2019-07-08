@@ -138,7 +138,15 @@ public class BaseActivity
             closeNavigationDrawer();
         }
         else {
-            super.onBackPressed();
+            //Takes the user back to HomeActivity if they are not on HomeActivity, otherwise calls super.onBackPressed()
+            if(!getClass().getSimpleName().equals(HomeActivity.class.getSimpleName())){
+                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            else{
+                super.onBackPressed();
+            }
         }
     }
 
