@@ -195,10 +195,10 @@ public class ShowAdapter
      */
     private int getLayoutToInflate(){
         if(mIsHomeRecyclerView){
-            return R.layout.home_list_row;
+            return R.layout.list_row_home;
         }
 
-        return R.layout.other_list_row;
+        return R.layout.list_row_other;
     }
 
     /**

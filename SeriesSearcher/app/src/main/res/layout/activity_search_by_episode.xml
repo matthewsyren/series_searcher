@@ -94,7 +94,7 @@
                 android:layout_marginBottom="@dimen/activity_vertical_margin">
                 <include
                     android:id="@+id/guideline"
-                    layout="@layout/centre_guideline"/>
+                    layout="@layout/guideline_centre"/>
 
                 <TextView
                     android:id="@+id/text_show_season_number_title"
@@ -140,7 +140,7 @@
                 android:layout_marginBottom="@dimen/activity_vertical_margin">
                 <include
                     android:id="@+id/guideline"
-                    layout="@layout/centre_guideline"/>
+                    layout="@layout/guideline_centre"/>
 
                 <TextView
                     android:id="@+id/text_show_air_date_title"

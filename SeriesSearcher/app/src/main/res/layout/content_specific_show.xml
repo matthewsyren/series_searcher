@@ -25,7 +25,7 @@
             android:layout_height="wrap_content">
             <include
                 android:id="@+id/guideline_1"
-                layout="@layout/centre_guideline"/>
+                layout="@layout/guideline_centre"/>
 
             <TextView
                 android:id="@+id/text_show_premiered_title"
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content">
             <include
                 android:id="@+id/guideline_2"
-                layout="@layout/centre_guideline"/>
+                layout="@layout/guideline_centre"/>
 
             <TextView
                 android:id="@+id/text_show_language_title"
@@ -113,7 +113,7 @@
             android:layout_height="wrap_content">
             <include
                 android:id="@+id/guideline_3"
-                layout="@layout/centre_guideline"/>
+                layout="@layout/guideline_centre"/>
 
             <TextView
                 android:id="@+id/text_show_runtime_title"
@@ -156,7 +156,7 @@
             android:layout_height="wrap_content">
             <include
                 android:id="@+id/guideline_4"
-                layout="@layout/centre_guideline"/>
+                layout="@layout/guideline_centre"/>
 
             <TextView
                 android:id="@+id/text_show_latest_episode_title"
@@ -205,7 +205,7 @@
     </LinearLayout>
 
     <include
-        layout="@layout/no_internet_connection"
+        layout="@layout/section_no_internet_connection"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -25,5 +25,5 @@
         android:visibility="gone"/>
 
     <include
-        layout="@layout/no_internet_connection"/>
+        layout="@layout/section_no_internet_connection"/>
 </RelativeLayout>

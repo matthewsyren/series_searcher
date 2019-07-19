@@ -26,11 +26,11 @@
         android:visibility="gone"/>
 
     <include
-        layout="@layout/no_internet_connection"/>
+        layout="@layout/section_no_internet_connection"/>
 
     <include
-        layout="@layout/email_not_verified"/>
+        layout="@layout/section_email_not_verified"/>
 
     <include
-        layout="@layout/no_series_added_to_my_series" />
+        layout="@layout/section_no_series_added_to_my_series" />
 </RelativeLayout>
