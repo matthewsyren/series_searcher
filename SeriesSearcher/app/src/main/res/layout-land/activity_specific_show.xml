@@ -10,7 +10,7 @@
     tools:context="com.matthewsyren.seriessearcher.activities.SpecificShowActivity">
 
     <ImageView
-        android:id="@+id/image_view_specific_show"
+        android:id="@+id/iv_specific_show"
         android:layout_width="0dp"
         android:minWidth="@dimen/specific_show_activity_image_view_land_width"
         android:maxWidth="@dimen/specific_show_activity_image_view_land_width"
@@ -26,14 +26,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/image_view_specific_show"
+        app:layout_constraintStart_toEndOf="@+id/iv_specific_show"
         app:layout_constraintTop_toTopOf="parent">
         <include
             layout="@layout/content_specific_show_wrapper" />
     </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/button_search_by_episode"
+        android:id="@+id/fab_search_by_episode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"

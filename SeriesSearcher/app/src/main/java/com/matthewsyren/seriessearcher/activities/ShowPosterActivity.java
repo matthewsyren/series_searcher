@@ -24,9 +24,9 @@ import butterknife.ButterKnife;
 public class ShowPosterActivity
         extends AppCompatActivity {
     //View bindings
-    @BindView(R.id.image_view_show_poster) ImageView mIvShowPoster;
+    @BindView(R.id.iv_show_poster) ImageView mIvShowPoster;
     @Nullable
-    @BindView(R.id.text_view_show_title) TextView mTvShowTitle;
+    @BindView(R.id.tv_show_title) TextView mTvShowTitle;
 
     //Constants
     public static final String SHOW_KEY = "show_key";

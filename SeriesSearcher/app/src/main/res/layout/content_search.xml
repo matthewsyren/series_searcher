@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_search"
+    android:id="@+id/rl_search"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginStart="@dimen/list_activity_horizontal_margin"
@@ -12,12 +12,12 @@
     tools:showIn="@layout/app_bar_search">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_search_results"
+        android:id="@+id/rv_search_results"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <ProgressBar
-        android:id="@+id/progress_bar"
+        android:id="@+id/pb_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -36,7 +36,7 @@
         android:visibility="gone"/>
 
     <TextView
-        android:id="@+id/text_no_internet_connection"
+        android:id="@+id/tv_no_internet_connection"
         android:layout_width="match_parent"
         android:textAlignment="center"
         android:layout_height="wrap_content"

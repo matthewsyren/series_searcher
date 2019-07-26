@@ -43,11 +43,11 @@ public class SearchActivity
         extends BaseActivity
         implements IOnDataSavingPreferenceChangedListener{
     //View bindings
-    @BindView(R.id.recycler_view_search_results) RecyclerView mRecyclerViewSearchResults;
-    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
-    @BindView(R.id.text_search_series) EditText mTextSearchSeries;
+    @BindView(R.id.rv_search_results) RecyclerView mRvSearchResults;
+    @BindView(R.id.pb_search) ProgressBar mPbSearch;
+    @BindView(R.id.et_search_series) EditText mEtSearchSeries;
     @BindView(R.id.tv_no_series_found) TextView mTvNoSeriesFound;
-    @BindView(R.id.text_no_internet_connection) TextView mTextNoInternetConnection;
+    @BindView(R.id.tv_no_internet_connection) TextView mTextNoInternetConnection;
 
     //Variables
     private ArrayList<Show> mShows =  new ArrayList<>();
@@ -158,13 +158,13 @@ public class SearchActivity
                 if(ongoingOperation != null){
                     if(ongoingOperation){
                         //Hides the RecyclerView and displays the ProgressBar
-                        mProgressBar.setVisibility(View.VISIBLE);
-                        mRecyclerViewSearchResults.setVisibility(View.GONE);
+                        mPbSearch.setVisibility(View.VISIBLE);
+                        mRvSearchResults.setVisibility(View.GONE);
                     }
                     else{
                         //Hides the ProgressBar and displays the RecyclerView
-                        mProgressBar.setVisibility(View.GONE);
-                        mRecyclerViewSearchResults.setVisibility(View.VISIBLE);
+                        mPbSearch.setVisibility(View.GONE);
+                        mRvSearchResults.setVisibility(View.VISIBLE);
 
                         //Displays a message if no series are found
                         if(mShows.size() == 0){
@@ -212,16 +212,16 @@ public class SearchActivity
         //Sets up Adapter to RecyclerView
         mAdapter = new ShowAdapter(this, mShows, false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mRecyclerViewSearchResults.setLayoutManager(linearLayoutManager);
-        mRecyclerViewSearchResults.setAdapter(mAdapter);
-        mRecyclerViewSearchResults.addItemDecoration(new DividerItemDecoration(this, linearLayoutManager.getOrientation()));
+        mRvSearchResults.setLayoutManager(linearLayoutManager);
+        mRvSearchResults.setAdapter(mAdapter);
+        mRvSearchResults.addItemDecoration(new DividerItemDecoration(this, linearLayoutManager.getOrientation()));
     }
 
     /**
      * Sets up the typing listener
      */
     private void setUpTypingListener(){
-        mTextSearchSeries.addTextChangedListener(new TextWatcher() {
+        mEtSearchSeries.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -250,7 +250,7 @@ public class SearchActivity
      */
     private void searchShows(){
         //Fetches user's input
-        String searchText = mTextSearchSeries.getText().toString();
+        String searchText = mEtSearchSeries.getText().toString();
 
         //Hides the TextViews
         mTvNoSeriesFound.setVisibility(View.INVISIBLE);

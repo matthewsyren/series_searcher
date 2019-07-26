@@ -54,8 +54,8 @@ public class HomeActivity
         implements IOnDataSavingPreferenceChangedListener,
         EnterPasswordFragment.IEnterPasswordFragmentOnClickListener {
     //View bindings
-    @BindView(R.id.recycler_view_my_shows) RecyclerView mRecyclerViewMyShows;
-    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.rv_my_shows) RecyclerView mRvMyShows;
+    @BindView(R.id.pb_home) ProgressBar mPbHome;
     @BindView(R.id.cl_no_internet_connection) ConstraintLayout mClNoInternetConnection;
     @BindView(R.id.cl_email_not_verified) ConstraintLayout mClEmailNotVerified;
     @BindView(R.id.rl_no_series_added_to_my_series) RelativeLayout mRlNoSeriesAddedToMySeries;
@@ -135,8 +135,8 @@ public class HomeActivity
             outState.putParcelableArrayList(SHOWS_BUNDLE_KEY, mShows);
         }
 
-        if(mRecyclerViewMyShows.getLayoutManager() != null){
-            mScrollPosition = ((LinearLayoutManager)mRecyclerViewMyShows.getLayoutManager())
+        if(mRvMyShows.getLayoutManager() != null){
+            mScrollPosition = ((LinearLayoutManager)mRvMyShows.getLayoutManager())
                     .findFirstCompletelyVisibleItemPosition();
 
             outState.putInt(SCROLL_POSITION_BUNDLE_KEY, mScrollPosition);
@@ -262,12 +262,12 @@ public class HomeActivity
                     if(ongoingOperation){
                         //Hides the verify email message and displays a ProgressBar
                         mClEmailNotVerified.setVisibility(View.GONE);
-                        mProgressBar.setVisibility(View.VISIBLE);
+                        mPbHome.setVisibility(View.VISIBLE);
                     }
                     else{
                         //Hides the ProgressBar and displays the verify email message
                         mClEmailNotVerified.setVisibility(View.VISIBLE);
-                        mProgressBar.setVisibility(View.GONE);
+                        mPbHome.setVisibility(View.GONE);
                     }
 
                     //Updates the mOngoingOperation variable
@@ -419,13 +419,13 @@ public class HomeActivity
                     if(ongoingOperation){
                         //Hides the RecyclerView and displays the ProgressBar
                         mRlNoSeriesAddedToMySeries.setVisibility(View.GONE);
-                        mProgressBar.setVisibility(View.VISIBLE);
-                        mRecyclerViewMyShows.setVisibility(View.GONE);
+                        mPbHome.setVisibility(View.VISIBLE);
+                        mRvMyShows.setVisibility(View.GONE);
                     }
                     else{
                         //Hides the ProgressBar and displays the RecyclerView
-                        mProgressBar.setVisibility(View.GONE);
-                        mRecyclerViewMyShows.setVisibility(View.VISIBLE);
+                        mPbHome.setVisibility(View.GONE);
+                        mRvMyShows.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -516,7 +516,7 @@ public class HomeActivity
                         if(!mOngoingOperation){
                             //Displays a message that explains how to verify the user's email address and hides the ProgressBar
                             mClEmailNotVerified.setVisibility(View.VISIBLE);
-                            mProgressBar.setVisibility(View.GONE);
+                            mPbHome.setVisibility(View.GONE);
                         }
                     }
                 }
@@ -600,9 +600,9 @@ public class HomeActivity
         mAdapter = new ShowAdapter(this, mShows, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         linearLayoutManager.scrollToPosition(mScrollPosition);
-        mRecyclerViewMyShows.setLayoutManager(linearLayoutManager);
-        mRecyclerViewMyShows.setAdapter(mAdapter);
-        mRecyclerViewMyShows.addItemDecoration(new DividerItemDecoration(this, linearLayoutManager.getOrientation()));
+        mRvMyShows.setLayoutManager(linearLayoutManager);
+        mRvMyShows.setAdapter(mAdapter);
+        mRvMyShows.addItemDecoration(new DividerItemDecoration(this, linearLayoutManager.getOrientation()));
     }
 
     /**
@@ -651,7 +651,7 @@ public class HomeActivity
             mClNoInternetConnection.setVisibility(View.VISIBLE);
             mRlNoSeriesAddedToMySeries.setVisibility(View.GONE);
             mClEmailNotVerified.setVisibility(View.GONE);
-            mRecyclerViewMyShows.setVisibility(View.GONE);
+            mRvMyShows.setVisibility(View.GONE);
         }
     }
 
@@ -680,7 +680,7 @@ public class HomeActivity
      */
     private void toggleViewVisibility(int recyclerViewVisibility, int otherViewVisibility){
         mRlNoSeriesAddedToMySeries.setVisibility(otherViewVisibility);
-        mRecyclerViewMyShows.setVisibility(recyclerViewVisibility);
+        mRvMyShows.setVisibility(recyclerViewVisibility);
     }
 
     /**

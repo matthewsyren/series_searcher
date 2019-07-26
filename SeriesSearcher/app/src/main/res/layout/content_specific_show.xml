@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
-    android:id="@+id/rl_specific_show"
+    android:id="@+id/cl_specific_show"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -20,7 +20,7 @@
         android:orientation="vertical">
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/row_1"
+            android:id="@+id/cl_row_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <include
@@ -28,7 +28,7 @@
                 layout="@layout/guideline_centre"/>
 
             <TextView
-                android:id="@+id/text_show_premiered_title"
+                android:id="@+id/tv_show_premiered_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 style="@style/SpecificShowActivityCaption"
@@ -39,14 +39,14 @@
                 android:layout_marginTop="0dp"/>
 
             <TextView
-                android:id="@+id/text_show_premiered"
+                android:id="@+id/tv_show_premiered"
                 style="@style/SpecificShowText"
-                app:layout_constraintTop_toBottomOf="@id/text_show_premiered_title"
+                app:layout_constraintTop_toBottomOf="@id/tv_show_premiered_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/guideline_1" />
 
             <TextView
-                android:id="@+id/text_show_status_title"
+                android:id="@+id/tv_show_status_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 style="@style/SpecificShowActivityCaption"
@@ -57,15 +57,15 @@
                 android:layout_marginTop="0dp"/>
 
             <TextView
-                android:id="@+id/text_show_status"
+                android:id="@+id/tv_show_status"
                 style="@style/SpecificShowText"
                 app:layout_constraintStart_toEndOf="@id/guideline_1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_show_status_title" />
+                app:layout_constraintTop_toBottomOf="@id/tv_show_status_title" />
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/row_2"
+            android:id="@+id/cl_row_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <include
@@ -73,7 +73,7 @@
                 layout="@layout/guideline_centre"/>
 
             <TextView
-                android:id="@+id/text_show_language_title"
+                android:id="@+id/tv_show_language_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 style="@style/SpecificShowActivityCaption"
@@ -83,14 +83,14 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
-                android:id="@+id/text_show_language"
+                android:id="@+id/tv_show_language"
                 style="@style/SpecificShowText"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/guideline_2"
-                app:layout_constraintTop_toBottomOf="@+id/text_show_language_title" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_show_language_title" />
 
             <TextView
-                android:id="@+id/text_show_genres_title"
+                android:id="@+id/tv_show_genres_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 style="@style/SpecificShowActivityCaption"
@@ -100,15 +100,15 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/text_show_genres"
+                android:id="@+id/tv_show_genres"
                 style="@style/SpecificShowText"
                 app:layout_constraintStart_toEndOf="@id/guideline_2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_show_genres_title" />
+                app:layout_constraintTop_toBottomOf="@id/tv_show_genres_title" />
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/row_3"
+            android:id="@+id/cl_row_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <include
@@ -116,7 +116,7 @@
                 layout="@layout/guideline_centre"/>
 
             <TextView
-                android:id="@+id/text_show_runtime_title"
+                android:id="@+id/tv_show_runtime_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 style="@style/SpecificShowActivityCaption"
@@ -126,14 +126,14 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
-                android:id="@+id/text_show_runtime"
+                android:id="@+id/tv_show_runtime"
                 style="@style/SpecificShowText"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/guideline_3"
-                app:layout_constraintTop_toBottomOf="@+id/text_show_runtime_title"/>
+                app:layout_constraintTop_toBottomOf="@+id/tv_show_runtime_title"/>
 
             <TextView
-                android:id="@+id/text_show_rating_title"
+                android:id="@+id/tv_show_rating_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 style="@style/SpecificShowActivityCaption"
@@ -143,15 +143,15 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
-                android:id="@+id/text_show_rating"
+                android:id="@+id/tv_show_rating"
                 style="@style/SpecificShowText"
                 app:layout_constraintStart_toEndOf="@id/guideline_3"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_show_rating_title" />
+                app:layout_constraintTop_toBottomOf="@id/tv_show_rating_title" />
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/row_4"
+            android:id="@+id/cl_row_4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <include
@@ -159,7 +159,7 @@
                 layout="@layout/guideline_centre"/>
 
             <TextView
-                android:id="@+id/text_show_latest_episode_title"
+                android:id="@+id/tv_show_latest_episode_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 style="@style/SpecificShowActivityCaption"
@@ -169,14 +169,14 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
-                android:id="@+id/text_show_latest_episode"
+                android:id="@+id/tv_show_latest_episode"
                 style="@style/SpecificShowText"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/guideline_4"
-                app:layout_constraintTop_toBottomOf="@id/text_show_latest_episode_title" />
+                app:layout_constraintTop_toBottomOf="@id/tv_show_latest_episode_title" />
 
             <TextView
-                android:id="@+id/text_show_next_episode_title"
+                android:id="@+id/tv_show_next_episode_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 style="@style/SpecificShowActivityCaption"
@@ -186,17 +186,17 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
-                android:id="@+id/text_show_next_episode"
+                android:id="@+id/tv_show_next_episode"
                 style="@style/SpecificShowText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/guideline_4"
-                app:layout_constraintTop_toBottomOf="@id/text_show_next_episode_title" />
+                app:layout_constraintTop_toBottomOf="@id/tv_show_next_episode_title" />
         </android.support.constraint.ConstraintLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/text_show_summary"
+            android:id="@+id/tv_show_summary"
             android:layout_marginTop="@dimen/show_information_margin_top"
             android:layout_marginBottom="@dimen/text_specific_show_activity_margin_bottom"
             android:textAlignment="inherit"
@@ -212,7 +212,7 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ProgressBar
-        android:id="@+id/progress_bar"
+        android:id="@+id/pb_specific_show"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/progress_bar_margin_top"

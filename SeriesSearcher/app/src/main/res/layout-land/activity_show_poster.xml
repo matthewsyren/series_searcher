@@ -34,7 +34,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
             <TextView
-                android:id="@+id/text_view_show_title"
+                android:id="@+id/tv_show_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/ShowPosterTitle"
@@ -49,7 +49,7 @@
             app:layout_constraintGuide_percent="@dimen/show_poster_landscape_guideline_3_percentage" />
 
         <ImageView
-            android:id="@+id/image_view_show_poster"
+            android:id="@+id/iv_show_poster"
             android:layout_width="0dp"
             app:layout_constraintHeight_max="@dimen/show_poster_height"
             app:layout_constrainedHeight="true"

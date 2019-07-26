@@ -6,16 +6,16 @@
     android:layout_height="match_parent"
     android:visibility="gone">
     <TextView
-        android:id="@+id/text_no_shows"
+        android:id="@+id/tv_no_shows"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_home_message"
         style="@style/TextViewMessageStyle"
-        android:layout_above="@+id/button_add_shows"
+        android:layout_above="@+id/b_add_shows"
         android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
     <Button
-        android:id="@+id/button_add_shows"
+        android:id="@+id/b_add_shows"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_centerInParent="true"

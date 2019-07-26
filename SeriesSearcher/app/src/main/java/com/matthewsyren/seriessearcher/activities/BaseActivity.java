@@ -80,7 +80,7 @@ public class BaseActivity
 
             //Displays the appropriate value for the Data Saving Mode Switch (checked or not checked)
             View actionView = menuItem.getActionView();
-            final Switch navSwitch = actionView.findViewById(R.id.switch_data_saving_mode);
+            final Switch navSwitch = actionView.findViewById(R.id.s_data_saving_mode);
             navSwitch.setChecked(UserAccountUtilities.getDataSavingPreference(this));
 
             //Registers an OnCheckedChangedListener for the Data Saving Mode Switch
@@ -115,7 +115,7 @@ public class BaseActivity
      */
     protected void displayUserDetails(){
         View view = mNavigationView.getHeaderView(0);
-        TextView textView = view.findViewById(R.id.textView);
+        TextView textView = view.findViewById(R.id.tv_email_address);
         String emailAddress = UserAccountUtilities.getUserEmailAddress();
 
         if(emailAddress != null){

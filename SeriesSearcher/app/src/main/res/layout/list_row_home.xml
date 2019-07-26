@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/list_row_vertical_padding"
     android:paddingBottom="@dimen/list_row_vertical_padding">
     <LinearLayout
-        android:id="@+id/thumbnail"
+        android:id="@+id/ll_thumbnail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/thumbnail_padding"
@@ -17,7 +17,7 @@
         android:layout_centerInParent="true">
 
         <com.matthewsyren.seriessearcher.customviews.RoundedImageView
-            android:id="@+id/image_show_poster"
+            android:id="@+id/riv_show_poster"
             android:layout_width="@dimen/list_row_show_poster_width"
             android:layout_height="@dimen/list_row_show_poster_height"
             android:transitionName="@string/transition_image"
@@ -28,35 +28,35 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/text_show_title"
+        android:id="@+id/tv_show_title"
         style="@style/RecyclerViewLargeText"
-        android:layout_alignTop="@+id/thumbnail"
-        android:layout_toEndOf="@+id/thumbnail"
-        android:layout_toStartOf="@+id/linear_layout_button"/>
+        android:layout_alignTop="@+id/ll_thumbnail"
+        android:layout_toEndOf="@+id/ll_thumbnail"
+        android:layout_toStartOf="@+id/ll_button"/>
 
     <TextView
-        android:id="@+id/text_show_rating"
+        android:id="@+id/tv_show_rating"
         style="@style/RecyclerViewSmallText"
-        android:layout_below="@id/text_show_title"
-        android:layout_toEndOf="@+id/thumbnail"
-        android:layout_toStartOf="@+id/linear_layout_button"/>
+        android:layout_below="@id/tv_show_title"
+        android:layout_toEndOf="@+id/ll_thumbnail"
+        android:layout_toStartOf="@+id/ll_button"/>
 
     <TextView
-        android:id="@+id/text_show_status"
+        android:id="@+id/tv_show_status"
         style="@style/RecyclerViewSmallText"
-        android:layout_below="@id/text_show_rating"
-        android:layout_toEndOf="@+id/thumbnail"
-        android:layout_toStartOf="@+id/linear_layout_button"/>
+        android:layout_below="@id/tv_show_rating"
+        android:layout_toEndOf="@+id/ll_thumbnail"
+        android:layout_toStartOf="@+id/ll_button"/>
 
     <TextView
-        android:id="@+id/text_show_next_episode_date"
+        android:id="@+id/tv_show_next_episode_date"
         style="@style/RecyclerViewSmallText"
-        android:layout_below="@id/text_show_status"
-        android:layout_toEndOf="@+id/thumbnail"
-        android:layout_toStartOf="@+id/linear_layout_button"/>
+        android:layout_below="@id/tv_show_status"
+        android:layout_toEndOf="@+id/ll_thumbnail"
+        android:layout_toStartOf="@+id/ll_button"/>
 
     <LinearLayout
-        android:id="@+id/linear_layout_button"
+        android:id="@+id/ll_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -66,7 +66,7 @@
         android:layout_marginStart="@dimen/list_row_button_margin_side">
 
         <ImageButton
-            android:id="@+id/button_toggle_show"
+            android:id="@+id/ib_toggle_show"
             android:layout_width="@dimen/list_row_button_size"
             android:layout_height="@dimen/list_row_button_size"
             android:textSize="@dimen/list_row_button_text_size"

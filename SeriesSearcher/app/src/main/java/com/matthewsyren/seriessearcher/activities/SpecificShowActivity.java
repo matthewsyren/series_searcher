@@ -67,26 +67,26 @@ public class SpecificShowActivity
         extends AppCompatActivity
         implements IRemoveShowFromMySeriesFragmentOnClickListener {
     //View bindings
-    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
-    @BindView(R.id.text_show_next_episode) TextView mTextShowNextEpisode;
-    @BindView(R.id.text_show_latest_episode) TextView mTextShowLatestEpisode;
-    @BindView(R.id.image_view_specific_show) ImageView mImageViewSpecificShow;
-    @BindView(R.id.text_show_premiered) TextView mTextShowPremiered;
-    @BindView(R.id.text_show_language) TextView mTextShowLanguage;
-    @BindView(R.id.text_show_status) TextView mTextShowStatus;
-    @BindView(R.id.text_show_genres) TextView mTextShowGenres;
-    @BindView(R.id.text_show_runtime) TextView mTextShowRuntime;
-    @BindView(R.id.text_show_rating) TextView mTextShowRating;
-    @BindView(R.id.text_show_summary) TextView mTextShowSummary;
+    @BindView(R.id.pb_specific_show) ProgressBar mPbSpecificShow;
+    @BindView(R.id.tv_show_next_episode) TextView mTvShowNextEpisode;
+    @BindView(R.id.tv_show_latest_episode) TextView mTvShowLatestEpisode;
+    @BindView(R.id.iv_specific_show) ImageView mIvSpecificShow;
+    @BindView(R.id.tv_show_premiered) TextView mTvShowPremiered;
+    @BindView(R.id.tv_show_language) TextView mTvShowLanguage;
+    @BindView(R.id.tv_show_status) TextView mTvShowStatus;
+    @BindView(R.id.tv_show_genres) TextView mTvShowGenres;
+    @BindView(R.id.tv_show_runtime) TextView mTvShowRuntime;
+    @BindView(R.id.tv_show_rating) TextView mTvShowRating;
+    @BindView(R.id.tv_show_summary) TextView mTvShowSummary;
     @BindView(R.id.ll_specific_show) LinearLayout mLlSpecificShow;
     @Nullable
-    @BindView(R.id.app_bar) AppBarLayout mAppBar;
+    @BindView(R.id.abl_specific_show) AppBarLayout mAblSpecificShow;
     @Nullable
     @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.button_search_by_episode) FloatingActionButton mButtonSearchByEpisode;
+    @BindView(R.id.fab_search_by_episode) FloatingActionButton mFabSearchByEpisode;
     @BindView(R.id.cl_no_internet_connection) ConstraintLayout mClNoInternetConnection;
     @Nullable
-    @BindView(R.id.toolbar_layout) CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.ctl_specific_show) CollapsingToolbarLayout mCtlSpecificShow;
 
     //Variables
     private Show mShow;
@@ -221,7 +221,7 @@ public class SpecificShowActivity
         mChanged = null;
 
         //Hides the FloatingActionButton
-        mButtonSearchByEpisode.setVisibility(View.GONE);
+        mFabSearchByEpisode.setVisibility(View.GONE);
 
         super.onBackPressed();
     }
@@ -272,11 +272,11 @@ public class SpecificShowActivity
                 if(ongoingOperation != null){
                     if(ongoingOperation){
                         //Displays the ProgressBar
-                        mProgressBar.setVisibility(View.VISIBLE);
+                        mPbSpecificShow.setVisibility(View.VISIBLE);
                     }
                     else{
                         //Hides the ProgressBar
-                        mProgressBar.setVisibility(View.GONE);
+                        mPbSpecificShow.setVisibility(View.GONE);
                     }
                 }
             }
@@ -360,12 +360,12 @@ public class SpecificShowActivity
                 }
             });
 
-            if(mAppBar != null){
+            if(mAblSpecificShow != null){
                 /*
                  * Adds OffsetChangedListener to the AppBarLayout, which will display the appropriate icons when the AppBar is collapsed or expanded
                  * Adapted from https://stackoverflow.com/questions/31682310/android-collapsingtoolbarlayout-collapse-listener?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
                  */
-                mAppBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+                mAblSpecificShow.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
                     @Override
                     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                         if (Math.abs(verticalOffset) - appBarLayout.getTotalScrollRange() == 0) {
@@ -438,11 +438,11 @@ public class SpecificShowActivity
     private void toggleNoInternetMessageVisibility(boolean online){
         if(online){
             mClNoInternetConnection.setVisibility(View.GONE);
-            mButtonSearchByEpisode.setVisibility(View.VISIBLE);
+            mFabSearchByEpisode.setVisibility(View.VISIBLE);
         }
         else{
             mClNoInternetConnection.setVisibility(View.VISIBLE);
-            mButtonSearchByEpisode.setVisibility(View.GONE);
+            mFabSearchByEpisode.setVisibility(View.GONE);
 
             //Scrolls up to make the Views more visible
             scrollUp(false);
@@ -478,7 +478,7 @@ public class SpecificShowActivity
                     String displayText = JsonUtilities.parseShowEpisodeDate(json, this, true);
 
                     //Displays the text in the appropriate TextView
-                    if(mTextShowLatestEpisode.getText().toString().length() == 0) {
+                    if(mTvShowLatestEpisode.getText().toString().length() == 0) {
                         mShow.setShowPreviousEpisode(displayText);
                     }
                     else{
@@ -506,30 +506,30 @@ public class SpecificShowActivity
     private void displayShowInformation(Show show){
         if(show != null){
             //Displays the information for the Show
-            mTextShowPremiered.setText(show.getShowPremieredDate());
-            mTextShowLanguage.setText(show.getShowLanguages());
-            mTextShowStatus.setText(show.getShowStatus());
-            mTextShowRating.setText(show.getShowRating());
-            mTextShowGenres.setText(show.getShowGenres());
-            mTextShowSummary.setText(Html.fromHtml(show.getShowSummary()));
+            mTvShowPremiered.setText(show.getShowPremieredDate());
+            mTvShowLanguage.setText(show.getShowLanguages());
+            mTvShowStatus.setText(show.getShowStatus());
+            mTvShowRating.setText(show.getShowRating());
+            mTvShowGenres.setText(show.getShowGenres());
+            mTvShowSummary.setText(Html.fromHtml(show.getShowSummary()));
 
             //Displays the appropriate unit for the runtime
             if(!show.getShowRuntime().equals(getString(R.string.n_a))){
-                mTextShowRuntime.setText(
+                mTvShowRuntime.setText(
                         getString(
                                 R.string.text_minutes,
                                 show.getShowRuntime()));
             }
             else{
-                mTextShowRuntime.setText(show.getShowRuntime());
+                mTvShowRuntime.setText(show.getShowRuntime());
             }
 
             if(show.getShowPreviousEpisode() != null){
-                mTextShowLatestEpisode.setText(show.getShowPreviousEpisode());
+                mTvShowLatestEpisode.setText(show.getShowPreviousEpisode());
             }
 
             if(show.getShowNextEpisode() != null){
-                mTextShowNextEpisode.setText(show.getShowNextEpisode());
+                mTvShowNextEpisode.setText(show.getShowNextEpisode());
             }
 
             if(show.getShowPreviousEpisode() != null && show.getShowNextEpisode() != null && show.getShowTitle() != null){
@@ -541,7 +541,7 @@ public class SpecificShowActivity
             displayImage(show.getShowImageUrl());
 
             //Displays the FloatingActionButton
-            mButtonSearchByEpisode.setVisibility(View.VISIBLE);
+            mFabSearchByEpisode.setVisibility(View.VISIBLE);
         }
     }
 
@@ -550,8 +550,8 @@ public class SpecificShowActivity
      */
     private void displayActivityTitle(){
         if(mShowTitle != null){
-            if(mCollapsingToolbarLayout != null){
-                mCollapsingToolbarLayout.setTitle(mShowTitle);
+            if(mCtlSpecificShow != null){
+                mCtlSpecificShow.setTitle(mShowTitle);
             }
             else if(getSupportActionBar() != null){
                 getSupportActionBar().setTitle(mShowTitle);
@@ -567,18 +567,18 @@ public class SpecificShowActivity
         //Displays a default image if the show doesn't have a poster or the user has enabled data saving mode, otherwise displays a default image
         if((UserAccountUtilities.getDataSavingPreference(this) || imageUrl == null) && !mIsImageLoaded){
             //Displays a default image
-            mImageViewSpecificShow.setScaleType(ImageView.ScaleType.CENTER);
-            mImageViewSpecificShow.setImageResource(R.mipmap.ic_launcher);
+            mIvSpecificShow.setScaleType(ImageView.ScaleType.CENTER);
+            mIvSpecificShow.setImageResource(R.mipmap.ic_launcher);
 
             //Sets the ImageView's background to the colorPrimary colour
-            mImageViewSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            mIvSpecificShow.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
             //Sets the maxWidth and maxHeight of the ImageView to a quarter of the user's screen
             Display display = getWindowManager().getDefaultDisplay();
             Point point = new Point();
             display.getSize(point);
-            mImageViewSpecificShow.setMaxWidth(point.x / 4);
-            mImageViewSpecificShow.setMaxHeight(point.y / 4);
+            mIvSpecificShow.setMaxWidth(point.x / 4);
+            mIvSpecificShow.setMaxHeight(point.y / 4);
 
             //Marks the image as loaded
             mIsImageLoaded = true;
@@ -598,12 +598,12 @@ public class SpecificShowActivity
                         .onlyScaleDown()
                         .error(R.color.colorGray)
                         .placeholder(R.color.colorGray)
-                        .into(mImageViewSpecificShow, new Callback() {
+                        .into(mIvSpecificShow, new Callback() {
                             @Override
                             public void onSuccess() {
                                 //Marks the image as loaded
                                 mIsImageLoaded = true;
-                                Bitmap bitmap = ((BitmapDrawable) mImageViewSpecificShow.getDrawable()).getBitmap();
+                                Bitmap bitmap = ((BitmapDrawable) mIvSpecificShow.getDrawable()).getBitmap();
 
                                 //Applies the Show poster's swatch
                                 applyShowPosterSwatch(bitmap);
@@ -653,11 +653,11 @@ public class SpecificShowActivity
                     window.setStatusBarColor(darkSwatchColour);
 
                     //Sets the ImageView's background colour
-                    mImageViewSpecificShow.setBackgroundColor(swatchColour);
+                    mIvSpecificShow.setBackgroundColor(swatchColour);
 
                     //Sets the CollapsingToolbarLayout/ActionBar's colour
-                    if(mCollapsingToolbarLayout != null){
-                        mCollapsingToolbarLayout.setContentScrimColor(swatchColour);
+                    if(mCtlSpecificShow != null){
+                        mCtlSpecificShow.setContentScrimColor(swatchColour);
                     }
                     else if(getSupportActionBar() != null && getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(swatchColour));
@@ -674,7 +674,7 @@ public class SpecificShowActivity
     private void scrollUp(boolean considerDeviceHeight){
         //Fetches the heights of the device and image
         int deviceHeight = DeviceUtilities.getDeviceHeight(getWindowManager());
-        final int imageHeight = mImageViewSpecificShow.getDrawable().getIntrinsicHeight();
+        final int imageHeight = mIvSpecificShow.getDrawable().getIntrinsicHeight();
 
         //Scrolls up if the ImageView's image takes up more than half the device's height, or if considerDeviceHeight is false
         if(!considerDeviceHeight || (imageHeight > (deviceHeight / 2))){
@@ -693,9 +693,9 @@ public class SpecificShowActivity
      * @param duration The duration in milliseconds of the scroll
      */
     private void scrollToOffset(int offset, int duration){
-        if(mAppBar != null) {
+        if(mAblSpecificShow != null) {
             //Fetches the AppBarLayout's Behavior
-            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mAppBar.getLayoutParams();
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mAblSpecificShow.getLayoutParams();
             final AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) layoutParams.getBehavior();
 
             //Performs an animated scroll
@@ -712,7 +712,7 @@ public class SpecificShowActivity
                     public void onAnimationUpdate(ValueAnimator animation) {
                         //Sets the offset for the AppBar
                         behavior.setTopAndBottomOffset((Integer) animation.getAnimatedValue());
-                        mAppBar.requestLayout();
+                        mAblSpecificShow.requestLayout();
                     }
                 });
 

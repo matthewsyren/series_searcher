@@ -161,7 +161,7 @@ public class ShowAdapter
     private void displayImagesForRow(final ViewHolder viewHolder, int position){
         //Displays the app's launcher icon if the show has no poster or if data saving mode has been activated
         if(UserAccountUtilities.getDataSavingPreference(mContext) || sShows.get(position).getShowImageUrl() == null){
-            viewHolder.ivShowPoster.setImageResource(R.mipmap.ic_launcher);
+            viewHolder.rivShowPoster.setImageResource(R.mipmap.ic_launcher);
         }
         else{
             //Initialises ShowImage
@@ -175,7 +175,7 @@ public class ShowAdapter
                     .onlyScaleDown()
                     .error(R.color.colorGray)
                     .placeholder(R.color.colorGray)
-                    .into(viewHolder.ivShowPoster);
+                    .into(viewHolder.rivShowPoster);
         }
 
         //Displays appropriate image for the ImageButton
@@ -290,15 +290,15 @@ public class ShowAdapter
             extends RecyclerView.ViewHolder
             implements View.OnClickListener{
         //View bindings
-        @BindView(R.id.image_show_poster) RoundedImageView ivShowPoster;
-        @BindView(R.id.text_show_title) TextView tvShowTitle;
-        @BindView(R.id.text_show_rating) TextView tvShowRating;
-        @BindView(R.id.text_show_status) TextView tvShowStatus;
+        @BindView(R.id.riv_show_poster) RoundedImageView rivShowPoster;
+        @BindView(R.id.tv_show_title) TextView tvShowTitle;
+        @BindView(R.id.tv_show_rating) TextView tvShowRating;
+        @BindView(R.id.tv_show_status) TextView tvShowStatus;
         @Nullable
-        @BindView(R.id.text_show_next_episode_date) TextView tvShowNextEpisode;
+        @BindView(R.id.tv_show_next_episode_date) TextView tvShowNextEpisode;
         @Nullable
-        @BindView(R.id.text_show_runtime) TextView tvShowRuntime;
-        @BindView(R.id.button_toggle_show) ImageButton ibToggleShow;
+        @BindView(R.id.tv_show_runtime) TextView tvShowRuntime;
+        @BindView(R.id.ib_toggle_show) ImageButton ibToggleShow;
 
         //Variables
         private final Context mContext;
@@ -310,7 +310,7 @@ public class ShowAdapter
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
-            ivShowPoster.setOnClickListener(new View.OnClickListener() {
+            rivShowPoster.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //Displays a Dialog with the Show's poster
@@ -344,7 +344,7 @@ public class ShowAdapter
 
             //Creates a Bundle to animate the shared image
             Bundle bundle = ActivityOptions
-                    .makeSceneTransitionAnimation((Activity) mContext, ivShowPoster, ivShowPoster.getTransitionName())
+                    .makeSceneTransitionAnimation((Activity) mContext, rivShowPoster, rivShowPoster.getTransitionName())
                     .toBundle();
 
             //Opens ShowPosterActivity

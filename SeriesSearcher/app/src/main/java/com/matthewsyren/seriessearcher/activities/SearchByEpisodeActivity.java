@@ -37,19 +37,19 @@ import butterknife.ButterKnife;
 public class SearchByEpisodeActivity
         extends AppCompatActivity {
     //View bindings
-    @BindView(R.id.text_show_title) TextView mTextShowTitle;
-    @BindView(R.id.text_show_episode_name) TextView mTextShowEpisodeName;
-    @BindView(R.id.text_show_air_date) TextView mTextShowAirDate;
-    @BindView(R.id.text_show_runtime) TextView mTextShowRuntime;
-    @BindView(R.id.text_show_summary) TextView mTextShowSummary;
-    @BindView(R.id.text_show_season) EditText mTextShowSeason;
-    @BindView(R.id.text_show_episode) EditText mTextShowEpisode;
-    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
-    @BindView(R.id.button_search) Button mButtonSearch;
+    @BindView(R.id.tv_show_title) TextView mTvShowTitle;
+    @BindView(R.id.tv_show_episode_name) TextView mTvShowEpisodeName;
+    @BindView(R.id.tv_show_air_date) TextView mTvShowAirDate;
+    @BindView(R.id.tv_show_runtime) TextView mTvShowRuntime;
+    @BindView(R.id.tv_show_summary) TextView mTvShowSummary;
+    @BindView(R.id.et_show_season) EditText mEtShowSeason;
+    @BindView(R.id.et_show_episode) EditText mEtShowEpisode;
+    @BindView(R.id.pb_search_by_episode) ProgressBar mPbSearchByEpisode;
+    @BindView(R.id.b_search) Button mBSearch;
     @BindView(R.id.ll_search_by_episode_information) LinearLayout mLlSearchByEpisodeInformation;
-    @BindView(R.id.text_no_internet_connection) TextView mTextNoInternetConnection;
-    @BindView(R.id.text_show_season_number) TextView mTextShowSeasonNumber;
-    @BindView(R.id.text_show_episode_number) TextView mTextShowEpisodeNumber;
+    @BindView(R.id.tv_no_internet_connection) TextView mTvNoInternetConnection;
+    @BindView(R.id.tv_show_season_number) TextView mTvShowSeasonNumber;
+    @BindView(R.id.tv_show_episode_number) TextView mTvShowEpisodeNumber;
 
     //Variables
     private ShowEpisode mShowEpisode;
@@ -108,9 +108,9 @@ public class SearchByEpisodeActivity
                     if(ongoingOperation){
                         //Displays the ProgressBar and hides other Views that display information
                         mLlSearchByEpisodeInformation.setVisibility(View.INVISIBLE);
-                        mProgressBar.setVisibility(View.VISIBLE);
-                        mButtonSearch.setVisibility(View.INVISIBLE);
-                        mTextNoInternetConnection.setVisibility(View.GONE);
+                        mPbSearchByEpisode.setVisibility(View.VISIBLE);
+                        mBSearch.setVisibility(View.INVISIBLE);
+                        mTvNoInternetConnection.setVisibility(View.GONE);
                     }
                     else{
                         //Hides the ProgressBar and displays the Show's information
@@ -119,8 +119,8 @@ public class SearchByEpisodeActivity
                         }
 
                         //Displays the search Button and hides the ProgressBar
-                        mButtonSearch.setVisibility(View.VISIBLE);
-                        mProgressBar.setVisibility(View.GONE);
+                        mBSearch.setVisibility(View.VISIBLE);
+                        mPbSearchByEpisode.setVisibility(View.GONE);
                     }
                 }
             }
@@ -168,7 +168,7 @@ public class SearchByEpisodeActivity
             showTitle = bundle.getString(SHOW_TITLE_BUNDLE_KEY);
         }
 
-        mTextShowTitle.setText(showTitle);
+        mTvShowTitle.setText(showTitle);
         setTitle(getString(R.string.title_activity_search_by_episode));
     }
 
@@ -195,8 +195,8 @@ public class SearchByEpisodeActivity
             try{
                 //Hides the search Button, episode information and no Internet connection message
                 mLlSearchByEpisodeInformation.setVisibility(View.INVISIBLE);
-                mButtonSearch.setVisibility(View.INVISIBLE);
-                mTextNoInternetConnection.setVisibility(View.GONE);
+                mBSearch.setVisibility(View.INVISIBLE);
+                mTvNoInternetConnection.setVisibility(View.GONE);
 
                 //Hides the user's keyboard
                 DeviceUtilities.hideKeyboard(this, getWindow());
@@ -209,21 +209,21 @@ public class SearchByEpisodeActivity
                 }
 
                 //Gets the user's input
-                int season = Integer.parseInt(mTextShowSeason.getText().toString());
-                int episode = Integer.parseInt(mTextShowEpisode.getText().toString());
+                int season = Integer.parseInt(mEtShowSeason.getText().toString());
+                int episode = Integer.parseInt(mEtShowEpisode.getText().toString());
 
                 //Fetches information from the TVMaze API
                 mShowViewModel.requestJsonResponse(LinkUtilities.getShowEpisodeInformationLink(showNumber, season, episode));
             }
             catch(NumberFormatException nfe){
                 //Displays an error message to the user
-                if(mTextShowEpisode.getText().toString().length() == 0 && mTextShowSeason.getText().toString().length() == 0){
+                if(mEtShowEpisode.getText().toString().length() == 0 && mEtShowSeason.getText().toString().length() == 0){
                     Toast.makeText(getApplicationContext(), R.string.error_missing_season_and_episode_number, Toast.LENGTH_LONG).show();
                 }
-                else if(mTextShowSeason.getText().toString().length() == 0){
+                else if(mEtShowSeason.getText().toString().length() == 0){
                     Toast.makeText(getApplicationContext(), R.string.error_missing_season_number, Toast.LENGTH_LONG).show();
                 }
-                else if(mTextShowEpisode.getText().toString().length() == 0){
+                else if(mEtShowEpisode.getText().toString().length() == 0){
                     Toast.makeText(getApplicationContext(), R.string.error_missing_episode_number, Toast.LENGTH_LONG).show();
                 }
                 else{
@@ -231,7 +231,7 @@ public class SearchByEpisodeActivity
                 }
 
                 //Displays the search Button
-                mButtonSearch.setVisibility(View.VISIBLE);
+                mBSearch.setVisibility(View.VISIBLE);
 
                 //Resets the search results
                 resetSearchResults();
@@ -240,7 +240,7 @@ public class SearchByEpisodeActivity
         else{
             //Hides the Show's information, displays the no Internet connection message and clears the previous episode data
             mLlSearchByEpisodeInformation.setVisibility(View.GONE);
-            mTextNoInternetConnection.setVisibility(View.VISIBLE);
+            mTvNoInternetConnection.setVisibility(View.VISIBLE);
             mShowEpisode = null;
         }
     }
@@ -270,7 +270,7 @@ public class SearchByEpisodeActivity
             }
 
             //Displays the search Button
-            mButtonSearch.setVisibility(View.VISIBLE);
+            mBSearch.setVisibility(View.VISIBLE);
         }
         catch(JSONException j){
             Toast.makeText(getApplicationContext(), R.string.error_occurred, Toast.LENGTH_LONG).show();
@@ -282,10 +282,10 @@ public class SearchByEpisodeActivity
      */
     private void resetSearchResults(){
         //Clears the TextViews and hides them
-        mTextShowAirDate.setText("");
-        mTextShowEpisodeName.setText("");
-        mTextShowRuntime.setText("");
-        mTextShowSummary.setText("");
+        mTvShowAirDate.setText("");
+        mTvShowEpisodeName.setText("");
+        mTvShowRuntime.setText("");
+        mTvShowSummary.setText("");
         mLlSearchByEpisodeInformation.setVisibility(View.INVISIBLE);
 
         //Clears the mShowEpisode object
@@ -298,21 +298,21 @@ public class SearchByEpisodeActivity
      */
     private void displayEpisodeInformation(ShowEpisode showEpisode){
         //Displays values in TextViews
-        mTextShowEpisodeName.setText(showEpisode.getEpisodeName());
-        mTextShowAirDate.setText(showEpisode.getEpisodeAirDate());
-        mTextShowSummary.setText(Html.fromHtml(showEpisode.getEpisodeSummary()));
-        mTextShowSeasonNumber.setText(showEpisode.getSeasonNumber());
-        mTextShowEpisodeNumber.setText(showEpisode.getEpisodeNumber());
+        mTvShowEpisodeName.setText(showEpisode.getEpisodeName());
+        mTvShowAirDate.setText(showEpisode.getEpisodeAirDate());
+        mTvShowSummary.setText(Html.fromHtml(showEpisode.getEpisodeSummary()));
+        mTvShowSeasonNumber.setText(showEpisode.getSeasonNumber());
+        mTvShowEpisodeNumber.setText(showEpisode.getEpisodeNumber());
 
         //Displays the appropriate unit for the runtime
         if(!showEpisode.getEpisodeRuntime().equals(getString(R.string.n_a))){
-            mTextShowRuntime.setText(
+            mTvShowRuntime.setText(
                     getString(
                             R.string.text_minutes,
                             showEpisode.getEpisodeRuntime()));
         }
         else{
-            mTextShowRuntime.setText(showEpisode.getEpisodeRuntime());
+            mTvShowRuntime.setText(showEpisode.getEpisodeRuntime());
         }
 
         //Makes the Views visible

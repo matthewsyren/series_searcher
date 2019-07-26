@@ -43,8 +43,8 @@ public class RandomShowsActivity
         extends BaseActivity
         implements IOnDataSavingPreferenceChangedListener{
     //View bindings
-    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
-    @BindView(R.id.recycler_view_random_shows) RecyclerView mRecyclerViewRandomShows;
+    @BindView(R.id.pb_random_shows) ProgressBar mPbRandomShows;
+    @BindView(R.id.rv_random_shows) RecyclerView mRvRandomShows;
     @BindView(R.id.cl_no_internet_connection) ConstraintLayout mClNoInternetConnection;
 
     //Variables
@@ -162,13 +162,13 @@ public class RandomShowsActivity
                 if(ongoingOperation != null){
                     if(ongoingOperation){
                         //Hides the RecyclerView and displays the ProgressBar
-                        mRecyclerViewRandomShows.setVisibility(View.GONE);
-                        mProgressBar.setVisibility(View.VISIBLE);
+                        mRvRandomShows.setVisibility(View.GONE);
+                        mPbRandomShows.setVisibility(View.VISIBLE);
                     }
                     else{
                         //Hides the ProgressBar and displays the RecyclerView
-                        mRecyclerViewRandomShows.setVisibility(View.VISIBLE);
-                        mProgressBar.setVisibility(View.GONE);
+                        mRvRandomShows.setVisibility(View.VISIBLE);
+                        mPbRandomShows.setVisibility(View.GONE);
                     }
                 }
             }
@@ -220,9 +220,9 @@ public class RandomShowsActivity
         //Sets up Adapter to RecyclerView
         mAdapter = new ShowAdapter(this, mShows, false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mRecyclerViewRandomShows.setLayoutManager(linearLayoutManager);
-        mRecyclerViewRandomShows.setAdapter(mAdapter);
-        mRecyclerViewRandomShows.addItemDecoration(new DividerItemDecoration(this, linearLayoutManager.getOrientation()));
+        mRvRandomShows.setLayoutManager(linearLayoutManager);
+        mRvRandomShows.setAdapter(mAdapter);
+        mRvRandomShows.addItemDecoration(new DividerItemDecoration(this, linearLayoutManager.getOrientation()));
     }
 
     /**
@@ -233,7 +233,7 @@ public class RandomShowsActivity
         mShows.clear();
         mShowViewModel.getObservableShows().setValue(new ArrayList<Show>());
         mAdapter.notifyDataSetChanged();
-        mRecyclerViewRandomShows.getLayoutManager().scrollToPosition(0);
+        mRvRandomShows.getLayoutManager().scrollToPosition(0);
 
         //Displays/hides Views based on Internet connection status
         boolean online = NetworkUtilities.isOnline(this);

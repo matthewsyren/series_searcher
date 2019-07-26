@@ -49,7 +49,7 @@ public class EnterPasswordFragment
                     @Override
                     public void onClick(View v) {
                         //Fetches the user's password
-                        EditText etPassword = view.findViewById(R.id.text_password);
+                        EditText etPassword = view.findViewById(R.id.et_password);
                         String password = etPassword.getText().toString();
 
                         //Sends the user's password back to the Activity if it isn't empty, otherwise displays an error message

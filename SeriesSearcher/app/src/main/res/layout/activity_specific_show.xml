@@ -8,13 +8,13 @@
     android:fitsSystemWindows="true"
     tools:context="com.matthewsyren.seriessearcher.activities.SpecificShowActivity">
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar"
+        android:id="@+id/abl_specific_show"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
         tools:ignore="InconsistentLayout">
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
+            android:id="@+id/ctl_specific_show"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:contentScrim="?android:attr/colorPrimary"
@@ -22,7 +22,7 @@
             android:fitsSystemWindows="true"
             app:title=" ">
             <ImageView
-                android:id="@+id/image_view_specific_show"
+                android:id="@+id/iv_specific_show"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="@dimen/specific_show_activity_image_view_min_height"
@@ -35,7 +35,7 @@
                 android:background="@color/colorGray" />
 
             <View
-                android:id="@+id/show_poster_image_gradient"
+                android:id="@+id/v_show_poster_image_gradient"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/show_poster_image_gradient_height"
                 android:background="@drawable/show_poster_image_gradient"
@@ -55,11 +55,11 @@
     <include layout="@layout/content_specific_show_wrapper" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/button_search_by_episode"
+        android:id="@+id/fab_search_by_episode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@id/app_bar"
+        app:layout_anchor="@id/abl_specific_show"
         app:layout_anchorGravity="bottom|end"
         android:src="@drawable/ic_search_white_24dp"
         android:onClick="searchByEpisodeOnClick"
