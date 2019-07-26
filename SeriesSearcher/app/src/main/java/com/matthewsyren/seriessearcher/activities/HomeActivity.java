@@ -182,6 +182,11 @@ public class HomeActivity
                         for(int i = 0; i < mShows.size(); i++){
                             if((String.valueOf(mShows.get(i).getShowId())).equals(showId)){
                                 if(!isShowAdded){
+                                    //Ensures that the Adapter is not null
+                                    if(mAdapter == null){
+                                        setUpAdapter();
+                                    }
+
                                     //Removes the Show as the Show is no longer in My Series
                                     mShows.remove(i);
                                     mAdapter.notifyItemRemoved(i);
