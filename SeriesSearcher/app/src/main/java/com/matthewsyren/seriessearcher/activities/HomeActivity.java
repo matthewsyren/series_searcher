@@ -732,6 +732,8 @@ public class HomeActivity
                                 //Adds the next episode date to the series if the URL contains the series name
                                 if(url.toLowerCase().contains(seriesName)){
                                     mShows.get(s).setShowNextEpisode(displayText);
+                                    mAdapter.notifyItemChanged(s);
+                                    break;
                                 }
                             }
                         }
