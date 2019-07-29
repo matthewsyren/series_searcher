@@ -72,21 +72,25 @@ public class BaseActivity
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        //Registers a Listener if the user has signed in and verified their email address
-        if(UserAccountUtilities.getUserKey(getApplicationContext()) != null){
-            //Initialises variables
-            final Menu menu = mNavigationView.getMenu();
-            final MenuItem menuItem = menu.findItem(R.id.nav_data_saving_mode);
+        //Initialises variables
+        final Menu menu = mNavigationView.getMenu();
+        final MenuItem menuItem = menu.findItem(R.id.nav_data_saving_mode);
 
-            //Displays the appropriate value for the Data Saving Mode Switch (checked or not checked)
-            View actionView = menuItem.getActionView();
-            final Switch navSwitch = actionView.findViewById(R.id.s_data_saving_mode);
-            navSwitch.setChecked(UserAccountUtilities.getDataSavingPreference(this));
+        //Displays the appropriate value for the Data Saving Mode Switch (checked or not checked), and disables clicks on the Switch (it will programmatically be clicked if the user's email address is verified)
+        View actionView = menuItem.getActionView();
+        final Switch navSwitch = actionView.findViewById(R.id.s_data_saving_mode);
+        navSwitch.setClickable(false);
+        navSwitch.setChecked(UserAccountUtilities.getDataSavingPreference(this));
 
-            //Registers an OnCheckedChangedListener for the Data Saving Mode Switch
-            navSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        //Registers an OnCheckedChangedListener for the Data Saving Mode Switch
+        navSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //Updates the user's preferences if the the user's email address is verified
+                if(UserAccountUtilities.getUserKey(getApplicationContext()) != null){
+                    //Performs a click on the Switch
+                    navSwitch.callOnClick();
+
                     //Toggles the user's data saving preference
                     UserAccountUtilities.toggleDataSavingPreference(buttonView.getContext());
 
@@ -98,16 +102,21 @@ public class BaseActivity
                     //Closes the NavigationDrawer
                     closeNavigationDrawer();
                 }
-            });
+            }
+        });
 
-            menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
+        //Registers a OnMenuItemOnClickListener
+        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                //Performs the click on the Switch if the user has verified their email
+                if(UserAccountUtilities.getUserKey(getApplicationContext()) != null){
                     navSwitch.performClick();
-                    return false;
                 }
-            });
-        }
+
+                return false;
+            }
+        });
     }
 
     /**
