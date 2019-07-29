@@ -309,6 +309,12 @@ public class HomeActivity
                     if(resultCode == EmailVerificationViewModel.REAUTHENTICATION_SUCCESSFUL){
                         //Refreshes the AuthListener, as the user has successfully reauthenticated
                         mAttemptedVerification = true;
+
+                        //Removes the AuthStateListener
+                        if(mAuthStateListener != null){
+                            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+                        }
+
                         setUpAuthListener();
                     }
                     else if(resultCode == EmailVerificationViewModel.REAUTHENTICATION_WRONG_PASSWORD){
@@ -632,6 +638,11 @@ public class HomeActivity
 
         //Fetches Shows if there is an Internet connection
         if(online && !mOngoingOperation){
+            //Registers the ShowViewModel Observers if they haven't been registered already
+            if(mShowViewModel == null){
+                registerShowViewModelObservers();
+            }
+
             //Requests a list of Shows that the user has added to My Series
             mShowViewModel.requestShowsInMySeriesJson();
         }
