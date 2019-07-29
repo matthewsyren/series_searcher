@@ -188,9 +188,7 @@ public class HomeActivity
                                     }
 
                                     //Removes the Show as the Show is no longer in My Series
-                                    mShows.remove(i);
-                                    mAdapter.notifyItemRemoved(i);
-                                    mAdapter.notifyItemRangeChanged(i, mAdapter.getItemCount());
+                                    mAdapter.removeShowFromHomeActivityRecyclerView(i);
                                 }
                                 break;
                             }

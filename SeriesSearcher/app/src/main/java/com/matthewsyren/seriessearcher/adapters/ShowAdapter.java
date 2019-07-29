@@ -266,22 +266,31 @@ public class ShowAdapter
 
             //Removes the Show if the HomeActivity is open, otherwise changes the Button icon for the Show from a delete icon to an add icon
             if(mIsHomeRecyclerView){
-                if(sShows.size() > 0){
-                    //Removes the Show from the sShows List
-                    sShows.remove(position);
-                    notifyItemRemoved(position);
-                    notifyItemRangeChanged(position, getItemCount());
-                }
-
-                if(sShows.size() == 0){
-                    //Displays a message telling the user to add Shows to My Series if My Series is empty
-                    ((HomeActivity)mContext).fetchUsersShows();
-                }
+                //Removes the Show from the HomeActivity RecyclerView
+                removeShowFromHomeActivityRecyclerView(position);
             }
             else{
                 //Updates the Button icon for the Show
                 notifyItemChanged(position);
             }
+        }
+    }
+
+    /**
+     * Removes a Show from the RecyclerView on HomeActivity
+     * @param position The position in the sShows ArrayList of the Show that was removed
+     */
+    public void removeShowFromHomeActivityRecyclerView(int position){
+        if(sShows.size() > 0){
+            //Removes the Show from the sShows List
+            sShows.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, getItemCount());
+        }
+
+        if(sShows.size() == 0){
+            //Displays a message telling the user to add Shows to My Series if My Series is empty
+            ((HomeActivity)mContext).fetchUsersShows();
         }
     }
 
