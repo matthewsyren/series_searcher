@@ -47,7 +47,7 @@ public class SearchActivity
     @BindView(R.id.pb_search) ProgressBar mPbSearch;
     @BindView(R.id.et_search_series) EditText mEtSearchSeries;
     @BindView(R.id.tv_no_series_found) TextView mTvNoSeriesFound;
-    @BindView(R.id.tv_no_internet_connection) TextView mTextNoInternetConnection;
+    @BindView(R.id.tv_no_internet_connection) TextView mTvNoInternetConnection;
 
     //Variables
     private ArrayList<Show> mShows =  new ArrayList<>();
@@ -254,7 +254,7 @@ public class SearchActivity
 
         //Hides the TextViews
         mTvNoSeriesFound.setVisibility(View.INVISIBLE);
-        mTextNoInternetConnection.setVisibility(View.GONE);
+        mTvNoInternetConnection.setVisibility(View.GONE);
 
         //Cancels any previous requests and clears the previous results
         mShowViewModel.cancelAsyncTasks();
@@ -267,7 +267,8 @@ public class SearchActivity
         }
         else{
             //Displays no Internet connection message
-            mTextNoInternetConnection.setVisibility(View.VISIBLE);
+            mTvNoInternetConnection.setVisibility(View.VISIBLE);
+            mPbSearch.setVisibility(View.GONE);
         }
     }
 
