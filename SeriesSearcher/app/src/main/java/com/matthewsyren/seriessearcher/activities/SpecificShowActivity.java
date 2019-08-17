@@ -451,6 +451,7 @@ public class SpecificShowActivity
 
     /**
      * Fetches the Show's information
+     * @param view The View that was clicked on
      */
     public void refreshActivity(View view){
         getShowInformation();
@@ -726,6 +727,7 @@ public class SpecificShowActivity
 
     /**
      * Takes the user to the SearchByEpisodeActivity
+     * @param view The View that was clicked on
      */
     public void searchByEpisodeOnClick(View view) {
         //Fetches the link for the show that the user clicked on from the Bundle

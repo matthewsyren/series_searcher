@@ -90,6 +90,7 @@ public class FirebaseService
     /**
      * Returns a DatabaseReference to the user's data in the Firebase Database
      * @param userKey The unique key for the user
+     * @return A DatabaseReference to the user's data in the Firebase Database
      */
     private DatabaseReference getFirebaseDatabaseReference(String userKey){
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();

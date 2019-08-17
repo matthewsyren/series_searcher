@@ -20,7 +20,7 @@ public class JsonUtilities {
      * Returns a Show object parsed from the JSONObject passed in
      * @param json The JSON to be parsed
      * @param context The Context of the calling Activity
-     * @param fetchNextEpisode Set as true to fetch information about the Show's next episode
+     * @param fetchNextEpisode Set to true to fetch information about the Show's next episode
      * @param showAdded Set to true if the Show has been added to My Series by the user, otherwise set to false
      * @param showViewModel The instance of ShowViewModel to send JSON responses to
      * @return A Show object with the parsed JSON as values

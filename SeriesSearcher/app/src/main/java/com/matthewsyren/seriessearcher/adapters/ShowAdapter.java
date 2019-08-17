@@ -53,6 +53,9 @@ public class ShowAdapter
 
     /**
      * Constructor
+     * @param context The Context of the calling Activity
+     * @param shows An ArrayList of the Shows to be displayed
+     * @param isHomeRecyclerView Set to true if the Activity is the HomeActivity, otherwise set to false
      */
     public ShowAdapter(Context context, ArrayList<Show> shows, boolean isHomeRecyclerView) {
         mContext = context;
@@ -63,6 +66,7 @@ public class ShowAdapter
 
     /**
      * Setter method
+     * @param shows An updated ArrayList of Shows
      */
     public void setShows(ArrayList<Show> shows){
         sShows = shows;
@@ -192,6 +196,7 @@ public class ShowAdapter
 
     /**
      * Returns the appropriate XML layout to inflate
+     * @return The XML layout to inflate
      */
     private int getLayoutToInflate(){
         if(mIsHomeRecyclerView){
@@ -314,6 +319,8 @@ public class ShowAdapter
 
         /**
          * Constructor
+         * @param itemView The View on which the items will be looked up
+         * @param context The Context of the calling Activity
          */
         public ViewHolder(View itemView, final Context context) {
             super(itemView);

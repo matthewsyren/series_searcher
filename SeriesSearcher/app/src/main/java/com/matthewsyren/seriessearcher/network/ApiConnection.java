@@ -94,7 +94,8 @@ public class ApiConnection
      */
     public interface IApiConnectionResponse {
         /**
-         * Used to fetch JSON data that was retrieved from an API. The class that needs the data will implement this interface, and the ApiConnection class sends the data to the method once it has fetched the data
+         * Used to send JSON data that was retrieved from an API to the appropriate class. The class that needs the data will implement this interface, and the ApiConnection class sends the data to the method once it has fetched the data
+         * @param response The response that was retrieved from the API
          */
         void onJsonResponseRetrieved(String response);
     }

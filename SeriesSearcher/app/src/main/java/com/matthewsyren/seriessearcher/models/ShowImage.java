@@ -35,6 +35,7 @@ public class ShowImage {
 
     /**
      * Getter method
+     * @return The image height in pixels
      */
     public int getHeight(){
         return height;
@@ -42,6 +43,7 @@ public class ShowImage {
 
     /**
      * Getter method
+     * @return The image width in pixels
      */
     public int getWidth(){
         return width;

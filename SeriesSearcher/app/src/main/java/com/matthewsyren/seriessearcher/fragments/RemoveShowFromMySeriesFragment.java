@@ -100,6 +100,8 @@ public class RemoveShowFromMySeriesFragment
     public interface IRemoveShowFromMySeriesFragmentOnClickListener {
         /**
          * Sends data back to the appropriate Activity once a decision has been made on RemoveShowFromMySeriesFragment
+         * @param removed True if the Show was removed, otherwise false
+         * @param show The Show that was added to/removed from My Series
          */
         void onRemoveShowFromMySeriesFragmentClick(boolean removed, Show show);
     }

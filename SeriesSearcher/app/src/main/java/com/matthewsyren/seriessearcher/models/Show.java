@@ -38,6 +38,14 @@ public class Show
 
     /**
      * Constructor (used for the RecyclerViews)
+     * @param showId The ID of the Show
+     * @param showTitle The title of the Show
+     * @param showRating The rating of the Show (out of 10)
+     * @param showStatus The status of the Show (whether it is still running or not)
+     * @param showImageUrl The URL of the poster for the Show
+     * @param showRuntime The runtime of the Show in minutes
+     * @param showAdded True if the Show has been added to My Series, otherwise false
+     * @param showNextEpisode The episode number and date of the next episode for the Show
      */
     public Show(int showId, String showTitle, String showRating, String showStatus, String showImageUrl, String showRuntime, Boolean showAdded, String showNextEpisode) {
         this.showId = showId;
@@ -52,6 +60,19 @@ public class Show
 
     /**
      * Constructor (used for more detailed information on the Show)
+     * @param showId The ID of the Show
+     * @param showImageUrl The URL of the poster for the Show
+     * @param showTitle The title of the Show
+     * @param showRating The rating of the Show (out of 10)
+     * @param showStatus The status of the Show (whether it is still running or not)
+     * @param showNextEpisode The episode number and date of the next episode of the Show
+     * @param showRuntime The runtime of the Show in minutes
+     * @param showAdded True if the Show has been added to My Series, otherwise false
+     * @param showPremieredDate The date that the Show premiered
+     * @param showLanguages The languages used in the Show (separated by commas)
+     * @param showGenres The genres of the Show (separated by commas)
+     * @param showSummary The summary of the Show's plot
+     * @param showPreviousEpisode The episode number and date of the previous episode for the Show
      */
     public Show(int showId, String showImageUrl, String showTitle, String showRating, String showStatus, String showNextEpisode, String showRuntime, Boolean showAdded, String showPremieredDate, String showLanguages, String showGenres, String showSummary, String showPreviousEpisode) {
         this.showId = showId;
@@ -71,6 +92,7 @@ public class Show
 
     /**
      * Getter method
+     * @return The ID of the Show
      */
     public int getShowId(){
         return showId;
@@ -78,6 +100,7 @@ public class Show
 
     /**
      * Getter method
+     * @return The title of the Show
      */
     public String getShowTitle() {
         return showTitle;
@@ -85,6 +108,7 @@ public class Show
 
     /**
      * Getter method
+     * @return The rating of the Show (out of 10)
      */
     public String getShowRating() {
         return showRating;
@@ -92,6 +116,7 @@ public class Show
 
     /**
      * Getter method
+     * @return The status of the Show (e.g. running, ended etc.)
      */
     public String getShowStatus() {
         return showStatus;
@@ -99,6 +124,7 @@ public class Show
 
     /**
      * Getter method
+     * @return The episode number and date of the Show's next episode)
      */
     public String getShowNextEpisode() {
         return showNextEpisode;
@@ -106,6 +132,7 @@ public class Show
 
     /**
      * Getter method
+     * @return The URL of the Show's poster
      */
     public String getShowImageUrl(){
         return showImageUrl;
@@ -113,6 +140,7 @@ public class Show
 
     /**
      * Getter method
+     * @return The runtime of the Show (in minutes)
      */
     public String getShowRuntime() {
         return showRuntime;
@@ -120,6 +148,7 @@ public class Show
 
     /**
      * Getter method
+     * @return The date that the Show premiered
      */
     public String getShowPremieredDate() {
         return showPremieredDate;
@@ -127,6 +156,7 @@ public class Show
 
     /**
      * Getter method
+     * @return The languages used in the Show (separated by commas)
      */
     public String getShowLanguages() {
         return showLanguages;
@@ -134,6 +164,7 @@ public class Show
 
     /**
      * Getter method
+     * @return The genres of the Show (separated by commas)
      */
     public String getShowGenres() {
         return showGenres;
@@ -141,6 +172,7 @@ public class Show
 
     /**
      * Getter method
+     * @return The summary of the Show's plot
      */
     public String getShowSummary() {
         return showSummary;
@@ -148,6 +180,7 @@ public class Show
 
     /**
      * Getter method
+     * @return The episode number and date of the Show's latest episode
      */
     public String getShowPreviousEpisode() {
         return showPreviousEpisode;
@@ -155,6 +188,7 @@ public class Show
 
     /**
      * Getter method
+     * @return True if the Show has been added to My Series, otherwise false
      */
     public Boolean isShowAdded() {
         return showAdded;
@@ -162,6 +196,7 @@ public class Show
 
     /**
      * Setter method
+     * @param showNextEpisode The episode number and date of the Show's next episode
      */
     public void setShowNextEpisode(String showNextEpisode) {
         this.showNextEpisode = showNextEpisode;
@@ -169,6 +204,7 @@ public class Show
 
     /**
      * Setter method
+     * @param showAdded True if the Show has been added to My Series, otherwise false
      */
     public void setShowAdded(Boolean showAdded) {
         this.showAdded = showAdded;
@@ -176,6 +212,7 @@ public class Show
 
     /**
      * Setter method
+     * @param showPreviousEpisode The episode number and date of the Show's latest episode
      */
     public void setShowPreviousEpisode(String showPreviousEpisode) {
         this.showPreviousEpisode = showPreviousEpisode;

@@ -4,6 +4,10 @@ import android.os.Bundle;
 
 import com.matthewsyren.seriessearcher.R;
 
+/**
+ * Activity displays a disclaimer to the user
+ */
+
 public class DisclaimerActivity
         extends BaseActivity {
     @Override

@@ -259,6 +259,7 @@ public class RandomShowsActivity
 
     /**
      * Fetches random Shows
+     * @param view The View that was clicked on
      */
     public void refreshActivity(View view){
         getRandomShows();

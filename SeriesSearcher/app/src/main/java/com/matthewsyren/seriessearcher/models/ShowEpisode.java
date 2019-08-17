@@ -19,6 +19,12 @@ public class ShowEpisode
 
     /**
      * Constructor
+     * @param episodeName The name of the episode
+     * @param episodeAirDate The date that the episode aired
+     * @param episodeRuntime The runtime of the episode (in minutes)
+     * @param episodeSummary The summary of the episode's plot
+     * @param seasonNumber The season number of the episode
+     * @param episodeNumber The episode number
      */
     public ShowEpisode(String episodeName, String episodeAirDate, String episodeRuntime, String episodeSummary, String seasonNumber, String episodeNumber) {
         this.episodeName = episodeName;
@@ -31,6 +37,7 @@ public class ShowEpisode
 
     /**
      * Getter method
+     * @return The name of the episode
      */
     public String getEpisodeName() {
         return episodeName;
@@ -38,6 +45,7 @@ public class ShowEpisode
 
     /**
      * Getter method
+     * @return The date that the episode aired
      */
     public String getEpisodeAirDate() {
         return episodeAirDate;
@@ -45,6 +53,7 @@ public class ShowEpisode
 
     /**
      * Getter method
+     * @return The runtime of the episode in minutes
      */
     public String getEpisodeRuntime() {
         return episodeRuntime;
@@ -52,6 +61,7 @@ public class ShowEpisode
 
     /**
      * Getter method
+     * @return The summary of the episode's plot
      */
     public String getEpisodeSummary() {
         return episodeSummary;
@@ -59,6 +69,7 @@ public class ShowEpisode
 
     /**
      * Getter method
+     * @return The season number of the episode
      */
     public String getSeasonNumber() {
         return seasonNumber;
@@ -66,6 +77,7 @@ public class ShowEpisode
 
     /**
      * Getter method
+     * @return The episode number of the episode
      */
     public String getEpisodeNumber() {
         return episodeNumber;

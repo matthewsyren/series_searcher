@@ -189,6 +189,7 @@ public class SearchByEpisodeActivity
 
     /**
      * Searches for the episode entered by the user
+     * @param view The View that was clicked on
      */
     public void searchByEpisodeOnClick(View view){
         if(NetworkUtilities.isOnline(this)){

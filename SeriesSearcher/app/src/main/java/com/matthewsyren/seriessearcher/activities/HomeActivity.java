@@ -540,6 +540,7 @@ public class HomeActivity
 
     /**
      * Sends an email to the user to verify their email address
+     * @param view The View that was clicked on
      */
     public void sendVerificationEmail(View view){
         mEmailVerificationViewModel.sendVerificationEmail(mFirebaseUser);
@@ -547,6 +548,7 @@ public class HomeActivity
 
     /**
      * Confirms the user's verification by making them enter their password
+     * @param view The View that was clicked on
      */
     public void confirmVerification(View view){
         //Initialises a DialogFragment that allows the user to enter their password
@@ -666,6 +668,7 @@ public class HomeActivity
 
     /**
      * Takes user to SearchActivity
+     * @param view The View that was clicked on
      */
     public void openSearchShows(View view) {
         Intent intent = new Intent(this, SearchActivity.class);
@@ -675,6 +678,7 @@ public class HomeActivity
 
     /**
      * Fetches the user's Shows
+     * @param view The View that was clicked on
      */
     public void refreshActivity(View view){
         if(UserAccountUtilities.getUserKey(this) != null){

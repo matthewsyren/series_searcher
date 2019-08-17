@@ -16,7 +16,8 @@ import com.matthewsyren.seriessearcher.R;
  * Generates an ImageView with rounded corners
  */
 
-public class RoundedImageView extends AppCompatImageView {
+public class RoundedImageView
+        extends AppCompatImageView {
     //Declarations
     private Path mRoundedPath;
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -24,6 +25,7 @@ public class RoundedImageView extends AppCompatImageView {
 
     /**
      * Constructor
+     * @param context The Context of the calling Activity
      */
     public RoundedImageView(Context context) {
         super(context);
@@ -32,6 +34,8 @@ public class RoundedImageView extends AppCompatImageView {
 
     /**
      * Constructor
+     * @param context The Context of the calling Activity
+     * @param attributeSet The AttributeSet for the View
      */
     public RoundedImageView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -40,6 +44,9 @@ public class RoundedImageView extends AppCompatImageView {
 
     /**
      * Constructor
+     * @param context The Context of the calling Activity
+     * @param attrs The AttributeSet for the View
+     * @param defStyle The default style to apply to the View
      */
     public RoundedImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

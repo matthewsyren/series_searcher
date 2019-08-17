@@ -86,6 +86,7 @@ public class ShowPosterActivity
 
     /**
      * Closes the Dialog (suppressed the unused warning as the onClick attribute is set in styles.xml, under the ShowPosterActivityOuterConstraintLayout style)
+     * @param view The View that was clicked on
      */
     @SuppressWarnings("unused")
     public void closeDialog(View view){

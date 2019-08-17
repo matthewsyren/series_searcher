@@ -102,6 +102,7 @@ public class EnterPasswordFragment
     public interface IEnterPasswordFragmentOnClickListener {
         /**
          * Sends data back to the appropriate Activity once the user has entered their password
+         * @param password The password that was entered by the user
          */
         void onEnterPasswordFragmentClick(String password);
     }
